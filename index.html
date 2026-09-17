@@ -6,10 +6,13 @@
 <meta name="theme-color" content="#2b6cb0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="배화여고 시간표">
+<meta name="apple-mobile-web-app-title" content="배화 시간표">
 <title>배화여자고등학교 스마트 시간표</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+<!-- 예쁜 앱 아이콘 및 파비콘 -->
+<link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
 <style>
     :root {
         --primary: #2b6cb0;
@@ -64,7 +67,7 @@
         box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
     .app-title-box { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .app-title-box .logo-icon { font-size: 22px; }
+    .app-title-img { width: 26px; height: 26px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .app-title-text { font-size: 17px; font-weight: 800; color: var(--primary-dark); letter-spacing: -0.4px; }
     .today-badge {
         font-size: 12px;
@@ -515,7 +518,7 @@
 <!-- 상단 헤더 -->
 <header class="app-header">
     <div class="app-title-box" onclick="switchTab('tab-my', document.querySelectorAll('.nav-item')[0])">
-        <span class="logo-icon">🏫</span>
+        <img src="./favicon.png" class="app-title-img" alt="배화여고">
         <span class="app-title-text">배화여고 시간표</span>
     </div>
     <div id="headerDateBadge" class="today-badge">로딩중..</div>
@@ -526,12 +529,12 @@
     <section id="tab-my" class="tab-content active">
         <div class="m-card">
             <div class="m-card-title">
-                <span>👤 선생님 선택</span>
+                <span>👤 선생님 선택 (가나다순)</span>
                 <button id="saveTeacherBtn" class="m-btn m-btn-outline m-btn-sm" onclick="saveCurrentTeacher()">⭐ 기본으로 저장</button>
             </div>
             <div style="display:flex; gap:8px; align-items:center;">
                 <select id="myTeacherSelect" class="m-select" onchange="onTeacherChange()">
-                    <!-- JS로 교사 명단 자동 추가 -->
+                    <!-- JS로 교사 명단 가나다 오름차순 자동 추가 -->
                 </select>
             </div>
             <div id="quickSavedContainer" style="display:none;">
@@ -542,7 +545,7 @@
             </div>
             <div style="font-size: 12px; color: var(--primary); margin-top: 10px; display:flex; align-items:center; gap:5px; background:var(--primary-light); padding:8px 10px; border-radius:8px;">
                 <span>💡</span>
-                <span><b>파란색 수업</b>을 누르면 <b>공강·스왑 교체 추천</b>이 뜹니다!</span>
+                <span><b>파란색 수업</b>을 누르면 <b>공강·스왑 추천</b>이 뜹니다!</span>
             </div>
         </div>
 
@@ -612,7 +615,7 @@
     <!-- ==================== 탭 4: 교직원 전화번호 및 교실 ==================== -->
     <section id="tab-phone" class="tab-content">
         <div class="m-card">
-            <div class="m-card-title">📞 교직원 내선번호 & 좌석</div>
+            <div class="m-card-title">📞 교직원 내선번호 & 좌석 (가나다순)</div>
             <input type="text" id="phoneSearchInput" class="m-input" placeholder="이름, 부서, 위치 검색 (예: 김지혜, 1학년, 행정실)" oninput="filterPhone()">
             <div class="phone-filter-bar" style="margin-top:10px; margin-bottom:0;">
                 <button class="phone-filter-chip active phone-dept-btn" onclick="setDeptFilter('전체', this)">전체</button>
@@ -626,7 +629,7 @@
         </div>
 
         <div id="phoneListContainer">
-            <!-- JS 렌더링 -->
+            <!-- JS 렌더링 (가나다 오름차순) -->
         </div>
     </section>
 
@@ -641,7 +644,7 @@
         </div>
 
         <div class="m-card">
-            <div class="m-card-title">📋 전체 교사 시간표 빠른 조회</div>
+            <div class="m-card-title">📋 전체 교사 시간표 빠른 조회 (가나다순)</div>
             <p style="font-size:12px; color:var(--gray-600); margin-top:0;">선생님 이름을 터치하면 해당 시간표로 즉시 이동합니다.</p>
             <div id="allTeachersGrid" class="teacher-grid-list"></div>
         </div>
@@ -905,28 +908,13 @@
         const sel = document.getElementById('myTeacherSelect');
         const allGrid = document.getElementById('allTeachersGrid');
         
+        // 1. 카드 데이터 파싱
         cards.forEach(card => {
             const header = card.querySelector('.card-header');
             if(!header) return;
             const name = header.innerText.replace('교사', '').trim();
             teachers.push(name);
             schedule[name] = {};
-            
-            // 내 시간표 셀렉트 옵션
-            let opt = document.createElement('option');
-            opt.value = name; opt.text = name + " 선생님";
-            sel.appendChild(opt);
-
-            // 전체 교사 퀵 버튼
-            let btn = document.createElement('button');
-            btn.className = 'teacher-chip-btn';
-            btn.innerText = name;
-            btn.onclick = () => {
-                sel.value = name;
-                renderMyTimetable();
-                switchTab('tab-my', document.querySelectorAll('.nav-item')[0]);
-            };
-            allGrid.appendChild(btn);
             
             const rows = card.querySelectorAll('tr');
             rows.forEach((row, idx) => {
@@ -943,6 +931,26 @@
                     }
                 }
             });
+        });
+
+        // ⭐ 2. 교직원(선생님) 이름 오름차순(가나다순) 정렬!
+        teachers.sort((a, b) => a.localeCompare(b, 'ko'));
+
+        // 정렬된 순서대로 내 시간표 셀렉트 & 전체 교사 퀵 버튼 생성
+        teachers.forEach(name => {
+            let opt = document.createElement('option');
+            opt.value = name; opt.text = name + " 선생님";
+            sel.appendChild(opt);
+
+            let btn = document.createElement('button');
+            btn.className = 'teacher-chip-btn';
+            btn.innerText = name;
+            btn.onclick = () => {
+                sel.value = name;
+                renderMyTimetable();
+                switchTab('tab-my', document.querySelectorAll('.nav-item')[0]);
+            };
+            allGrid.appendChild(btn);
         });
 
         // localStorage 저장된 기본 교사 불러오기
@@ -1157,7 +1165,7 @@
         table.innerHTML = html;
     }
 
-    // ⭐ 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서로 변경!)
+    // ⭐ 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서)
     function openSwapModal(myTeacher, day, period, subjectText) {
         document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 추천 목록`;
         document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님: ${subjectText}`;
@@ -1399,7 +1407,7 @@
         filterPhone();
     }
 
-    // 전화번호 필터 및 카드 렌더링
+    // 전화번호 필터 및 카드 렌더링 (⭐ 이름 가나다 오름차순 정렬 적용!)
     function filterPhone() {
         const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
         const container = document.getElementById('phoneListContainer');
@@ -1428,6 +1436,9 @@
             container.innerHTML = '<div style="text-align:center; padding:30px; color:#a0aec0; font-size:13px;">일치하는 검색 결과가 없습니다.</div>';
             return;
         }
+
+        // ⭐ 교직원 이름 가나다 오름차순 정렬!
+        filtered.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 
         let html = '';
         filtered.forEach(p => {
@@ -1481,6 +1492,7 @@
 
     function renderGroupChips() {
         const container = document.getElementById('groupTeacherChips');
+        container.innerHTML = '';
         teachers.forEach(t => {
             const lbl = document.createElement('label');
             lbl.style.cssText = "display:inline-flex; align-items:center; gap:4px; background:white; border:1px solid #cbd5e0; padding:4px 8px; border-radius:14px; font-size:12px; cursor:pointer;";
