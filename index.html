@@ -407,7 +407,7 @@
         color: #c53030;
         font-weight: bold;
         font-size: 13px;
-        padding: 7px 10px;
+        padding: 7px 11px;
         border-radius: 8px;
         text-decoration: none;
     }
@@ -542,7 +542,7 @@
             </div>
             <div style="font-size: 12px; color: var(--primary); margin-top: 10px; display:flex; align-items:center; gap:5px; background:var(--primary-light); padding:8px 10px; border-radius:8px;">
                 <span>💡</span>
-                <span><b>파란색 수업</b>을 누르면 <b>상호 교체·보강 추천</b>이 뜹니다!</span>
+                <span><b>파란색 수업</b>을 누르면 <b>공강·스왑 교체 추천</b>이 뜹니다!</span>
             </div>
         </div>
 
@@ -678,7 +678,7 @@
         <div class="sheet-handle"></div>
         <div class="sheet-header">
             <div>
-                <h3 class="sheet-title" id="sheetModalTitle">🔄 수업 교환/보강 추천</h3>
+                <h3 class="sheet-title" id="sheetModalTitle">🔄 수업 추천 (공강 / 스왑)</h3>
                 <div class="sheet-subtitle" id="sheetModalSubtitle">선택한 수업 정보</div>
             </div>
             <button class="sheet-close" onclick="closeSwapModal()">✕</button>
@@ -847,6 +847,25 @@
         { name: "교과교실2", ext: "438", loc: "특별교실", hrClass: "-", hrExt: "-" },
         { name: "진로교실", ext: "433", loc: "특별교실", hrClass: "-", hrExt: "-" }
     ];
+
+    // 내선번호 ➡️ 실제 전화걸기 번호 변환 (일반 교직원 3자리는 02-724-0*** 형식)
+    function getFullDialNumber(ext) {
+        if (!ext || ext === '-') return null;
+        let clean = ext.trim();
+        // 이미 02- 또는 다른 지역번호/하이픈이 있는 일반 전화번호
+        if (clean.includes('-')) {
+            return clean.startsWith('02-') ? clean : `02-${clean}`;
+        }
+        // 일반 3자리 내선번호 (예: 301 ➡️ 02-724-0301)
+        if (/^\d{3}$/.test(clean)) {
+            return `02-724-0${clean}`;
+        }
+        // 4자리인 경우 (예: 1234 ➡️ 02-724-1234)
+        if (/^\d{4}$/.test(clean)) {
+            return `02-724-${clean}`;
+        }
+        return `02-724-0${clean}`;
+    }
 
     // 오늘 요일 계산 (0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6: 토)
     function getTodayDayStr() {
@@ -1046,7 +1065,7 @@
                 if(isPureClass(text)) {
                     let parts = text.split('\n');
                     let subj = parts[0].trim();
-                    let cls = parts.length > 1 ? parts[1].trim() : '';
+                    let cls = parts[1].trim(); 
                     if(!subjectMap[subj]) subjectMap[subj] = new Set();
                     if(cls) subjectMap[subj].add(cls);
                 }
@@ -1094,7 +1113,7 @@
                     let cleanText = cellText.replace(/\n/g, ' ');
                     html += `<td class="t-cell-class${todayClass}" onclick="openSwapModal('${t}', '${d}', ${p}, '${cleanText}')">
                         ${cellText.replace(/\n/g, '<br>')}
-                        <span class="t-cell-swap-hint">교환</span>
+                        <span class="t-cell-swap-hint">추천</span>
                     </td>`;
                 } else {
                     html += `<td class="t-cell-fixed${todayClass}">${cellText.replace(/\n/g, '<br>')}</td>`;
@@ -1138,9 +1157,10 @@
         table.innerHTML = html;
     }
 
+    // ⭐ 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서로 변경!)
     function openSwapModal(myTeacher, day, period, subjectText) {
-        document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 교환·보강 추천`;
-        document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님 수업 : ${subjectText}`;
+        document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 추천 목록`;
+        document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님: ${subjectText}`;
 
         let targetClasses = [];
         let targetGrades = new Set();
@@ -1154,6 +1174,25 @@
             }
         }
 
+        // 1. 공강 교사 계산 (보강/대강 가능)
+        let candidates = [];
+        for(let t of teachers) {
+            if(t === myTeacher) continue; 
+            const text = schedule[t][period][day];
+            if(isFree(text)) {
+                candidates.push({
+                    name: t,
+                    totalPure: getPureClassCount(t),
+                    dayPure: getPureClassCount(t, day)
+                });
+            }
+        }
+        candidates.sort((a, b) => {
+            if (a.dayPure !== b.dayPure) return a.dayPure - b.dayPure;
+            return a.totalPure - b.totalPure;
+        });
+
+        // 2. 상호 맞바꾸기(스왑) 계산
         let mutualSwaps = [];
         for (let cls of classNames) {
             let clsGrade = cls.split('-')[0];
@@ -1204,33 +1243,38 @@
             return a.partnerPeriod - b.partnerPeriod;
         });
 
-        let candidates = [];
-        for(let t of teachers) {
-            if(t === myTeacher) continue; 
-            const text = schedule[t][period][day];
-            if(isFree(text)) {
-                if (!mutualSwaps.some(m => m.partner === t)) {
-                    candidates.push({
-                        name: t,
-                        totalPure: getPureClassCount(t),
-                        dayPure: getPureClassCount(t, day)
-                    });
-                }
-            }
-        }
-        candidates.sort((a, b) => {
-            if (a.dayPure !== b.dayPure) return a.dayPure - b.dayPure;
-            return a.totalPure - b.totalPure;
-        });
-
         let html = '';
 
-        // 1. 맞교환
-        if (mutualSwaps.length > 0) {
-            html += `<div style="margin-bottom: 18px;">
-                <div style="font-size:14px; font-weight:800; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-                    <span>🤝</span> <span>상호 맞교환 가능 (${mutualSwaps.length}건)</span>
+        // 🌟 [1순위] 공강 교사 (보강/대강 가능 교사) 먼저 표시!
+        html += `<div style="margin-bottom: 20px;">
+            <div style="font-size:14px; font-weight:800; color:var(--orange); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span>🙋</span> <span>1. 공강 교사 (보강/대강 가능: ${candidates.length}명)</span>
+            </div>`;
+        
+        if (candidates.length === 0) {
+            html += `<div style="font-size:12px; color:#a0aec0; text-align:center; padding:10px;">해당 시간 공강인 교사가 없습니다.</div>`;
+        } else {
+            html += `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:8px;">`;
+            for(let c of candidates) {
+                const isRec = c.dayPure < 3;
+                html += `
+                <div class="swap-card" style="${isRec ? 'border:1.5px solid var(--orange); background:#fffaf0;' : ''}">
+                    <div style="font-weight:bold; font-size:13px; color:var(--gray-800);">${c.name} 선생님</div>
+                    <div style="font-size:11px; color:var(--gray-600); margin-top:2px;">당일 ${c.dayPure}T / 주 ${c.totalPure}T</div>
+                    ${isRec ? '<span style="display:inline-block; font-size:10px; background:#fbd38d; color:#744210; padding:1px 5px; border-radius:4px; margin-top:4px; font-weight:bold;">여유 추천</span>' : ''}
                 </div>`;
+            }
+            html += `</div>`;
+        }
+        html += `</div>`;
+
+        // 🌟 [2순위] 상호 맞바꾸기(스왑) 그 다음에 표시!
+        html += `<div>
+            <div style="font-size:14px; font-weight:800; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span>🤝</span> <span>2. 상호 맞교환 가능 스왑 (${mutualSwaps.length}건)</span>
+            </div>`;
+
+        if (mutualSwaps.length > 0) {
             for (let m of mutualSwaps) {
                 let badgeClass = 'badge-same-grade';
                 let badgeText = '같은 학년(다른 요일)';
@@ -1251,33 +1295,10 @@
                     </div>
                 </div>`;
             }
-            html += `</div>`;
         } else {
-            html += `<div style="font-size:13px; color:var(--gray-600); background:#f7fafc; padding:12px; border-radius:8px; margin-bottom:15px; text-align:center;">
-                🤝 해당 시간과 딱 맞바꿀 수 있는 상대 교사가 없습니다.
+            html += `<div style="font-size:13px; color:var(--gray-600); background:#f7fafc; padding:12px; border-radius:8px; text-align:center;">
+                🤝 서로 시간을 딱 맞바꿀 수 있는 교환 조합이 없습니다.
             </div>`;
-        }
-
-        // 2. 일방향 보강
-        html += `<div>
-            <div style="font-size:14px; font-weight:800; color:var(--orange); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-                <span>🙋</span> <span>공강 교사 (보강/대강 가능: ${candidates.length}명)</span>
-            </div>`;
-        
-        if (candidates.length === 0) {
-            html += `<div style="font-size:12px; color:#a0aec0; text-align:center; padding:10px;">해당 시간 공강인 교사가 없습니다.</div>`;
-        } else {
-            html += `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:8px;">`;
-            for(let c of candidates) {
-                const isRec = c.dayPure < 3;
-                html += `
-                <div class="swap-card" style="${isRec ? 'border:1.5px solid var(--orange); background:#fffaf0;' : ''}">
-                    <div style="font-weight:bold; font-size:13px; color:var(--gray-800);">${c.name} 선생님</div>
-                    <div style="font-size:11px; color:var(--gray-600); margin-top:2px;">당일 ${c.dayPure}T / 주 ${c.totalPure}T</div>
-                    ${isRec ? '<span style="display:inline-block; font-size:10px; background:#fbd38d; color:#744210; padding:1px 5px; border-radius:4px; margin-top:4px;">여유 추천</span>' : ''}
-                </div>`;
-            }
-            html += `</div>`;
         }
         html += `</div>`;
 
@@ -1378,6 +1399,7 @@
         filterPhone();
     }
 
+    // 전화번호 필터 및 카드 렌더링
     function filterPhone() {
         const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
         const container = document.getElementById('phoneListContainer');
@@ -1410,8 +1432,8 @@
         let html = '';
         filtered.forEach(p => {
             const hasHr = p.hrClass !== '-' && p.hrExt !== '-';
-            const isFullPhone = p.ext.includes('-');
-            const callHref = isFullPhone ? `tel:${p.ext}` : `tel:02-737-6600,${p.ext}`;
+            const dialNumber = getFullDialNumber(p.ext);
+            const hrDialNumber = hasHr ? getFullDialNumber(p.hrExt) : null;
 
             html += `
             <div class="contact-card">
@@ -1421,10 +1443,15 @@
                         ${hasHr ? `<span class="contact-badge">${p.hrClass}</span>` : ''}
                     </div>
                     <div class="contact-loc">📍 ${p.loc}</div>
-                    ${hasHr ? `<div class="contact-hr-ext">🏫 교실 내선: <b>${p.hrExt}</b></div>` : ''}
+                    ${hasHr ? `
+                    <div class="contact-hr-ext">
+                        🏫 교실 내선: 
+                        <a href="tel:${hrDialNumber}" style="color:var(--primary); font-weight:bold; text-decoration:underline;">${p.hrExt}</a>
+                        <span style="font-size:10px; color:var(--gray-500); margin-left:2px;">(${hrDialNumber})</span>
+                    </div>` : ''}
                 </div>
                 <div class="contact-ext-group">
-                    <a href="${callHref}" class="contact-call-btn" title="전화 걸기">
+                    <a href="tel:${dialNumber}" class="contact-call-btn" title="전화 걸기 (${dialNumber})">
                         <span>📞</span> ${p.ext}
                     </a>
                     <button class="contact-copy-btn" onclick="copyExt('${p.ext}', '${p.name}')" title="내선번호 복사">
@@ -1437,10 +1464,11 @@
     }
 
     function copyExt(ext, name) {
-        navigator.clipboard.writeText(ext).then(() => {
-            showToast(`${name} 내선번호 (${ext}) 복사 완료!`);
+        const full = getFullDialNumber(ext);
+        navigator.clipboard.writeText(full).then(() => {
+            showToast(`${name} 전화번호 (${full}) 복사 완료!`);
         }).catch(() => {
-            showToast(`내선번호: ${ext}`);
+            showToast(`내선번호: ${full}`);
         });
     }
 
