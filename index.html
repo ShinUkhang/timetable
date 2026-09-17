@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2b6cb0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="배화여고 시간표">
+<title>배화여자고등학교 스마트 시간표</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+<style>
+    :root {
+        --primary: #2b6cb0;
+        --primary-dark: #1a365d;
+        --primary-light: #ebf8ff;
+        --primary-border: #bee3f8;
+        --accent: #319795;
+        --accent-light: #e6fffa;
+        --accent-border: #b2f5ea;
+        --orange: #dd6b20;
+        --orange-light: #fffaf0;
+        --orange-border: #fbd38d;
+        --green: #2f855a;
+        --green-light: #f0fff4;
+        --purple: #6b46c1;
+        --purple-light: #faf5ff;
+        --gray-50: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e0;
+        --gray-500: #a0aec0;
+        --gray-600: #718096;
+        --gray-700: #4a5568;
+        --gray-800: #2d3748;
+        --card-radius: 14px;
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+        margin: 0;
+        padding: 0;
+        padding-bottom: calc(75px + var(--safe-bottom));
+        font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, "Malgun Gothic", sans-serif;
+        background-color: #f4f7fa;
+        color: var(--gray-800);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    /* 상단 고정 헤더 */
+    .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: white;
+        border-bottom: 1px solid var(--gray-200);
+        padding: 11px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .app-title-box { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .app-title-box .logo-icon { font-size: 22px; }
+    .app-title-text { font-size: 17px; font-weight: 800; color: var(--primary-dark); letter-spacing: -0.4px; }
+    .today-badge {
+        font-size: 12px;
+        font-weight: bold;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 4px 10px;
+        border-radius: 14px;
+        border: 1px solid var(--primary-border);
+    }
+
+    /* 본문 레이아웃 */
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 12px 12px 24px 12px;
+    }
+
+    /* 하단 고정 탭 바 (Mobile Bottom Navigation) */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        justify-content: space-around;
+        padding-top: 6px;
+        padding-bottom: calc(6px + var(--safe-bottom));
+        z-index: 200;
+        box-shadow: 0 -3px 12px rgba(0,0,0,0.05);
+    }
+    .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 0;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--gray-600);
+        transition: color 0.15s, transform 0.1s;
+        font-family: inherit;
+    }
+    .nav-item:active { transform: scale(0.92); }
+    .nav-item.active { color: var(--primary); font-weight: bold; }
+    .nav-icon { font-size: 20px; line-height: 1.2; margin-bottom: 2px; }
+    .nav-label { font-size: 11px; }
+
+    /* 모바일 카드 스타일 */
+    .m-card {
+        background: white;
+        border-radius: var(--card-radius);
+        border: 1px solid var(--gray-200);
+        padding: 16px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .m-card-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        margin: 0 0 12px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* 폼 요소 최적화 */
+    .m-select, .m-input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--gray-300);
+        font-size: 15px;
+        font-weight: bold;
+        color: var(--gray-800);
+        background-color: white;
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .m-select:focus, .m-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(43,108,176,0.15);
+    }
+    .m-btn {
+        padding: 11px 16px;
+        border-radius: 10px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.15s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-family: inherit;
+    }
+    .m-btn:active { opacity: 0.85; transform: scale(0.98); }
+    .m-btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+    .m-btn-outline {
+        background: white;
+        color: var(--primary);
+        border: 1.5px solid var(--primary);
+    }
+    .m-btn-outline:active { background: var(--primary-light); }
+
+    /* 탭 컨텐츠 영역 */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.18s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* 시간표 공통 테이블 (모바일 전용 비율) */
+    .t-table-wrapper {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--gray-300);
+        background: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+    .t-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        text-align: center;
+        font-size: 12px;
+    }
+    .t-table th, .t-table td {
+        border: 1px solid var(--gray-200);
+        padding: 6px 2px;
+        height: 48px;
+        vertical-align: middle;
+        word-break: keep-all;
+    }
+    .t-table th {
+        background-color: var(--gray-50);
+        color: var(--gray-700);
+        font-size: 12px;
+        font-weight: bold;
+        height: 34px;
+    }
+    .t-table th.period-col, .t-table td.period-col {
+        width: 30px;
+        background-color: #edf2f7;
+        font-weight: bold;
+        color: var(--gray-700);
+    }
+    .t-table th.today-col {
+        background-color: #ebf8ff !important;
+        color: var(--primary) !important;
+        position: relative;
+    }
+    .t-table th.today-col::after {
+        content: "오늘";
+        display: block;
+        font-size: 9px;
+        color: var(--primary);
+        margin-top: -2px;
+    }
+    .t-table td.today-col {
+        background-color: #f7fafc;
+    }
+    
+    /* 수업 셀 & 클릭 가능 셀 */
+    .t-cell-class {
+        background-color: #f0f7ff;
+        color: var(--primary-dark);
+        font-weight: bold;
+        cursor: pointer;
+        position: relative;
+        transition: 0.15s;
+    }
+    .t-cell-class:active {
+        background-color: #bee3f8;
+        transform: scale(0.96);
+    }
+    .t-cell-swap-hint {
+        font-size: 9px;
+        color: var(--primary);
+        display: block;
+        text-decoration: underline;
+        margin-top: 1px;
+    }
+    .t-cell-free {
+        color: var(--gray-500);
+        background-color: #fff;
+        font-size: 11px;
+    }
+    .t-cell-fixed {
+        background-color: var(--gray-100);
+        color: var(--gray-700);
+    }
+
+    /* 수업 교환 및 보강 모달 (바텀시트 스타일) */
+    .modal-backdrop {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        backdrop-filter: blur(2px);
+    }
+    .modal-backdrop.show { display: flex; animation: bgFadeIn 0.2s ease-out; }
+    @keyframes bgFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-sheet {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        max-height: 86vh;
+        border-radius: 20px 20px 0 0;
+        overflow-y: auto;
+        padding: 20px 16px calc(24px + var(--safe-bottom)) 16px;
+        box-shadow: 0 -4px 25px rgba(0,0,0,0.18);
+        animation: sheetUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+    .sheet-handle {
+        width: 44px;
+        height: 5px;
+        background: var(--gray-300);
+        border-radius: 4px;
+        margin: 0 auto 16px auto;
+    }
+    .sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--gray-200);
+    }
+    .sheet-title { font-size: 17px; font-weight: 800; color: var(--primary-dark); margin: 0; }
+    .sheet-subtitle { font-size: 12px; color: var(--gray-600); margin-top: 4px; }
+    .sheet-close {
+        background: #edf2f7;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gray-700);
+    }
+
+    /* 교환 추천 미니 카드 */
+    .swap-card {
+        border-radius: 10px;
+        border: 1px solid var(--gray-300);
+        padding: 12px;
+        margin-bottom: 10px;
+        background: white;
+    }
+    .swap-card.mutual {
+        border: 1.5px solid var(--accent);
+        background: #fcfefe;
+    }
+    .swap-card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .swap-teacher-name { font-size: 15px; font-weight: bold; color: var(--gray-800); }
+    .swap-badge {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: bold;
+    }
+    .badge-same-class { background: #fefcbf; color: #744210; }
+    .badge-same-day { background: #c6f6d5; color: #22543d; }
+    .badge-same-grade { background: #e2e8f0; color: #4a5568; }
+
+    /* 연락처 검색 및 카드 */
+    .phone-filter-bar {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .phone-filter-chip {
+        white-space: nowrap;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: bold;
+        background: var(--gray-100);
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+        cursor: pointer;
+    }
+    .phone-filter-chip.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .contact-card {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: 0.15s;
+    }
+    .contact-card:active { background: #f8fafc; }
+    .contact-info { flex: 1; padding-right: 10px; }
+    .contact-name { font-size: 15px; font-weight: bold; color: var(--gray-800); margin-bottom: 4px; }
+    .contact-loc { font-size: 12px; color: var(--gray-600); }
+    .contact-badge { font-size: 11px; color: var(--primary); background: var(--primary-light); padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
+    .contact-ext-group { display: flex; gap: 6px; align-items: center; }
+    .contact-call-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #fff5f5;
+        border: 1px solid #fed7d7;
+        color: #c53030;
+        font-weight: bold;
+        font-size: 13px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+    .contact-call-btn:active { background: #fed7d7; }
+    .contact-copy-btn {
+        display: inline-flex;
+        align-items: center;
+        background: #edf2f7;
+        border: 1px solid var(--gray-300);
+        color: var(--gray-700);
+        padding: 7px 9px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .contact-copy-btn:active { background: #e2e8f0; }
+    .contact-hr-ext { font-size: 11px; color: var(--primary); margin-top: 4px; }
+
+    /* 급식 카드 */
+    .meal-box {
+        background: linear-gradient(135deg, #fffaf0 0%, #fff 100%);
+        border: 1.5px solid var(--orange-border);
+        border-radius: var(--card-radius);
+        padding: 18px 16px;
+        text-align: center;
+        margin-bottom: 14px;
+    }
+    .meal-menu-text {
+        font-size: 15px;
+        font-weight: bold;
+        color: var(--gray-800);
+        line-height: 2.0;
+        margin: 14px 0;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    /* 토스트 메시지 */
+    .toast {
+        position: fixed;
+        bottom: 85px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(45, 55, 72, 0.95);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 2000;
+        display: none;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    }
+
+    /* 원본 교사 카드 보관 컨테이너 (데이터 파싱용, 화면에서는 숨김) */
+    .hidden-data-source { display: none !important; }
+
+    /* 전체 교사 아코디언/목록 */
+    .teacher-grid-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+    }
+    .teacher-chip-btn {
+        background: white;
+        border: 1px solid var(--gray-300);
+        border-radius: 8px;
+        padding: 9px 4px;
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--gray-700);
+        cursor: pointer;
+        text-align: center;
+        transition: 0.15s;
+    }
+    .teacher-chip-btn:active {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    /* 빠른 저장 교사 칩 */
+    .my-t-quick-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--primary-light);
+        border: 1px solid var(--primary-border);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 12px;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+</style>
+</head>
+<body>
+
+<!-- 상단 헤더 -->
+<header class="app-header">
+    <div class="app-title-box" onclick="switchTab('tab-my', document.querySelectorAll('.nav-item')[0])">
+        <span class="logo-icon">🏫</span>
+        <span class="app-title-text">배화여고 시간표</span>
+    </div>
+    <div id="headerDateBadge" class="today-badge">로딩중..</div>
+</header>
+
+<main class="container">
+    <!-- ==================== 탭 1: 내 시간표 ==================== -->
+    <section id="tab-my" class="tab-content active">
+        <div class="m-card">
+            <div class="m-card-title">
+                <span>👤 선생님 선택</span>
+                <button id="saveTeacherBtn" class="m-btn m-btn-outline m-btn-sm" onclick="saveCurrentTeacher()">⭐ 기본으로 저장</button>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <select id="myTeacherSelect" class="m-select" onchange="onTeacherChange()">
+                    <!-- JS로 교사 명단 자동 추가 -->
+                </select>
+            </div>
+            <div id="quickSavedContainer" style="display:none;">
+                <div class="my-t-quick-chip" onclick="loadSavedTeacher()">
+                    <span>⭐ 내 시간표 바로가기:</span>
+                    <span id="savedTeacherNameText" style="text-decoration:underline;">-</span>
+                </div>
+            </div>
+            <div style="font-size: 12px; color: var(--primary); margin-top: 10px; display:flex; align-items:center; gap:5px; background:var(--primary-light); padding:8px 10px; border-radius:8px;">
+                <span>💡</span>
+                <span><b>파란색 수업</b>을 누르면 <b>상호 교체·보강 추천</b>이 뜹니다!</span>
+            </div>
+        </div>
+
+        <div class="m-card" style="padding: 10px;">
+            <div id="myTimetableTitle" style="font-weight:bold; font-size:15px; color:var(--primary-dark); margin: 4px 6px 10px 6px;"></div>
+            <div class="t-table-wrapper">
+                <table class="t-table" id="myTimetableTable">
+                    <!-- JS 렌더링 -->
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 탭 2: 반별 시간표 ==================== -->
+    <section id="tab-class" class="tab-content">
+        <div class="m-card">
+            <div class="m-card-title">🏫 반별(교실) 시간표 조회</div>
+            <div style="display:flex; gap:8px;">
+                <select id="classSelect" class="m-select" onchange="renderClassTimetable()">
+                    <!-- JS로 반 명단 자동 추가 -->
+                </select>
+            </div>
+            <p style="font-size: 12px; color: var(--gray-600); margin: 8px 0 0 0;">
+                각 교시별 과목명과 담당 선생님 성함을 보여줍니다.
+            </p>
+        </div>
+
+        <div class="m-card" style="padding: 10px;">
+            <div id="classTimetableTitle" style="font-weight:bold; font-size:15px; color:var(--green); margin: 4px 6px 10px 6px;"></div>
+            <div class="t-table-wrapper">
+                <table class="t-table" id="classTimetableTable">
+                    <!-- JS 렌더링 -->
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 탭 3: 오늘 급식 & 점심 짝꿍 ==================== -->
+    <section id="tab-lunch" class="tab-content">
+        <!-- 급식 카드 -->
+        <div class="meal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="lunchDateText" style="font-weight:800; color:var(--orange); font-size:15px;">🍽️ 오늘의 급식</span>
+                <button onclick="fetchNeisLunch()" style="background:none; border:none; cursor:pointer; font-size:18px; padding:4px;" title="새로고침">🔄</button>
+            </div>
+            <div id="lunchMenuDisplay" class="meal-menu-text">
+                급식 정보를 불러오는 중입니다... ⏳
+            </div>
+            <div style="font-size:11px; color:var(--gray-600);">NEIS 교육행정정보시스템 실시간 연동</div>
+        </div>
+
+        <!-- 점심 짝꿍 카드 -->
+        <div class="m-card">
+            <div class="m-card-title">🍱 점심 짝꿍 찾기 (4, 5교시)</div>
+            <p style="font-size:12px; color:var(--gray-600); margin-top:0;">4교시/5교시 공강 교사를 자동 분류합니다.</p>
+            <div style="display:flex; gap:6px; margin-bottom:12px;">
+                <button class="phone-filter-chip active lunch-day-btn" onclick="setLunchDay('월', this)">월</button>
+                <button class="phone-filter-chip lunch-day-btn" onclick="setLunchDay('화', this)">화</button>
+                <button class="phone-filter-chip lunch-day-btn" onclick="setLunchDay('수', this)">수</button>
+                <button class="phone-filter-chip lunch-day-btn" onclick="setLunchDay('목', this)">목</button>
+                <button class="phone-filter-chip lunch-day-btn" onclick="setLunchDay('금', this)">금</button>
+            </div>
+            <div id="lunchResultArea"></div>
+        </div>
+    </section>
+
+    <!-- ==================== 탭 4: 교직원 전화번호 및 교실 ==================== -->
+    <section id="tab-phone" class="tab-content">
+        <div class="m-card">
+            <div class="m-card-title">📞 교직원 내선번호 & 좌석</div>
+            <input type="text" id="phoneSearchInput" class="m-input" placeholder="이름, 부서, 위치 검색 (예: 김지혜, 1학년, 행정실)" oninput="filterPhone()">
+            <div class="phone-filter-bar" style="margin-top:10px; margin-bottom:0;">
+                <button class="phone-filter-chip active phone-dept-btn" onclick="setDeptFilter('전체', this)">전체</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('1학년', this)">1학년부</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('2학년', this)">2학년부</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('3학년', this)">3학년부</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('연구', this)">연구/교무</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('행정실', this)">행정실</button>
+                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('특별교실', this)">특별실</button>
+            </div>
+        </div>
+
+        <div id="phoneListContainer">
+            <!-- JS 렌더링 -->
+        </div>
+    </section>
+
+    <!-- ==================== 탭 5: 공강 & 전체 시간표 ==================== -->
+    <section id="tab-group" class="tab-content">
+        <div class="m-card">
+            <div class="m-card-title">👥 공통 공강 시간 계산</div>
+            <p style="font-size:12px; color:var(--gray-600); margin-top:0;">선생님들을 터치하여 그룹을 묶고, 함께 비는 공강 시간을 찾습니다.</p>
+            <div id="groupTeacherChips" style="display:flex; flex-wrap:wrap; gap:6px; max-height:130px; overflow-y:auto; padding:8px; background:#f8fafc; border:1px dashed var(--gray-300); border-radius:10px; margin-bottom:10px;"></div>
+            <button class="m-btn" style="width:100%;" onclick="calculateGroupFree()">선택 그룹 공통 공강 조회</button>
+            <div id="groupResultArea" style="margin-top:14px;"></div>
+        </div>
+
+        <div class="m-card">
+            <div class="m-card-title">📋 전체 교사 시간표 빠른 조회</div>
+            <p style="font-size:12px; color:var(--gray-600); margin-top:0;">선생님 이름을 터치하면 해당 시간표로 즉시 이동합니다.</p>
+            <div id="allTeachersGrid" class="teacher-grid-list"></div>
+        </div>
+    </section>
+</main>
+
+<!-- 하단 고정 탭 바 -->
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('tab-my', this)">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">내시간표</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-class', this)">
+        <span class="nav-icon">🏫</span>
+        <span class="nav-label">반별시간표</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-lunch', this)">
+        <span class="nav-icon">🍱</span>
+        <span class="nav-label">급식·점심</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-phone', this)">
+        <span class="nav-icon">📞</span>
+        <span class="nav-label">교직원전화</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-group', this)">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label">공강·전체</span>
+    </button>
+</nav>
+
+<!-- 수업 교환/보강 모달 바텀시트 -->
+<div id="swapModal" class="modal-backdrop" onclick="closeSwapModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div>
+                <h3 class="sheet-title" id="sheetModalTitle">🔄 수업 교환/보강 추천</h3>
+                <div class="sheet-subtitle" id="sheetModalSubtitle">선택한 수업 정보</div>
+            </div>
+            <button class="sheet-close" onclick="closeSwapModal()">✕</button>
+        </div>
+        <div id="sheetModalBody">
+            <!-- JS 결과 렌더링 -->
+        </div>
+    </div>
+</div>
+
+<!-- 복사 토스트 알림 -->
+<div id="appToast" class="toast">복사되었습니다!</div>
+
+<!-- 원본 데이터 카드 (파싱용 숨김 컨테이너) -->
+<div class="hidden-data-source">
+<div class="card"><div class="card-header">교사 서진숙</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>국2A<br>1-1</td><td>논술<br>3-1</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>국2A<br>1-2</td><td>국2A<br>1-5</td><td>국2A<br>1-2</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>국2A<br>1-4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>국2A<br>1-3</td></tr><tr><td class="period">4</td><td>공강</td><td>논술<br>3-1</td><td>국2A<br>1-6</td><td>국2A<br>1-6</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>국2A<br>1-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>국2A<br>1-3</td><td>&nbsp;</td><td>국2A<br>1-4</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>국2A<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 조성용</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>국2B<br>1-2</td><td>&nbsp;</td><td>예배</td><td>D심국<br>3-5</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>심국<br>3-5</td><td>국2B<br>1-4</td><td>&nbsp;</td><td>D심국<br>3-5</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>심국<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>국2B<br>1-4</td></tr><tr><td class="period">4</td><td>공강</td><td>국2B<br>1-3</td><td>국2B<br>1-3</td><td>&nbsp;</td><td>국2B<br>1-1</td></tr><tr><td class="period">5</td><td>D심국<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>국2B<br>1-1</td><td>심국<br>3-5</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>국2B<br>1-2</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 이효정</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>화언A<br>2-5</td><td>화언A<br>2-6</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>화언A<br>2-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>화언A<br>2-2</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>&nbsp;</td><td>화언A<br>2-3</td><td>화언A<br>2-5</td><td>화언A<br>2-6</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>화언A<br>2-2</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>화언A<br>2-3</td><td>&nbsp;</td><td>화언A<br>2-4</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>화언A<br>2-4</td><td>&nbsp;</td><td>&nbsp;</td><td>화언A<br>2-1</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김영주</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>D화작<br>3-1</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>고전<br>3-1</td><td>&nbsp;</td><td>고전<br>3-1</td><td>D화작<br>3-1</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>고전<br>3-1</td><td>&nbsp;</td><td>고전<br>3-1</td><td>&nbsp;</td><td>고전<br>3-1</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D화작<br>3-1</td><td>고전<br>3-1</td><td>&nbsp;</td><td>고전<br>3-1</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>고전<br>3-1</td><td>&nbsp;</td><td>고전<br>3-1</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>진로<br>3-1</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 이수진</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>언매<br>설렘</td><td>화언B<br>2-3</td><td>언매<br>설렘</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>언매<br>설렘</td><td>화언B<br>2-4</td><td>언매<br>설렘</td><td>화언B<br>2-6</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>화언B<br>2-5</td><td>&nbsp;</td><td>화언B<br>2-3</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>언매<br>설렘</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>언매<br>설렘</td><td>동아</td></tr><tr><td class="period">7</td><td>화언B<br>2-6</td><td>화언B<br>2-5</td><td>&nbsp;</td><td>화언B<br>2-4</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 배민욱</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>화언B<br>2-1</td><td>&nbsp;</td><td>예배</td><td>D화작<br>3-4</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>화작<br>3-4</td><td>화언B<br>2-2</td><td>화작<br>3-4</td><td>D화작<br>3-4</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>화작<br>3-4</td><td>&nbsp;</td><td>화작<br>3-4</td><td>&nbsp;</td><td>화작<br>3-4</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D화작<br>3-4</td><td>화작<br>3-4</td><td>화언B<br>2-1</td><td>화작<br>3-4</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>화작<br>3-4</td><td>&nbsp;</td><td>화작<br>3-4</td><td>동아</td></tr><tr><td class="period">7</td><td>화언B<br>2-2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 선소희</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>국2B<br>1-6</td><td>예배</td><td>영상<br>2-4</td><td>영상<br>2-4</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>국2B<br>1-5</td><td>영상<br>2-4</td><td>영상<br>2-4</td><td>영상<br>2-4</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>영상<br>2-4</td><td>&nbsp;</td><td>국2B<br>1-5</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>E영상<br>2-4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D영상<br>2-4</td><td>B인공<br>신A</td><td>&nbsp;</td><td>C영상<br>2-4</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>국2B<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김재희</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>수학2<br>1-1</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>수학2<br>1-3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-2</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-3</td><td>수학2<br>1-3</td></tr><tr><td class="period">5</td><td>수학2<br>1-3</td><td>수학2<br>1-2</td><td>수학2<br>1-2</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>수학2<br>1-2</td><td>수학2<br>1-1</td><td>&nbsp;</td><td>수학2<br>1-1</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김지혜</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>D심수<br>3-3</td><td>논술<br>3-3</td></tr><tr><td class="period">2</td><td>심수<br>3-3</td><td>&nbsp;</td><td>심수<br>3-3</td><td>D심수<br>3-3</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>심수<br>3-3</td><td>&nbsp;</td><td>심수<br>3-3</td><td>&nbsp;</td><td>심수<br>3-3</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D심수<br>3-3</td><td>심수<br>3-3</td><td>&nbsp;</td><td>심수<br>3-3</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>심수<br>3-3</td><td>&nbsp;</td><td>심수<br>3-3</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>논술<br>3-3</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 원종범</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>미적<br>2-3</td><td>미적<br>2-3</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>논술<br>3-7</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>미적<br>2-1</td><td>&nbsp;</td><td>미적<br>2-3</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>미적<br>2-1</td><td>논술<br>3-7</td><td>&nbsp;</td><td>미적<br>2-1</td><td>미적<br>2-1</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>미적<br>2-3</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>미적<br>2-2</td><td>&nbsp;</td><td>미적<br>2-2</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>미적<br>2-2</td><td>&nbsp;</td><td>미적<br>2-2</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 신욱항</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>미적<br>2-4</td><td>&nbsp;</td><td>예배</td><td>기하<br>2-3</td><td>기하<br>2-3</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>미적<br>2-4</td><td>&nbsp;</td><td>기하<br>2-3</td><td>기하<br>2-3</td></tr><tr><td class="period">3</td><td>수학2<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>인지<br>3-7</td></tr><tr><td class="period">4</td><td>공강</td><td>E기하<br>2-3</td><td>미적<br>2-4</td><td>미적<br>2-4</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D기하<br>2-3</td><td>인지<br>3-7</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>인지<br>3-7</td><td>수학2<br>1-6</td><td>수학2<br>1-6</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>수학2<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 선민수</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>미적<br>2-5</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>미적<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>미적<br>3-5</td><td>미적<br>2-5</td><td>미적<br>3-5</td></tr><tr><td class="period">4</td><td>미적<br>2-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>미적<br>2-5</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>미적<br>3-5</td><td>미적<br>2-6</td><td>미적<br>3-5</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>미적<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>미적<br>2-5</td><td>미적<br>2-6</td><td>&nbsp;</td><td>미적<br>2-6</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 우승훈</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>수학2<br>1-5</td><td>&nbsp;</td><td>예배</td><td>D기하<br>3-7</td><td>수학2<br>1-4</td></tr><tr><td class="period">2</td><td>수학2<br>1-4</td><td>&nbsp;</td><td>기하<br>3-7</td><td>D기하<br>3-7</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>수학2<br>1-5</td><td>기하<br>3-7</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>수학2<br>1-4</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-5</td></tr><tr><td class="period">5</td><td>D기하<br>3-7</td><td>&nbsp;</td><td>&nbsp;</td><td>기하<br>3-7</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-5</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>수학2<br>1-4</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 조혜림</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>영2A<br>1-3</td><td>예배</td><td>&nbsp;</td><td>영2A<br>1-6</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>영2A<br>1-2</td><td>영2A<br>1-4</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>영2A<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>영2A<br>1-5</td><td>영2A<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>영2A<br>1-5</td><td>자율</td></tr><tr><td class="period">6</td><td>영2A<br>1-6</td><td>&nbsp;</td><td>영2A<br>1-3</td><td>영2A<br>1-2</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>영2A<br>1-4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 윤의국</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>영2B<br>1-5</td><td>예배</td><td>D영문<br>3-6</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>영문<br>3-6</td><td>&nbsp;</td><td>영2B<br>1-6</td><td>D영문<br>3-6</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>영문<br>3-6</td><td>&nbsp;</td><td>영2B<br>1-4</td><td>&nbsp;</td><td>영문<br>3-6</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D영문<br>3-6</td><td>영문<br>3-6</td><td>영2B<br>1-5</td><td>영2B<br>1-6</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>영문<br>3-6</td><td>&nbsp;</td><td>영문<br>3-6</td><td>동아</td></tr><tr><td class="period">7</td><td>영2B<br>1-4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 윤종희</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>영A<br>2-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>영A<br>2-3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>영A<br>2-4</td><td>&nbsp;</td><td>영A<br>2-2</td><td>영A<br>2-6</td><td>영A<br>2-2</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>영A<br>2-5</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>영A<br>2-5</td><td>&nbsp;</td><td>영A<br>2-1</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>영A<br>2-1</td><td>영A<br>2-4</td><td>&nbsp;</td><td>영A<br>2-3</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 구성덕</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>영B<br>2-2</td><td>예배</td><td>&nbsp;</td><td>문영<br>2-5</td></tr><tr><td class="period">2</td><td>문영<br>2-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>문영<br>2-5</td></tr><tr><td class="period">3</td><td>문영<br>2-5</td><td>영B<br>2-5</td><td>&nbsp;</td><td>영B<br>2-1</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>영B<br>2-3</td><td>E문영<br>2-5</td><td>영B<br>2-6</td><td>영B<br>2-2</td><td>영B<br>2-4</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>영B<br>2-4</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>영B<br>2-6</td><td>&nbsp;</td><td>영B<br>2-3</td><td>A문영<br>2-5</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>영B<br>2-1</td><td>&nbsp;</td><td>영B<br>2-5</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김선우</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>영2B<br>1-3</td><td>&nbsp;</td><td>예배</td><td>D영독<br>카페</td><td>영2B<br>1-1</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>영독<br>카페</td><td>D영독<br>카페</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>영2B<br>1-2</td><td>영독<br>카페</td><td>&nbsp;</td><td>영독<br>카페</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>영2B<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D영독<br>카페</td><td>영독<br>카페</td><td>&nbsp;</td><td>영독<br>카페</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>영독<br>카페</td><td>&nbsp;</td><td>영2B<br>1-3</td><td>동아</td></tr><tr><td class="period">7</td><td>영2B<br>1-2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 최연오</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>D영미<br>3-2</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>심영<br>3-2</td><td>&nbsp;</td><td>심영<br>3-2</td><td>D영미<br>3-2</td><td>진로<br>3-3</td></tr><tr><td class="period">3</td><td>심영<br>3-2</td><td>&nbsp;</td><td>심영<br>3-2</td><td>&nbsp;</td><td>심영<br>3-2</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D영미<br>3-2</td><td>심영<br>3-2</td><td>&nbsp;</td><td>심영<br>3-2</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>심영<br>3-2</td><td>&nbsp;</td><td>심영<br>3-2</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 정태진</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>생윤<br>3-1</td><td>생윤<br>3-1</td><td>예배</td><td>윤사<br>교과1</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>생윤<br>3-1</td><td>윤사<br>교과1</td><td>윤사<br>교과1</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>생윤<br>3-1</td><td>윤사<br>교과1</td><td>생윤<br>3-1</td><td>B윤사<br>교과1</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>&nbsp;</td><td>생윤<br>3-1</td><td>생윤<br>3-1</td></tr><tr><td class="period">5</td><td>D윤사<br>교과1</td><td>윤사<br>교과1</td><td>생윤<br>3-1</td><td>C윤사<br>교과1</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>윤사<br>교과1</td><td>생윤<br>3-1</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 우서영</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>현변<br>3-4</td><td>현변<br>3-4</td><td>예배</td><td>역사2<br>1-6</td><td>역사2<br>1-5</td></tr><tr><td class="period">2</td><td>역사2<br>1-5</td><td>현변<br>3-4</td><td>역사2<br>1-4</td><td>&nbsp;</td><td>역사2<br>1-6</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>현변<br>3-4</td><td>역사2<br>1-5</td><td>현변<br>3-4</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>역사2<br>1-6</td><td>&nbsp;</td><td>현변<br>3-4</td><td>현변<br>3-4</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>현변<br>3-4</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>역사2<br>1-4</td><td>&nbsp;</td><td>현변<br>3-4</td><td>역사2<br>1-4</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 박경화</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>세계<br>3-5</td><td>&nbsp;</td><td>예배</td><td>역사2<br>1-3</td><td>역사2<br>1-3</td></tr><tr><td class="period">2</td><td>2세계<br>교과2</td><td>역사2<br>1-1</td><td>&nbsp;</td><td>역사2<br>1-1</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>2세계<br>교과2</td><td>&nbsp;</td><td>역사2<br>1-3</td><td>&nbsp;</td><td>B2세계<br>교과2</td></tr><tr><td class="period">4</td><td>공강</td><td>역사2<br>1-2</td><td>&nbsp;</td><td>&nbsp;</td><td>역사2<br>1-2</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>2세계<br>교과2</td><td>세계<br>3-5</td><td>역사2<br>1-2</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>2세계<br>교과2</td><td>세계<br>3-5</td><td>A2세계<br>교과2</td><td>동아</td></tr><tr><td class="period">7</td><td>역사2<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 정은혜</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>정법<br>3-5</td><td>예배</td><td>&nbsp;</td><td>통사2B<br>1-2</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>사문<br>3-5</td><td>통사2B<br>1-3</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>사문<br>3-5</td><td>&nbsp;</td><td>정법<br>3-5</td><td>통사2B<br>1-1</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>사문<br>3-5</td><td>사문<br>3-5</td><td>사문<br>3-5</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>통사2B<br>1-3</td><td>&nbsp;</td><td>통사2B<br>1-1</td><td>자율</td></tr><tr><td class="period">6</td><td>사문<br>3-5</td><td>&nbsp;</td><td>통사2B<br>1-2</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>사문<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김윤희</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>통사2B<br>1-6</td><td>통사2B<br>1-4</td><td>예배</td><td>금융<br>2-2</td><td>금융<br>2-2</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>금융<br>2-2</td><td>금융<br>2-2</td></tr><tr><td class="period">3</td><td>통사2B<br>1-5</td><td>&nbsp;</td><td>&nbsp;</td><td>통사2B<br>1-4</td><td>B금융<br>2-2</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>E금융<br>2-2</td><td>통사2B<br>1-5</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D금융<br>2-2</td><td>금융<br>2-2</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>금융<br>2-2</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>통사2B<br>1-6</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 강주혁</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>통사2A<br>1-2</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>통사2A<br>1-2</td><td>한지<br>3-2</td><td>&nbsp;</td><td>&nbsp;</td><td>통사2A<br>1-5</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>한지<br>3-2</td><td>통사2A<br>1-1</td><td>통사2A<br>1-3</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>통사2A<br>1-3</td><td>&nbsp;</td><td>통사2A<br>1-4</td><td>통사2A<br>1-5</td><td>한지<br>3-2</td></tr><tr><td class="period">5</td><td>통사2A<br>1-4</td><td>통사2A<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>통사2A<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>통사2A<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 노석후</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>사문<br>설렘</td><td>사문<br>설렘</td><td>예배</td><td>세지<br>교과2</td><td>세지<br>교과2</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>세지<br>교과2</td><td>세지<br>교과2</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>사문<br>설렘</td><td>B기후<br>2-5</td></tr><tr><td class="period">4</td><td>공강</td><td>E세지<br>교과2</td><td>&nbsp;</td><td>세지<br>교과2</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D세지<br>교과2</td><td>기후<br>2-5</td><td>사문<br>설렘</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>기후<br>2-5</td><td>사문<br>설렘</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 옥수경</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>여지<br>3-2</td><td>여지<br>3-2</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>여지<br>3-2</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>여지<br>3-2</td><td>여지<br>3-2</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>여지<br>3-2</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>여지<br>3-2</td><td>&nbsp;</td><td>여지<br>3-2</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>여지<br>3-2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 백수정</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>생과<br>3-3</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>통과B<br>1-3</td><td>&nbsp;</td><td>&nbsp;</td><td>통과B<br>1-6</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>통과B<br>1-1</td><td>&nbsp;</td><td>생과<br>3-3</td><td>B인공<br>신A</td></tr><tr><td class="period">4</td><td>공강</td><td>진로<br>3-4</td><td>&nbsp;</td><td>생과<br>3-3</td><td>통과B<br>1-4</td></tr><tr><td class="period">5</td><td>통과B<br>1-2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>B인공<br>신A</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>통과B<br>1-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 임성우</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>지과<br>3-6</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>과연<br>3-6</td><td>&nbsp;</td><td>&nbsp;</td><td>진로<br>3-2</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>과연<br>3-6</td><td>&nbsp;</td><td>&nbsp;</td><td>B지시<br>2-4</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>융과<br>3-6</td><td>&nbsp;</td><td>과연<br>3-6</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>지시<br>2-4</td><td>지과<br>3-6</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>융과<br>3-6</td><td>지시<br>2-4</td><td>지과<br>3-6</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>융과<br>3-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김수경</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>물질<br>2-6</td><td>화실<br>2-6</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>생과<br>3-3</td><td>&nbsp;</td><td>물질<br>2-6</td><td>화실<br>2-6</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>생과<br>3-3</td><td>&nbsp;</td><td>&nbsp;</td><td>B물질<br>2-6</td></tr><tr><td class="period">4</td><td>공강</td><td>E화실<br>2-6</td><td>생과<br>3-3</td><td>&nbsp;</td><td>생과<br>3-3</td></tr><tr><td class="period">5</td><td>D물질<br>2-6</td><td>물질<br>2-6</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>생과<br>3-3</td><td>물질<br>2-6</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>생과<br>3-3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 정주연</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>역학<br>교과1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>통과A<br>1-1</td></tr><tr><td class="period">3</td><td>역학<br>교과1</td><td>&nbsp;</td><td>통과A<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>물리<br>3-1</td><td>통과A<br>1-4</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>물리<br>3-1</td><td>&nbsp;</td><td>&nbsp;</td><td>A역학<br>교과1</td><td>동아</td></tr><tr><td class="period">7</td><td>물리<br>3-1</td><td>통과A<br>1-2</td><td>통과A<br>1-5</td><td>통과A<br>1-3</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 정다영</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>과탐<br>1-2</td><td>예배</td><td>세포<br>2-5</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>인공<br>신A</td><td>&nbsp;</td><td>세포<br>2-5</td><td>세포<br>2-5</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>인공<br>신A</td><td>&nbsp;</td><td>세포<br>2-5</td><td>과탐<br>1-1</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>&nbsp;</td><td>생과<br>3-4</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>D세포<br>2-5</td><td>&nbsp;</td><td>&nbsp;</td><td>C세포<br>2-5</td><td>자율</td></tr><tr><td class="period">6</td><td>생과<br>3-4</td><td>과탐<br>1-3</td><td>&nbsp;</td><td>A인공<br>신A</td><td>동아</td></tr><tr><td class="period">7</td><td>생과<br>3-4</td><td>&nbsp;</td><td>진로<br>3-6</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 임진삼</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>생과<br>카페</td><td>예배</td><td>과탐<br>1-4</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>통과C<br>1-1</td><td>&nbsp;</td><td>통과C<br>1-2</td></tr><tr><td class="period">3</td><td>통과C<br>1-3</td><td>통과C<br>1-6</td><td>&nbsp;</td><td>생과<br>카페</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>통과C<br>1-4</td><td>통과C<br>1-5</td><td>생과<br>카페</td><td>생과<br>카페</td><td>과탐<br>1-6</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>생과<br>카페</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>생과<br>카페</td><td>&nbsp;</td><td>&nbsp;</td><td>과탐<br>1-5</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 황상희</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>생과<br>3-3</td><td>화학<br>3-7</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>통과D<br>1-1</td><td>화학<br>3-7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>화학<br>3-7</td><td>통과D<br>1-2</td><td>화학<br>3-7</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>통과D<br>1-6</td><td>&nbsp;</td><td>&nbsp;</td><td>화학<br>3-7</td><td>화학<br>3-7</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>통과D<br>1-4</td><td>생과<br>3-3</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>생과<br>3-3</td><td>통과D<br>1-5</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>통과D<br>1-3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 양진택</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>골프<br>2-4</td><td>예배</td><td>&nbsp;</td><td>운건<br>3-4</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>C인공<br>신A</td><td>&nbsp;</td><td>운건<br>3-1</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>운건<br>2-2</td><td>&nbsp;</td><td>운건<br>2-4</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>골프<br>2-2</td><td>운건<br>3-3</td><td>운건<br>2-1</td><td>운건<br>2-3</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>C인공<br>신A</td><td>자율</td></tr><tr><td class="period">6</td><td>골프<br>2-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>골프<br>2-3</td><td>&nbsp;</td><td>운건<br>3-2</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 최재민</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>골프<br>2-6</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>운건<br>3-7</td></tr><tr><td class="period">2</td><td>체2A<br>1-6</td><td>골프<br>2-5</td><td>&nbsp;</td><td>&nbsp;</td><td>운건<br>3-6</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>체2A<br>1-3</td><td>C인공<br>신A</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>운건<br>2-5</td><td>&nbsp;</td><td>체2A<br>1-2</td><td>체2A<br>1-1</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>체2A<br>1-4</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>체2A<br>1-5</td><td>운건<br>2-6</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>운건<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김수진</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>체2B<br>1-1</td><td>예배</td><td>체2B<br>1-5</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>체2B<br>1-6</td><td>&nbsp;</td><td>체2B<br>1-3</td><td>&nbsp;</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>체2B<br>1-4</td><td>&nbsp;</td><td>체2B<br>1-2</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 송정하</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>음연<br>교과1</td></tr><tr><td class="period">2</td><td>음연<br>2-6</td><td>&nbsp;</td><td>음연<br>2-6</td><td>음미<br>1-5</td><td>음연<br>교과1</td></tr><tr><td class="period">3</td><td>음연<br>2-6</td><td>&nbsp;</td><td>음연<br>2-6</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>&nbsp;</td><td>E음연<br>교과1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>음미<br>1-6</td><td>&nbsp;</td><td>음미<br>1-6</td><td>C음연<br>2-6</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>음미<br>1-4</td><td>&nbsp;</td><td>A음연<br>2-6</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>음미<br>1-5</td><td>음미<br>1-4</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 전성민</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>미체<br>2-1</td></tr><tr><td class="period">2</td><td>미체<br>2-3</td><td>&nbsp;</td><td>미체<br>2-3</td><td>&nbsp;</td><td>미체<br>2-1</td></tr><tr><td class="period">3</td><td>미체<br>2-3</td><td>&nbsp;</td><td>미체<br>2-3</td><td>&nbsp;</td><td>B미체<br>2-3</td></tr><tr><td class="period">4</td><td>음미<br>1-2</td><td>E미체<br>2-1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>미체<br>2-3</td><td>음미<br>1-1</td><td>C미체<br>2-3</td><td>자율</td></tr><tr><td class="period">6</td><td>음미<br>1-1</td><td>미체<br>2-3</td><td>&nbsp;</td><td>A미체<br>2-3</td><td>동아</td></tr><tr><td class="period">7</td><td>음미<br>1-3</td><td>&nbsp;</td><td>음미<br>1-3</td><td>음미<br>1-2</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 신미경</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>진로1<br>1-4</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>한문<br>3-6</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>한문<br>3-4</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>진로1<br>1-6</td></tr><tr><td class="period">4</td><td>공강</td><td>한문<br>3-6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>진로1<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>진로1<br>1-3</td><td>자율</td></tr><tr><td class="period">6</td><td>진로1<br>1-5</td><td>진로1<br>1-2</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>한문<br>3-4</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김보라</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>진로2<br>2-2</td><td>진로2<br>2-1</td><td>예배</td><td>&nbsp;</td><td>중국<br>3-2</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>중문<br>교과2</td><td>&nbsp;</td><td>종2<br>1-4</td></tr><tr><td class="period">3</td><td>&nbsp;</td><td>&nbsp;</td><td>중문<br>교과2</td><td>종2<br>1-6</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>공강</td><td>중국<br>3-2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>종2<br>1-6</td><td>종2<br>1-4</td><td>C중문<br>교과2</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>진로2<br>2-3</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 이미나</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>진로<br>3-5</td></tr><tr><td class="period">2</td><td>프어<br>2-1</td><td>&nbsp;</td><td>프어<br>2-1</td><td>&nbsp;</td><td>프어<br>3-5</td></tr><tr><td class="period">3</td><td>프어<br>2-1</td><td>&nbsp;</td><td>프어<br>2-1</td><td>&nbsp;</td><td>B프어<br>2-1</td></tr><tr><td class="period">4</td><td>공강</td><td>프어<br>3-5</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>프어<br>2-1</td><td>&nbsp;</td><td>C프어<br>2-1</td><td>자율</td></tr><tr><td class="period">6</td><td>&nbsp;</td><td>프어<br>2-1</td><td>&nbsp;</td><td>A프어<br>2-1</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>진로<br>3-7</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></div>
+<div class="card"><div class="card-header">교사 김민철</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-3</td></tr><tr><td class="period">3</td><td>종2<br>1-2</td><td>진로2<br>2-6</td><td>&nbsp;</td><td>종2<br>1-5</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>종2<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-2</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>종2<br>1-5</td><td>종2<br>1-3</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>진로2<br>2-4</td><td>&nbsp;</td><td>진로2<br>2-5</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-1</td><td>&nbsp;</td></tr></table></div>
+</div>
+
+<script>
+    const schedule = {};
+    const days = ['월', '화', '수', '목', '금'];
+    const teachers = [];
+    const classSchedule = {}; 
+    const classNames = new Set();
+    let currentDeptFilter = '전체';
+    let currentLunchDay = '월';
+
+    // 전화번호 데이터
+    const phoneData = [
+        { name: "교장실", ext: "301", loc: "본관 1층 앞", hrClass: "-", hrExt: "-" },
+        { name: "교감실", ext: "310", loc: "본관 1층 앞", hrClass: "-", hrExt: "-" },
+        
+        // 1학년부 (본관교무실 2)
+        { name: "조혜림", ext: "372", loc: "본관 2교무실 (1학년)", hrClass: "-", hrExt: "-" },
+        { name: "서진숙", ext: "354", loc: "본관 2교무실 (1학년)", hrClass: "1학년 인반", hrExt: "414" },
+        { name: "우서영", ext: "328", loc: "본관 2교무실 (1학년)", hrClass: "1학년 형반", hrExt: "401" },
+        { name: "최재민", ext: "314", loc: "본관 2교무실 (1학년)", hrClass: "1학년 예반", hrExt: "423" },
+        { name: "임진삼", ext: "343", loc: "본관 2교무실 (1학년)", hrClass: "1학년 원반", hrExt: "427" },
+        { name: "김수진", ext: "337", loc: "본관 2교무실 (1학년)", hrClass: "-", hrExt: "-" },
+        { name: "강주혁", ext: "364", loc: "본관 2교무실 (1학년)", hrClass: "1학년 의반", hrExt: "415" },
+        { name: "윤의국", ext: "369", loc: "본관 2교무실 (1학년)", hrClass: "1학년 지반", hrExt: "425" },
+        { name: "서영미", ext: "332", loc: "본관 2교무실 (1학년)", hrClass: "-", hrExt: "-" },
+        { name: "홍선희", ext: "335", loc: "본관 2교무실 (ai코디)", hrClass: "-", hrExt: "-" },
+
+        // 교육연구부 / 교무혁신부 / 진로 / 창의 / 안전 (본관교무실 1)
+        { name: "백수정", ext: "363", loc: "본관 1교무실 (연구)", hrClass: "-", hrExt: "-" },
+        { name: "전성민", ext: "331", loc: "본관 1교무실 (연구)", hrClass: "-", hrExt: "-" },
+        { name: "정주연", ext: "330", loc: "본관 1교무실 (연구)", hrClass: "-", hrExt: "-" },
+        { name: "노석후", ext: "351", loc: "본관 1교무실 (연구)", hrClass: "-", hrExt: "-" },
+        { name: "조예찬", ext: "348", loc: "본관 1교무실 (연구)", hrClass: "-", hrExt: "-" },
+        { name: "최연오", ext: "353", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "정다영", ext: "336", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "이수진", ext: "371", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "김윤희", ext: "357", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "신욱항", ext: "315", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "원종범", ext: "324", loc: "본관 1교무실 (교무)", hrClass: "2학년 진반", hrExt: "432" },
+        { name: "김선우", ext: "341", loc: "본관 1교무실 (교무)", hrClass: "-", hrExt: "-" },
+        { name: "양진택", ext: "326", loc: "본관 1교무실 (교무)", hrClass: "2학년 미반", hrExt: "428" },
+        { name: "신미경", ext: "359", loc: "본관 1교무실 (진로)", hrClass: "-", hrExt: "-" },
+        { name: "구인혜", ext: "316", loc: "본관 1교무실 (Wee)", hrClass: "-", hrExt: "-" },
+        { name: "정태진", ext: "360", loc: "본관 1교무실 (창의)", hrClass: "-", hrExt: "-" },
+        { name: "조성용", ext: "367", loc: "본관 1교무실 (창의)", hrClass: "-", hrExt: "-" },
+        { name: "박경화", ext: "373", loc: "본관 1교무실 (창의)", hrClass: "-", hrExt: "-" },
+        { name: "선민수", ext: "352", loc: "본관 1교무실 (창의)", hrClass: "-", hrExt: "-" },
+        { name: "이미나", ext: "345", loc: "본관 1교무실 (안전)", hrClass: "-", hrExt: "-" },
+        { name: "김재희", ext: "355", loc: "본관 1교무실 (안전)", hrClass: "-", hrExt: "-" },
+        { name: "황상희", ext: "358", loc: "본관 1교무실 (안전)", hrClass: "-", hrExt: "-" },
+
+        // 2학년부 (본관교무실 1)
+        { name: "이효정", ext: "365", loc: "본관 1교무실 (2학년)", hrClass: "-", hrExt: "-" },
+        { name: "구성덕", ext: "318", loc: "본관 1교무실 (2학년)", hrClass: "2학년 성반", hrExt: "436" },
+        { name: "윤종희", ext: "313", loc: "본관 1교무실 (2학년)", hrClass: "2학년 선반", hrExt: "430" },
+        { name: "선소희", ext: "312", loc: "본관 1교무실 (2학년)", hrClass: "2학년 덕반", hrExt: "439" },
+        { name: "김수경", ext: "339", loc: "본관 1교무실 (2학년)", hrClass: "2학년 현반", hrExt: "434" },
+
+        // 3학년부 및 교목실 (별관)
+        { name: "김지혜", ext: "319", loc: "별관 (3학년 2층)", hrClass: "3학년 애반", hrExt: "407" },
+        { name: "김보라", ext: "325", loc: "별관 (3학년 2층)", hrClass: "3학년 망반", hrExt: "406" },
+        { name: "정은혜", ext: "366", loc: "별관 (3학년 2층)", hrClass: "3학년 혜반", hrExt: "410" },
+        { name: "임성우", ext: "340", loc: "별관 (3학년 2층)", hrClass: "3학년 화반", hrExt: "412" },
+        { name: "김영주", ext: "361", loc: "별관 (3학년 2층)", hrClass: "3학년 신반", hrExt: "402" },
+        { name: "배민욱", ext: "368", loc: "별관 (3학년 2층)", hrClass: "3학년 은반", hrExt: "408" },
+        { name: "신미경(별관)", ext: "329", loc: "별관 (3학년 2층)", hrClass: "-", hrExt: "-" },
+        { name: "우승훈", ext: "321", loc: "별관 (3학년 2층)", hrClass: "3학년 영반", hrExt: "413" },
+        { name: "송정하", ext: "320", loc: "별관 (교목실 3층)", hrClass: "-", hrExt: "-" },
+        { name: "김민철", ext: "311", loc: "별관 (교목실 3층)", hrClass: "-", hrExt: "-" },
+
+        // 행정실 및 시설
+        { name: "행정실장", ext: "303", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "최민선", ext: "304", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "구도영", ext: "308", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "김희경", ext: "309", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "최광휘", ext: "307", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "임주원", ext: "305", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "임하나", ext: "306", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "시설관리실", ext: "470", loc: "행정실 옆", hrClass: "-", hrExt: "-" },
+        { name: "인쇄실", ext: "455", loc: "행정실 옆", hrClass: "-", hrExt: "-" },
+        { name: "행정실FAX", ext: "723-0752", loc: "행정실", hrClass: "-", hrExt: "-" },
+        { name: "정문", ext: "737-6606", loc: "학교 입구", hrClass: "-", hrExt: "-" },
+        { name: "당직실", ext: "467", loc: "-", hrClass: "-", hrExt: "-" },
+        { name: "매점", ext: "471", loc: "-", hrClass: "-", hrExt: "-" },
+        { name: "배화여중", ext: "725-6451", loc: "중학교", hrClass: "-", hrExt: "-" },
+        { name: "남휴게실", ext: "468", loc: "-", hrClass: "-", hrExt: "-" },
+        { name: "여휴게실", ext: "469", loc: "-", hrClass: "-", hrExt: "-" },
+
+        // 특별교실
+        { name: "영양사실", ext: "375", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "직원식당", ext: "475", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "3층식당", ext: "477", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "4층식당", ext: "479", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "보건실", ext: "356", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "도서관", ext: "333", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "종합실", ext: "454", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "컴퓨터실", ext: "453", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "전산실", ext: "450", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "미술실", ext: "459", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "생물실", ext: "457", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "음악실", ext: "448", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "체육관", ext: "451", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "방송실", ext: "461", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "사랑방", ext: "460", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "소망방", ext: "447", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "교과교실1", ext: "416", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "교과교실2", ext: "438", loc: "특별교실", hrClass: "-", hrExt: "-" },
+        { name: "진로교실", ext: "433", loc: "특별교실", hrClass: "-", hrExt: "-" }
+    ];
+
+    // 오늘 요일 계산 (0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6: 토)
+    function getTodayDayStr() {
+        const d = new Date().getDay();
+        const map = { 1: '월', 2: '화', 3: '수', 4: '목', 5: '금' };
+        return map[d] || null;
+    }
+
+    // 날짜 배지 초기화
+    function initDateBadge() {
+        const now = new Date();
+        const mm = now.getMonth() + 1;
+        const dd = now.getDate();
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        const dayStr = dayNames[now.getDay()];
+        
+        document.getElementById('headerDateBadge').innerText = `${mm}월 ${dd}일(${dayStr})`;
+        
+        const todayKor = getTodayDayStr();
+        if (todayKor) currentLunchDay = todayKor;
+    }
+
+    // 탭 전환
+    function switchTab(tabId, btnElem) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        if (btnElem) btnElem.classList.add('active');
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 데이터 초기화
+    function initData() {
+        const cards = document.querySelectorAll('.hidden-data-source .card');
+        const sel = document.getElementById('myTeacherSelect');
+        const allGrid = document.getElementById('allTeachersGrid');
+        
+        cards.forEach(card => {
+            const header = card.querySelector('.card-header');
+            if(!header) return;
+            const name = header.innerText.replace('교사', '').trim();
+            teachers.push(name);
+            schedule[name] = {};
+            
+            // 내 시간표 셀렉트 옵션
+            let opt = document.createElement('option');
+            opt.value = name; opt.text = name + " 선생님";
+            sel.appendChild(opt);
+
+            // 전체 교사 퀵 버튼
+            let btn = document.createElement('button');
+            btn.className = 'teacher-chip-btn';
+            btn.innerText = name;
+            btn.onclick = () => {
+                sel.value = name;
+                renderMyTimetable();
+                switchTab('tab-my', document.querySelectorAll('.nav-item')[0]);
+            };
+            allGrid.appendChild(btn);
+            
+            const rows = card.querySelectorAll('tr');
+            rows.forEach((row, idx) => {
+                if(idx === 0) return; 
+                const cols = row.querySelectorAll('td');
+                if(cols.length === 6) {
+                    const period = parseInt(cols[0].innerText.trim());
+                    schedule[name][period] = {};
+                    for(let i=1; i<=5; i++) {
+                        let cellHtml = cols[i].innerHTML;
+                        let cleanText = cellHtml.replace(/<br\s*[\/]?>/gi, '\n').replace(/&nbsp;/gi, '').trim();
+                        cleanText = cleanText.replace(/<[^>]*>?/gm, ''); 
+                        schedule[name][period][days[i-1]] = cleanText;
+                    }
+                }
+            });
+        });
+
+        // localStorage 저장된 기본 교사 불러오기
+        updateSavedTeacherUI();
+    }
+
+    function updateSavedTeacherUI() {
+        const saved = localStorage.getItem('bae_my_teacher');
+        const quickBox = document.getElementById('quickSavedContainer');
+        const nameText = document.getElementById('savedTeacherNameText');
+        const saveBtn = document.getElementById('saveTeacherBtn');
+        const currentSelected = document.getElementById('myTeacherSelect').value;
+
+        if (saved && teachers.includes(saved)) {
+            quickBox.style.display = 'block';
+            nameText.innerText = saved + " 선생님";
+            if (!currentSelected) {
+                document.getElementById('myTeacherSelect').value = saved;
+            }
+            if (currentSelected === saved) {
+                saveBtn.innerText = '⭐ 기본 교사로 저장됨';
+                saveBtn.style.color = 'var(--green)';
+                saveBtn.style.borderColor = 'var(--green)';
+            } else {
+                saveBtn.innerText = '⭐ 기본으로 저장';
+                saveBtn.style.color = 'var(--primary)';
+                saveBtn.style.borderColor = 'var(--primary)';
+            }
+        } else {
+            quickBox.style.display = 'none';
+        }
+    }
+
+    function saveCurrentTeacher() {
+        const t = document.getElementById('myTeacherSelect').value;
+        if (!t) return;
+        localStorage.setItem('bae_my_teacher', t);
+        updateSavedTeacherUI();
+        showToast(`${t} 선생님이 기본 시간표로 저장되었습니다!`);
+    }
+
+    function loadSavedTeacher() {
+        const saved = localStorage.getItem('bae_my_teacher');
+        if (saved) {
+            document.getElementById('myTeacherSelect').value = saved;
+            renderMyTimetable();
+            updateSavedTeacherUI();
+        }
+    }
+
+    function buildClassSchedule() {
+        for(let t of teachers) {
+            for(let p=1; p<=7; p++) {
+                for(let d of days) {
+                    let text = schedule[t][p]?.[d];
+                    if(text && text.includes('\n')) {
+                        let parts = text.split('\n');
+                        let subj = parts[0].trim();
+                        let cls = parts[1].trim(); 
+
+                        if (/^[1-3]-\d+$/.test(cls)) {
+                            classNames.add(cls);
+                            if(!classSchedule[cls]) classSchedule[cls] = {};
+                            if(!classSchedule[cls][p]) classSchedule[cls][p] = {};
+                            if(!classSchedule[cls][p][d]) classSchedule[cls][p][d] = [];
+                            classSchedule[cls][p][d].push({ subject: subj, teacher: t });
+                        }
+                    }
+                }
+            }
+        }
+        
+        const sel = document.getElementById('classSelect');
+        let sortedClasses = Array.from(classNames).sort((a, b) => {
+            let [gradeA, classNumA] = a.split('-').map(Number);
+            let [gradeB, classNumB] = b.split('-').map(Number);
+            if (gradeA !== gradeB) return gradeA - gradeB;
+            return classNumA - classNumB;
+        });
+        
+        sortedClasses.forEach(c => {
+            let opt = document.createElement('option');
+            opt.value = c; opt.text = c + "반 시간표";
+            sel.appendChild(opt);
+        });
+    }
+
+    function isFree(text) {
+        if (!text) return true;
+        text = text.replace(/\s+/g, '');
+        return text === '' || text === '공강' || text === '예배';
+    }
+
+    function isPureClass(text) {
+        if (!text) return false;
+        text = text.replace(/\s+/g, '');
+        if (text === '' || text === '공강' || text === '예배' || text === '동아' || text === '자율') return false;
+        return true;
+    }
+
+    function getPureClassCount(teacher, dayFilter = null) {
+        let count = 0;
+        for (let p = 1; p <= 7; p++) {
+            if (dayFilter) {
+                if (isPureClass(schedule[teacher][p]?.[dayFilter])) count++;
+            } else {
+                for (let d of days) {
+                    if (isPureClass(schedule[teacher][p]?.[d])) count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    function extractSubjects(teacher) {
+        let subjectMap = {};
+        for(let p=1; p<=7; p++) {
+            for(let d of days) {
+                let text = schedule[teacher][p]?.[d] || '';
+                if(isPureClass(text)) {
+                    let parts = text.split('\n');
+                    let subj = parts[0].trim();
+                    let cls = parts.length > 1 ? parts[1].trim() : '';
+                    if(!subjectMap[subj]) subjectMap[subj] = new Set();
+                    if(cls) subjectMap[subj].add(cls);
+                }
+            }
+        }
+        let result = [];
+        for(let subj in subjectMap) {
+            let classes = Array.from(subjectMap[subj]);
+            if(classes.length > 0) result.push(`${subj}(${classes.join(', ')})`);
+            else result.push(subj);
+        }
+        return result.join(', ');
+    }
+
+    function onTeacherChange() {
+        renderMyTimetable();
+        updateSavedTeacherUI();
+    }
+
+    function renderMyTimetable() {
+        const t = document.getElementById('myTeacherSelect').value;
+        if (!t) return;
+
+        document.getElementById('myTimetableTitle').innerText = `📅 ${t} 선생님 주간 시간표`;
+        const todayStr = getTodayDayStr();
+        const table = document.getElementById('myTimetableTable');
+        
+        let html = '<tr><th class="period-col">교시</th>';
+        for(let d of days) {
+            const isToday = (d === todayStr);
+            html += `<th class="${isToday ? 'today-col' : ''}">${d}</th>`;
+        }
+        html += '</tr>';
+
+        for(let p=1; p<=7; p++) {
+            html += `<tr><td class="period-col">${p}</td>`;
+            for(let d of days) {
+                const isToday = (d === todayStr);
+                const todayClass = isToday ? ' today-col' : '';
+                let cellText = schedule[t][p]?.[d] || '';
+
+                if (isFree(cellText)) {
+                    html += `<td class="t-cell-free${todayClass}">${cellText || '공강'}</td>`;
+                } else if (isPureClass(cellText)) {
+                    let cleanText = cellText.replace(/\n/g, ' ');
+                    html += `<td class="t-cell-class${todayClass}" onclick="openSwapModal('${t}', '${d}', ${p}, '${cleanText}')">
+                        ${cellText.replace(/\n/g, '<br>')}
+                        <span class="t-cell-swap-hint">교환</span>
+                    </td>`;
+                } else {
+                    html += `<td class="t-cell-fixed${todayClass}">${cellText.replace(/\n/g, '<br>')}</td>`;
+                }
+            }
+            html += '</tr>';
+        }
+        table.innerHTML = html;
+    }
+
+    function renderClassTimetable() {
+        const cls = document.getElementById('classSelect').value;
+        if(!cls) return;
+
+        document.getElementById('classTimetableTitle').innerText = `🏫 [${cls}반] 일과 시간표`;
+        const todayStr = getTodayDayStr();
+        const table = document.getElementById('classTimetableTable');
+
+        let html = '<tr><th class="period-col" style="background:#f0fff4;">교시</th>';
+        for(let d of days) {
+            const isToday = (d === todayStr);
+            html += `<th style="background:#f0fff4; color:var(--green);" class="${isToday ? 'today-col' : ''}">${d}</th>`;
+        }
+        html += '</tr>';
+
+        for(let p=1; p<=7; p++) {
+            html += `<tr><td class="period-col" style="background:#f0fff4;">${p}</td>`;
+            for(let d of days) {
+                const isToday = (d === todayStr);
+                const todayClass = isToday ? ' today-col' : '';
+                let cellData = classSchedule[cls]?.[p]?.[d];
+                if(cellData && cellData.length > 0) {
+                    let displayHtml = cellData.map(item => `<span style="font-weight:bold; color:var(--gray-800);">${item.subject}</span><br><span style="font-size:10px; color:var(--gray-600);">(${item.teacher})</span>`).join('<hr style="margin:3px 0; border:0; border-top:1px dashed #e2e8f0;">');
+                    html += `<td class="${todayClass}">${displayHtml}</td>`;
+                } else {
+                    html += `<td class="t-cell-free${todayClass}">-</td>`;
+                }
+            }
+            html += '</tr>';
+        }
+        table.innerHTML = html;
+    }
+
+    function openSwapModal(myTeacher, day, period, subjectText) {
+        document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 교환·보강 추천`;
+        document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님 수업 : ${subjectText}`;
+
+        let targetClasses = [];
+        let targetGrades = new Set();
+        if (typeof classNames !== 'undefined' && typeof classSchedule !== 'undefined') {
+            for (let cls of classNames) {
+                let cellData = classSchedule[cls]?.[period]?.[day];
+                if (cellData && cellData.some(item => item.teacher === myTeacher)) {
+                    targetClasses.push(cls);
+                    targetGrades.add(cls.split('-')[0]); 
+                }
+            }
+        }
+
+        let mutualSwaps = [];
+        for (let cls of classNames) {
+            let clsGrade = cls.split('-')[0];
+            if (!Array.from(targetGrades).includes(clsGrade)) continue;
+
+            for (let d of days) {
+                for (let p = 1; p <= 7; p++) {
+                    if (d === day && p === period) continue; 
+                    
+                    let cellData = classSchedule[cls]?.[p]?.[d];
+                    if (cellData) {
+                        for (let item of cellData) {
+                            let partnerTeacher = item.teacher;
+                            if (partnerTeacher === myTeacher) continue; 
+
+                            let isDuplicate = mutualSwaps.some(m => m.partner === partnerTeacher && m.partnerDay === d && m.partnerPeriod === p);
+                            if (isDuplicate) continue;
+                            
+                            let iAmFreeThen = isFree(schedule[myTeacher][p]?.[d]);
+                            let partnerIsFreeNow = isFree(schedule[partnerTeacher][period]?.[day]);
+                            
+                            if (iAmFreeThen && partnerIsFreeNow) {
+                                mutualSwaps.push({
+                                    partner: partnerTeacher,
+                                    partnerDay: d,
+                                    partnerPeriod: p,
+                                    partnerSubject: item.subject,
+                                    className: cls,
+                                    isSameClass: targetClasses.includes(cls),
+                                    isSameDay: (d === day),
+                                    totalPure: getPureClassCount(partnerTeacher),
+                                    dayPure: getPureClassCount(partnerTeacher, day)
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        mutualSwaps.sort((a, b) => {
+            if (a.isSameClass && !b.isSameClass) return -1;
+            if (!a.isSameClass && b.isSameClass) return 1;
+            if (a.isSameDay && !b.isSameDay) return -1;
+            if (!a.isSameDay && b.isSameDay) return 1;
+            let dayDiff = days.indexOf(a.partnerDay) - days.indexOf(b.partnerDay);
+            if (dayDiff !== 0) return dayDiff;
+            return a.partnerPeriod - b.partnerPeriod;
+        });
+
+        let candidates = [];
+        for(let t of teachers) {
+            if(t === myTeacher) continue; 
+            const text = schedule[t][period][day];
+            if(isFree(text)) {
+                if (!mutualSwaps.some(m => m.partner === t)) {
+                    candidates.push({
+                        name: t,
+                        totalPure: getPureClassCount(t),
+                        dayPure: getPureClassCount(t, day)
+                    });
+                }
+            }
+        }
+        candidates.sort((a, b) => {
+            if (a.dayPure !== b.dayPure) return a.dayPure - b.dayPure;
+            return a.totalPure - b.totalPure;
+        });
+
+        let html = '';
+
+        // 1. 맞교환
+        if (mutualSwaps.length > 0) {
+            html += `<div style="margin-bottom: 18px;">
+                <div style="font-size:14px; font-weight:800; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                    <span>🤝</span> <span>상호 맞교환 가능 (${mutualSwaps.length}건)</span>
+                </div>`;
+            for (let m of mutualSwaps) {
+                let badgeClass = 'badge-same-grade';
+                let badgeText = '같은 학년(다른 요일)';
+                if (m.isSameClass && m.isSameDay) { badgeClass = 'badge-same-class'; badgeText = '👍 같은 반 + 같은 날'; }
+                else if (m.isSameClass) { badgeClass = 'badge-same-class'; badgeText = '🔄 같은 반(다른 날)'; }
+                else if (m.isSameDay) { badgeClass = 'badge-same-day'; badgeText = '🏫 같은 학년 + 같은 날'; }
+
+                html += `
+                <div class="swap-card mutual">
+                    <div class="swap-card-head">
+                        <span class="swap-teacher-name">👨‍🏫 ${m.partner} 선생님</span>
+                        <span class="swap-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div style="font-size:12px; color:var(--gray-700); line-height:1.6;">
+                        <div>✔ <b>나</b> ➡️ ${m.partnerDay}요일 ${m.partnerPeriod}교시 (${m.className}반 ${m.partnerSubject})</div>
+                        <div>✔ <b>${m.partner}T</b> ➡️ ${day}요일 ${period}교시 수업 진행</div>
+                        <div style="font-size:11px; color:var(--gray-600); margin-top:3px;">당일 ${m.dayPure}시간 / 주 ${m.totalPure}시간</div>
+                    </div>
+                </div>`;
+            }
+            html += `</div>`;
+        } else {
+            html += `<div style="font-size:13px; color:var(--gray-600); background:#f7fafc; padding:12px; border-radius:8px; margin-bottom:15px; text-align:center;">
+                🤝 해당 시간과 딱 맞바꿀 수 있는 상대 교사가 없습니다.
+            </div>`;
+        }
+
+        // 2. 일방향 보강
+        html += `<div>
+            <div style="font-size:14px; font-weight:800; color:var(--orange); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                <span>🙋</span> <span>공강 교사 (보강/대강 가능: ${candidates.length}명)</span>
+            </div>`;
+        
+        if (candidates.length === 0) {
+            html += `<div style="font-size:12px; color:#a0aec0; text-align:center; padding:10px;">해당 시간 공강인 교사가 없습니다.</div>`;
+        } else {
+            html += `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:8px;">`;
+            for(let c of candidates) {
+                const isRec = c.dayPure < 3;
+                html += `
+                <div class="swap-card" style="${isRec ? 'border:1.5px solid var(--orange); background:#fffaf0;' : ''}">
+                    <div style="font-weight:bold; font-size:13px; color:var(--gray-800);">${c.name} 선생님</div>
+                    <div style="font-size:11px; color:var(--gray-600); margin-top:2px;">당일 ${c.dayPure}T / 주 ${c.totalPure}T</div>
+                    ${isRec ? '<span style="display:inline-block; font-size:10px; background:#fbd38d; color:#744210; padding:1px 5px; border-radius:4px; margin-top:4px;">여유 추천</span>' : ''}
+                </div>`;
+            }
+            html += `</div>`;
+        }
+        html += `</div>`;
+
+        document.getElementById('sheetModalBody').innerHTML = html;
+        document.getElementById('swapModal').classList.add('show');
+    }
+
+    function closeSwapModal(e) {
+        document.getElementById('swapModal').classList.remove('show');
+    }
+
+    // NEIS 급식 API
+    async function fetchNeisLunch() {
+        const display = document.getElementById('lunchMenuDisplay');
+        display.innerHTML = '급식 정보를 불러오는 중입니다... ⏳';
+        
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}${mm}${dd}`;
+        const displayDate = `${yyyy}년 ${mm}월 ${dd}일`;
+
+        document.getElementById('lunchDateText').innerText = `🍽️ 오늘(${displayDate})의 급식`;
+
+        const url = `https://open.neis.go.kr/hub/mealServiceDietInfo?Type=json&ATPT_OFCDC_SC_CODE=B10&SD_SCHUL_CODE=7010171&MLSV_YMD=${dateStr}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if(data.mealServiceDietInfo) {
+                let menu = data.mealServiceDietInfo[1].row[0].DDISH_NM;
+                menu = menu.replace(/[0-9]+\./g, '').replace(/<br\s*[\/]?>/gi, '<br>');
+                display.innerHTML = menu;
+            } else {
+                display.innerHTML = '<span style="color:#e53e3e; font-size:14px;">오늘은 급식 정보가 없습니다.<br><span style="font-size:12px; color:#718096;">(휴일, 재량휴업일, 방학 등)</span></span>';
+            }
+        } catch (e) {
+            display.innerHTML = '<span style="color:#e53e3e; font-size:13px;">급식 정보를 불러오지 못했습니다. (네트워크 상태 확인)</span>';
+        }
+    }
+
+    function setLunchDay(day, btnElem) {
+        currentLunchDay = day;
+        document.querySelectorAll('.lunch-day-btn').forEach(b => b.classList.remove('active'));
+        if (btnElem) btnElem.classList.add('active');
+        renderLunchPair();
+    }
+
+    function renderLunchPair() {
+        const day = currentLunchDay;
+        const bothFree = [], p4Free = [], p5Free = [], noneFree = [];
+        
+        for(let t of teachers) {
+            const free4 = isFree(schedule[t][4][day]);
+            const free5 = isFree(schedule[t][5][day]);
+            
+            if(free4 && free5) bothFree.push(t);
+            else if(free4) p4Free.push(t);
+            else if(free5) p5Free.push(t);
+            else noneFree.push(t);
+        }
+
+        let html = `
+            <div style="background:#f0fff4; border:1px solid #9ae6b4; border-radius:10px; padding:12px; margin-bottom:8px;">
+                <div style="font-weight:bold; color:#22543d; font-size:13px; margin-bottom:4px;">
+                    🟢 4, 5교시 연속 공강 (여유 식사) - ${bothFree.length}명
+                </div>
+                <div style="font-size:12px; color:#2d3748; line-height:1.6;">${bothFree.join(', ') || '없음'}</div>
+            </div>
+            <div style="background:#ebf8ff; border:1px solid #90cdf4; border-radius:10px; padding:12px; margin-bottom:8px;">
+                <div style="font-weight:bold; color:#2c5282; font-size:13px; margin-bottom:4px;">
+                    🔵 4교시만 공강 (일찍 식사 가능) - ${p4Free.length}명
+                </div>
+                <div style="font-size:12px; color:#2d3748; line-height:1.6;">${p4Free.join(', ') || '없음'}</div>
+            </div>
+            <div style="background:#fffff0; border:1px solid #f6e05e; border-radius:10px; padding:12px; margin-bottom:8px;">
+                <div style="font-weight:bold; color:#975a16; font-size:13px; margin-bottom:4px;">
+                    🟡 5교시만 공강 (늦게까지 식사 가능) - ${p5Free.length}명
+                </div>
+                <div style="font-size:12px; color:#2d3748; line-height:1.6;">${p5Free.join(', ') || '없음'}</div>
+            </div>
+            <div style="background:#fff5f5; border:1px solid #feb2b2; border-radius:10px; padding:12px;">
+                <div style="font-weight:bold; color:#c53030; font-size:13px; margin-bottom:4px;">
+                    🔴 4, 5교시 모두 수업 (점심시간만 식사) - ${noneFree.length}명
+                </div>
+                <div style="font-size:12px; color:#2d3748; line-height:1.6;">${noneFree.join(', ') || '없음'}</div>
+            </div>
+        `;
+        document.getElementById('lunchResultArea').innerHTML = html;
+    }
+
+    function setDeptFilter(dept, btnElem) {
+        currentDeptFilter = dept;
+        document.querySelectorAll('.phone-dept-btn').forEach(b => b.classList.remove('active'));
+        if (btnElem) btnElem.classList.add('active');
+        filterPhone();
+    }
+
+    function filterPhone() {
+        const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
+        const container = document.getElementById('phoneListContainer');
+
+        let filtered = phoneData.filter(p => {
+            const matchQuery = !query || (
+                p.name.toLowerCase().includes(query) || 
+                p.loc.toLowerCase().includes(query) || 
+                p.ext.includes(query) ||
+                p.hrClass.toLowerCase().includes(query)
+            );
+
+            if (!matchQuery) return false;
+
+            if (currentDeptFilter === '전체') return true;
+            if (currentDeptFilter === '1학년') return p.loc.includes('1학년') || p.hrClass.includes('1학년');
+            if (currentDeptFilter === '2학년') return p.loc.includes('2학년') || p.hrClass.includes('2학년');
+            if (currentDeptFilter === '3학년') return p.loc.includes('3학년') || p.hrClass.includes('3학년');
+            if (currentDeptFilter === '연구') return p.loc.includes('연구') || p.loc.includes('교무') || p.loc.includes('창의') || p.loc.includes('안전') || p.loc.includes('진로');
+            if (currentDeptFilter === '행정실') return p.loc.includes('행정') || p.name.includes('실') || p.name.includes('정문');
+            if (currentDeptFilter === '특별교실') return p.loc.includes('특별');
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding:30px; color:#a0aec0; font-size:13px;">일치하는 검색 결과가 없습니다.</div>';
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(p => {
+            const hasHr = p.hrClass !== '-' && p.hrExt !== '-';
+            const isFullPhone = p.ext.includes('-');
+            const callHref = isFullPhone ? `tel:${p.ext}` : `tel:02-737-6600,${p.ext}`;
+
+            html += `
+            <div class="contact-card">
+                <div class="contact-info">
+                    <div class="contact-name">
+                        ${p.name}
+                        ${hasHr ? `<span class="contact-badge">${p.hrClass}</span>` : ''}
+                    </div>
+                    <div class="contact-loc">📍 ${p.loc}</div>
+                    ${hasHr ? `<div class="contact-hr-ext">🏫 교실 내선: <b>${p.hrExt}</b></div>` : ''}
+                </div>
+                <div class="contact-ext-group">
+                    <a href="${callHref}" class="contact-call-btn" title="전화 걸기">
+                        <span>📞</span> ${p.ext}
+                    </a>
+                    <button class="contact-copy-btn" onclick="copyExt('${p.ext}', '${p.name}')" title="내선번호 복사">
+                        📋
+                    </button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function copyExt(ext, name) {
+        navigator.clipboard.writeText(ext).then(() => {
+            showToast(`${name} 내선번호 (${ext}) 복사 완료!`);
+        }).catch(() => {
+            showToast(`내선번호: ${ext}`);
+        });
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('appToast');
+        toast.innerText = msg;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+
+    function renderGroupChips() {
+        const container = document.getElementById('groupTeacherChips');
+        teachers.forEach(t => {
+            const lbl = document.createElement('label');
+            lbl.style.cssText = "display:inline-flex; align-items:center; gap:4px; background:white; border:1px solid #cbd5e0; padding:4px 8px; border-radius:14px; font-size:12px; cursor:pointer;";
+            const cb = document.createElement('input');
+            cb.type = 'checkbox'; cb.value = t; cb.className = 'group-t-cb';
+            cb.onchange = () => {
+                lbl.style.background = cb.checked ? '#bee3f8' : 'white';
+                lbl.style.borderColor = cb.checked ? '#3182ce' : '#cbd5e0';
+            };
+            lbl.appendChild(cb);
+            lbl.appendChild(document.createTextNode(t));
+            container.appendChild(lbl);
+        });
+    }
+
+    function calculateGroupFree() {
+        const cbs = document.querySelectorAll('.group-t-cb:checked');
+        const selected = Array.from(cbs).map(c => c.value);
+        const area = document.getElementById('groupResultArea');
+
+        if(selected.length === 0) {
+            alert('비교할 선생님을 한 명 이상 선택해주세요.');
+            return;
+        }
+
+        let html = `
+            <div style="background:#e2e8f0; padding:10px; border-radius:8px; font-size:12px; margin-bottom:10px;">
+                <strong>선택한 교사 (${selected.length}명):</strong> ${selected.join(', ')}
+            </div>
+            <div class="t-table-wrapper">
+            <table class="t-table">
+                <tr><th class="period-col">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr>
+        `;
+
+        for(let p=1; p<=7; p++) {
+            html += `<tr><td class="period-col">${p}</td>`;
+            for(let d of days) {
+                let allFree = true;
+                for(let t of selected) {
+                    if(!isFree(schedule[t][p][d])) { allFree = false; break; }
+                }
+                if(allFree) {
+                    html += `<td style="background:#c6f6d5; color:#22543d; font-weight:bold; font-size:11px;">모두<br>공강!</td>`;
+                } else {
+                    html += `<td class="t-cell-free">-</td>`;
+                }
+            }
+            html += `</tr>`;
+        }
+        html += `</table></div>`;
+        area.innerHTML = html;
+    }
+
+    window.onload = function() {
+        initDateBadge();
+        initData();
+        buildClassSchedule();
+        renderMyTimetable();
+        renderClassTimetable();
+        renderLunchPair();
+        fetchNeisLunch();
+        filterPhone();
+        renderGroupChips();
+
+        const todayDay = getTodayDayStr();
+        if (todayDay) {
+            document.querySelectorAll('.lunch-day-btn').forEach(b => {
+                if (b.innerText.includes(todayDay)) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            renderLunchPair();
+        }
+    };
+</script>
+</body>
+</html>
