@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="배화 시간표">
-<title>배화여자고등학교 스마트 시간표</title>
-<!-- 예쁜 앱 아이콘 및 파비콘 -->
+<title>🐱 배화여자고등학교 스마트 시간표</title>
+<!-- 귀여운 노란 고양이 앱 아이콘 및 파비콘 -->
 <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
@@ -60,14 +60,22 @@
         z-index: 100;
         background: white;
         border-bottom: 1px solid var(--gray-200);
-        padding: 11px 16px;
+        padding: 10px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     }
     .app-title-box { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .app-title-img { width: 26px; height: 26px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .app-title-cat {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #fffaf0;
+        border: 2px solid #fbd38d;
+        box-shadow: 0 2px 5px rgba(221,107,32,0.15);
+    }
     .app-title-text { font-size: 17px; font-weight: 800; color: var(--primary-dark); letter-spacing: -0.4px; }
     .today-badge {
         font-size: 12px;
@@ -515,10 +523,10 @@
 </head>
 <body>
 
-<!-- 상단 헤더 -->
+<!-- 상단 헤더 (귀여운 노란 고양이 로고 적용!) -->
 <header class="app-header">
     <div class="app-title-box" onclick="switchTab('tab-my', document.querySelectorAll('.nav-item')[0])">
-        <img src="./favicon.png" class="app-title-img" alt="배화여고">
+        <img src="./cat.png" class="app-title-cat" alt="노란 고양이">
         <span class="app-title-text">배화여고 시간표</span>
     </div>
     <div id="headerDateBadge" class="today-badge">로딩중..</div>
@@ -651,7 +659,7 @@
     </section>
 </main>
 
-<!-- 하단 고정 탭 바 -->
+<!-- 하단 고정 탭 바 (귀여운 노란 고양이 이모티콘 탑재!) -->
 <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('tab-my', this)">
         <span class="nav-icon">👤</span>
@@ -933,7 +941,7 @@
             });
         });
 
-        // ⭐ 2. 교직원(선생님) 이름 오름차순(가나다순) 정렬!
+        // 2. 교직원(선생님) 이름 오름차순(가나다순) 정렬!
         teachers.sort((a, b) => a.localeCompare(b, 'ko'));
 
         // 정렬된 순서대로 내 시간표 셀렉트 & 전체 교사 퀵 버튼 생성
@@ -1165,7 +1173,7 @@
         table.innerHTML = html;
     }
 
-    // ⭐ 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서)
+    // 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서)
     function openSwapModal(myTeacher, day, period, subjectText) {
         document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 추천 목록`;
         document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님: ${subjectText}`;
@@ -1253,7 +1261,7 @@
 
         let html = '';
 
-        // 🌟 [1순위] 공강 교사 (보강/대강 가능 교사) 먼저 표시!
+        // [1순위] 공강 교사 먼저 표시!
         html += `<div style="margin-bottom: 20px;">
             <div style="font-size:14px; font-weight:800; color:var(--orange); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
                 <span>🙋</span> <span>1. 공강 교사 (보강/대강 가능: ${candidates.length}명)</span>
@@ -1276,7 +1284,7 @@
         }
         html += `</div>`;
 
-        // 🌟 [2순위] 상호 맞바꾸기(스왑) 그 다음에 표시!
+        // [2순위] 상호 맞바꾸기(스왑) 그 다음에 표시!
         html += `<div>
             <div style="font-size:14px; font-weight:800; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
                 <span>🤝</span> <span>2. 상호 맞교환 가능 스왑 (${mutualSwaps.length}건)</span>
@@ -1407,7 +1415,7 @@
         filterPhone();
     }
 
-    // 전화번호 필터 및 카드 렌더링 (⭐ 이름 가나다 오름차순 정렬 적용!)
+    // 전화번호 필터 및 카드 렌더링 (가나다 오름차순 정렬)
     function filterPhone() {
         const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
         const container = document.getElementById('phoneListContainer');
@@ -1437,7 +1445,7 @@
             return;
         }
 
-        // ⭐ 교직원 이름 가나다 오름차순 정렬!
+        // 교직원 이름 가나다 오름차순 정렬!
         filtered.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 
         let html = '';

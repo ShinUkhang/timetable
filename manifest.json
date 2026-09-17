@@ -1,10 +1,10 @@
 {
   "name": "배화여자고등학교 스마트 시간표",
-  "short_name": "배화시간표",
+  "short_name": "배화시간표 🐱",
   "description": "배화여고 모바일 맞춤형 스마트 시간표 및 교무 지원 웹앱",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1a365d",
+  "background_color": "#fffaf0",
   "theme_color": "#2b6cb0",
   "orientation": "portrait",
   "icons": [
