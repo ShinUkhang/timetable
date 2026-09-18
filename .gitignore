@@ -12,4 +12,13 @@ $RECYCLE.BIN/
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+# Dependencies
+node_modules/
+package-lock.json
+
+# Excel temp files
+~$*.xlsx
+~$*.xls
+
+# Log files
+*.log

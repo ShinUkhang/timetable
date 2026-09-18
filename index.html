@@ -519,6 +519,173 @@
         cursor: pointer;
         margin-top: 8px;
     }
+
+    /* ================= 등교·급식 지도 스타일 ================= */
+    .duty-summary-card {
+        background: white;
+        border-radius: var(--card-radius);
+        border: 1px solid var(--gray-200);
+        padding: 14px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .duty-date-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--gray-200);
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .duty-date-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .duty-nav-btn-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .duty-nav-btn {
+        background: var(--gray-100);
+        border: 1px solid var(--gray-300);
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        color: var(--gray-700);
+        transition: 0.15s;
+        font-family: inherit;
+    }
+    .duty-nav-btn:active {
+        background: var(--gray-200);
+        transform: scale(0.95);
+    }
+    .duty-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    @media (max-width: 480px) {
+        .duty-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .duty-box {
+        border-radius: 10px;
+        padding: 10px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .duty-box.morning {
+        background: #fffaf0;
+        border: 1.5px solid #fbd38d;
+    }
+    .duty-box.lunch {
+        background: #ebf8ff;
+        border: 1.5px solid #bee3f8;
+    }
+    .duty-box-title {
+        font-size: 13px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .duty-box.morning .duty-box-title { color: #c05621; }
+    .duty-box.lunch .duty-box-title { color: #2b6cb0; }
+    .duty-box-time {
+        font-size: 10px;
+        font-weight: normal;
+        color: var(--gray-600);
+    }
+    .duty-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.06);
+        font-size: 13px;
+    }
+    .duty-label {
+        font-size: 12px;
+        color: var(--gray-600);
+        font-weight: bold;
+    }
+    .duty-teacher {
+        font-weight: 800;
+        color: var(--gray-800);
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        transition: 0.15s;
+    }
+    .duty-teacher:hover, .duty-teacher:active {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary-border);
+    }
+    .duty-my-alert {
+        background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%);
+        border: 1.5px solid #ed8936;
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        color: #742a2a;
+        font-size: 13px;
+        font-weight: bold;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(237,137,54,0.2);
+    }
+    .duty-empty-msg {
+        text-align: center;
+        padding: 16px;
+        color: var(--gray-600);
+        font-size: 13px;
+        background: #f8fafc;
+        border-radius: 10px;
+        border: 1px dashed var(--gray-300);
+    }
+    .duty-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        text-align: center;
+    }
+    .duty-table th, .duty-table td {
+        border: 1px solid var(--gray-200);
+        padding: 6px 4px;
+    }
+    .duty-table th {
+        background: var(--gray-100);
+        font-weight: bold;
+        color: var(--gray-700);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .duty-table tr.today-row {
+        background-color: #ebf8ff;
+        font-weight: bold;
+    }
+    .duty-table tr.today-row td {
+        border-color: #bee3f8;
+    }
+
 </style>
 </head>
 <body>
@@ -535,6 +702,31 @@
 <main class="container">
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
+
+        <!-- 교사 본인 지도 당번 알림 배너 -->
+        <div id="myDutyAlertBanner" class="duty-my-alert" style="display:none;"></div>
+
+        <!-- 🏫 오늘의 등교·급식 지도 위젯 -->
+        <div class="duty-summary-card">
+            <div class="duty-date-nav">
+                <div class="duty-date-title">
+                    <span>🏫</span>
+                    <span id="dutySelectedDateText">오늘의 지도교사</span>
+                </div>
+                <div class="duty-nav-btn-group">
+                    <button class="duty-nav-btn" onclick="shiftDutyDate(-1)" title="이전 날짜">◀</button>
+                    <button class="duty-nav-btn" onclick="resetDutyDateToday()" title="오늘로 이동">오늘</button>
+                    <button class="duty-nav-btn" onclick="shiftDutyDate(1)" title="다음 날짜">▶</button>
+                    <button class="duty-nav-btn" onclick="triggerDutyDatePicker()" title="날짜 직접 선택">📅</button>
+                    <button class="duty-nav-btn" style="background:#edf2f7; color:var(--primary); font-weight:bold;" onclick="openDutyAllModal()" title="전체 일정 및 안내사항">📋 전체</button>
+                    <input type="date" id="dutyDatePicker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="onDutyDatePicked(this.value)">
+                </div>
+            </div>
+            <div id="dutyCardContent">
+                <!-- JS로 등교/중식 지도 카드 렌더링 -->
+            </div>
+        </div>
+
         <div class="m-card">
             <div class="m-card-title">
                 <span>👤 선생님 선택 (가나다순)</span>
@@ -603,6 +795,18 @@
                 급식 정보를 불러오는 중입니다... ⏳
             </div>
             <div style="font-size:11px; color:var(--gray-600);">NEIS 교육행정정보시스템 실시간 연동</div>
+        </div>
+
+        
+        <!-- 오늘 중식지도 담당 안내 -->
+        <div class="m-card" style="margin-top:12px;">
+            <div class="m-card-title">
+                <span>🍱 오늘 중식지도 담당 (12:10~13:10)</span>
+                <button class="m-btn m-btn-outline m-btn-sm" onclick="openDutyAllModal()">전체일정</button>
+            </div>
+            <div id="lunchDutySummaryInMealTab">
+                <!-- JS 렌더링 -->
+            </div>
         </div>
 
         <!-- 점심 짝꿍 카드 -->
@@ -684,6 +888,24 @@
 </nav>
 
 <!-- 수업 교환/보강 모달 바텀시트 -->
+
+<!-- 등교·중식 지도 전체 일정 모달 바텀시트 -->
+<div id="dutyAllModal" class="modal-backdrop" onclick="closeDutyAllModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div>
+                <h3 class="sheet-title">📋 등교·중식 지도 일정 및 수칙</h3>
+                <div class="sheet-subtitle">배화여자고등학교 학생 생활지도 배정표</div>
+            </div>
+            <button class="sheet-close" onclick="closeDutyAllModal()">✕</button>
+        </div>
+        <div id="dutyAllModalBody">
+            <!-- JS 렌더링 -->
+        </div>
+    </div>
+</div>
+
 <div id="swapModal" class="modal-backdrop" onclick="closeSwapModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -750,6 +972,337 @@
 <div class="card"><div class="card-header">교사 김민철</div><table><tr><th class="period">교시</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th></tr><tr><td class="period">1</td><td>&nbsp;</td><td>&nbsp;</td><td>예배</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td class="period">2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-3</td></tr><tr><td class="period">3</td><td>종2<br>1-2</td><td>진로2<br>2-6</td><td>&nbsp;</td><td>종2<br>1-5</td><td>&nbsp;</td></tr><tr><td class="period">4</td><td>종2<br>1-1</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-2</td><td>&nbsp;</td></tr><tr><td class="period">5</td><td>&nbsp;</td><td>종2<br>1-5</td><td>종2<br>1-3</td><td>&nbsp;</td><td>자율</td></tr><tr><td class="period">6</td><td>진로2<br>2-4</td><td>&nbsp;</td><td>진로2<br>2-5</td><td>&nbsp;</td><td>동아</td></tr><tr><td class="period">7</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>종2<br>1-1</td><td>&nbsp;</td></tr></table></div>
 </div>
 
+<!-- DUTY_DATA_START -->
+<script>
+window.DUTY_SCHEDULE_DATA = {
+  "updatedAt": "2026-09-18T05:17:43.789Z",
+  "noticeMorning": "★ 학생 등교지도 안내 사항★\r\n\r\n- 학생들이 아침 등교시 교복을 단정히 입었는지 지도 바랍니다.\r\n  (교복 상하의 및 운동화를 착용하고 교내로 들어오도록 지도해주세요)\r\n- 지도 시간 : 본관- 7:30-8:00, 별관 7:30-7:50\r\n- 지도 위치 : 지도1교사 -본관 입구, 지도2교사 -별관 입구(50분에 출입문 통제)\r\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 주1회 금요일 (황상희)\r\n  * 1학년 : 강주혁 선생님,  2학년 : 양진택 선생님, 3학년 : 김지혜 선생님",
+  "noticeLunch": "★학생 중식지도 안내사항★\r\n\r\n - 학생 착석 지도 : 3학년-3,4층/ 2학년-3층/ 1학년-4층\r\n    (우측 열 뒤부터 앞좌석 순으로 앉도록 안내 부탁드립니다. )\r\n - 중식 중 정숙 지도 (식사 중 말은 최소화 하도록 지도)\r\n - 식사시 개인 위생 지도\r\n\r\n\r\n※ 선생님들께서는 위의 내용을 꼭! 숙지 하시고 중식지도를 부탁드리겠습니다^^",
+  "dates": {
+    "2026-09-01": {
+      "dateStr": "2026-09-01",
+      "displayDate": "9월 1일",
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "이수진",
+        "annex": "우서영",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "선소희",
+        "floor4": "이수진",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-02": {
+      "dateStr": "2026-09-02",
+      "displayDate": "9월 2일",
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "구인혜",
+        "annex": "원종범",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "이미나",
+        "floor4": "박경화",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-03": {
+      "dateStr": "2026-09-03",
+      "displayDate": "9월 3일",
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "김영주",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "선민수",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-04": {
+      "dateStr": "2026-09-04",
+      "displayDate": "9월 4일",
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "송정하",
+        "annex": "윤종희",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "우승훈",
+        "floor4": "윤의국",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-07": {
+      "dateStr": "2026-09-07",
+      "displayDate": "9월 7일",
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "김선우",
+        "annex": "양진택",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "김지혜",
+        "floor4": "김영주",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-08": {
+      "dateStr": "2026-09-08",
+      "displayDate": "9월 8일",
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "정주연",
+        "annex": "선소희",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "임성우",
+        "floor4": "윤종희",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-09": {
+      "dateStr": "2026-09-09",
+      "displayDate": "9월 9일",
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "김동하",
+        "annex": "구성덕",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "황상희",
+        "floor4": "원종범",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-10": {
+      "dateStr": "2026-09-10",
+      "displayDate": "9월 10일",
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "윤소연",
+        "annex": "김수경",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "전성민",
+        "floor4": "강주혁",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-11": {
+      "dateStr": "2026-09-11",
+      "displayDate": "9월 11일",
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "전성민",
+        "annex": "김보라",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "정은혜",
+        "floor4": "양진택",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-14": {
+      "dateStr": "2026-09-14",
+      "displayDate": "9월 14일",
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "박경화",
+        "annex": "김지혜",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "윤소연",
+        "floor4": "김보라",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-15": {
+      "dateStr": "2026-09-15",
+      "displayDate": "9월 15일",
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "선민수",
+        "annex": "배민욱",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "최재민",
+        "floor4": "정태진",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-16": {
+      "dateStr": "2026-09-16",
+      "displayDate": "9월 16일",
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "이미나",
+        "annex": "정은혜",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "우서영",
+        "floor4": "백수정",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-17": {
+      "dateStr": "2026-09-17",
+      "displayDate": "9월 17일",
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "노석후",
+        "annex": "임성우",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "김동하",
+        "floor4": "최연오",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-18": {
+      "dateStr": "2026-09-18",
+      "displayDate": "9월 18일",
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "정다영",
+        "annex": "우승훈",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "정주연",
+        "floor4": "김윤희",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-21": {
+      "dateStr": "2026-09-21",
+      "displayDate": "9월 21일",
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "김윤희",
+        "annex": "서진숙",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "김수경",
+        "floor4": "서진숙",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-22": {
+      "dateStr": "2026-09-22",
+      "displayDate": "9월 22일",
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "신욱항",
+        "annex": "강주혁",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "김선우",
+        "floor4": "조성용",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-23": {
+      "dateStr": "2026-09-23",
+      "displayDate": "9월 23일",
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "신미경",
+        "annex": "최재민",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "구인혜",
+        "floor4": "조혜림",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-28": {
+      "dateStr": "2026-09-28",
+      "displayDate": "9월 28일",
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "이효정",
+        "annex": "윤의국",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "구성덕",
+        "floor4": "이효정",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-29": {
+      "dateStr": "2026-09-29",
+      "displayDate": "9월 29일",
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "조혜림",
+        "annex": "임진삼",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "배민욱",
+        "floor4": "신미경",
+        "time": "12:10~13:10"
+      }
+    },
+    "2026-09-30": {
+      "dateStr": "2026-09-30",
+      "displayDate": "9월 30일",
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "조성용",
+        "annex": "우서영",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "송정하",
+        "floor4": "신욱항",
+        "time": "12:10~13:10"
+      }
+    }
+  }
+};
+</script>
+<!-- DUTY_DATA_END -->
 <script>
     const schedule = {};
     const days = ['월', '화', '수', '목', '금'];
@@ -1553,6 +2106,332 @@
         html += `</table></div>`;
         area.innerHTML = html;
     }
+
+    
+    // ==========================================
+    // 등교·급식 지도 관리 로직
+    // ==========================================
+    let currentDutyDateStr = getTodayIsoDate();
+
+    function getTodayIsoDate() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function triggerDutyDatePicker() {
+        const picker = document.getElementById('dutyDatePicker');
+        if (picker.showPicker) {
+            picker.showPicker();
+        } else {
+            picker.focus();
+            picker.click();
+        }
+    }
+
+    function onDutyDatePicked(val) {
+        if (!val) return;
+        currentDutyDateStr = val;
+        renderDutyUI();
+    }
+
+    function resetDutyDateToday() {
+        currentDutyDateStr = getTodayIsoDate();
+        renderDutyUI();
+    }
+
+    function shiftDutyDate(offset) {
+        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
+        const allKeys = Object.keys(data).sort();
+        if (allKeys.length === 0) return;
+
+        let curIdx = allKeys.indexOf(currentDutyDateStr);
+        if (curIdx === -1) {
+            // 현재 날짜가 목록에 없으면 가장 가까운 날짜 탐색
+            if (offset > 0) {
+                const nextKey = allKeys.find(k => k > currentDutyDateStr);
+                currentDutyDateStr = nextKey || allKeys[allKeys.length - 1];
+            } else {
+                const prevKeys = allKeys.filter(k => k < currentDutyDateStr);
+                currentDutyDateStr = prevKeys.length > 0 ? prevKeys[prevKeys.length - 1] : allKeys[0];
+            }
+        } else {
+            let nextIdx = curIdx + offset;
+            if (nextIdx < 0) nextIdx = 0;
+            if (nextIdx >= allKeys.length) nextIdx = allKeys.length - 1;
+            currentDutyDateStr = allKeys[nextIdx];
+        }
+        renderDutyUI();
+    }
+
+    function renderDutyUI() {
+        renderDutySummary();
+        renderLunchDutyInMealTab();
+        checkMyDutyAlert();
+    }
+
+    function renderDutySummary() {
+        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
+        const entry = data[currentDutyDateStr];
+        const titleEl = document.getElementById('dutySelectedDateText');
+        const container = document.getElementById('dutyCardContent');
+        if (!titleEl || !container) return;
+
+        // 날짜 표시
+        const todayIso = getTodayIsoDate();
+        const isToday = currentDutyDateStr === todayIso;
+        
+        let dateObj = new Date(currentDutyDateStr + 'T00:00:00');
+        let m = dateObj.getMonth() + 1;
+        let d = dateObj.getDate();
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+        let dayStr = dayNames[dateObj.getDay()];
+
+        if (entry) {
+            m = entry.month || m;
+            d = entry.day || d;
+            dayStr = entry.dayOfWeek || dayStr;
+        }
+
+        titleEl.innerHTML = `${isToday ? '<b>[오늘]</b> ' : ''}${m}월 ${d}일(${dayStr}) 지도교사`;
+
+        if (!entry) {
+            container.innerHTML = `
+                <div class="duty-empty-msg">
+                    <div>🏖️ <b>${m}월 ${d}일(${dayStr})</b>에는 배정된 등교·중식 지도가 없습니다.</div>
+                    <div style="font-size:11px; color:var(--gray-500); margin-top:4px;">(주말, 공휴일, 재량휴업일 등)</div>
+                    <button class="m-btn m-btn-outline m-btn-sm" style="margin-top:10px;" onclick="shiftDutyDate(1)">가장 가까운 지도일 보기 ▶</button>
+                </div>
+            `;
+            return;
+        }
+
+        const mMain = entry.morning.main || '-';
+        const mAnnex = entry.morning.annex || '-';
+        const lF3 = entry.lunch.floor3 || '-';
+        const lF4 = entry.lunch.floor4 || '-';
+
+        container.innerHTML = `
+            <div class="duty-grid">
+                <!-- 등교지도 박스 -->
+                <div class="duty-box morning">
+                    <div class="duty-box-title">
+                        <span>🌅 등교지도</span>
+                        <span class="duty-box-time">본관 07:30~08:00 / 별관 07:30~07:50</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">🏛️ 본관 입구</span>
+                        <span class="duty-teacher" onclick="selectTeacherAndGo('${mMain}')">${mMain}T</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">🏫 별관 입구</span>
+                        <span class="duty-teacher" onclick="selectTeacherAndGo('${mAnnex}')">${mAnnex}T</span>
+                    </div>
+                </div>
+
+                <!-- 중식지도 박스 -->
+                <div class="duty-box lunch">
+                    <div class="duty-box-title">
+                        <span>🍱 중식지도</span>
+                        <span class="duty-box-time">12:10~13:10 (착석 및 정숙 지도)</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">3️⃣ 3층 식당</span>
+                        <span class="duty-teacher" onclick="selectTeacherAndGo('${lF3}')">${lF3}T</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">4️⃣ 4층 식당</span>
+                        <span class="duty-teacher" onclick="selectTeacherAndGo('${lF4}')">${lF4}T</span>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size:11px; color:var(--gray-500); margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span>💡 선생님 이름을 누르면 해당 시간표로 즉시 이동합니다.</span>
+                <span style="text-decoration:underline; cursor:pointer;" onclick="openDutyAllModal()">수칙 보기</span>
+            </div>
+        `;
+    }
+
+    // 선택한 교사의 시간표로 이동
+    function selectTeacherAndGo(teacherName) {
+        if (!teacherName || teacherName === '-') return;
+        const cleanName = teacherName.replace('T', '').trim();
+        const sel = document.getElementById('myTeacherSelect');
+        if (sel && teachers.includes(cleanName)) {
+            sel.value = cleanName;
+            onTeacherChange();
+            switchTab('tab-my', document.querySelectorAll('.nav-item')[0]);
+            showToast(`${cleanName} 선생님 시간표로 이동했습니다.`);
+        } else {
+            showToast(`${cleanName} 선생님 정보를 조회합니다.`);
+        }
+    }
+
+    // 내 시간표 선택 교사의 당번 알림 확인
+    function checkMyDutyAlert() {
+        const banner = document.getElementById('myDutyAlertBanner');
+        const sel = document.getElementById('myTeacherSelect');
+        if (!banner || !sel) return;
+
+        const currentTeacher = sel.value;
+        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
+        const entry = data[currentDutyDateStr];
+
+        if (!currentTeacher || !entry) {
+            banner.style.display = 'none';
+            return;
+        }
+
+        const alerts = [];
+        const isToday = currentDutyDateStr === getTodayIsoDate();
+        const timePrefix = isToday ? '오늘' : entry.displayDate;
+
+        if (entry.morning.main === currentTeacher) {
+            alerts.push(`🌅 ${timePrefix} <b>【본관 등교지도】</b> 당번입니다! (07:30~08:00, 본관 입구)`);
+        }
+        if (entry.morning.annex === currentTeacher) {
+            alerts.push(`🌅 ${timePrefix} <b>【별관 등교지도】</b> 당번입니다! (07:30~07:50, 별관 입구)`);
+        }
+        if (entry.lunch.floor3 === currentTeacher) {
+            alerts.push(`🍱 ${timePrefix} <b>【중식지도 (3층)】</b> 당번입니다! (12:10~13:10)`);
+        }
+        if (entry.lunch.floor4 === currentTeacher) {
+            alerts.push(`🍱 ${timePrefix} <b>【중식지도 (4층)】</b> 당번입니다! (12:10~13:10)`);
+        }
+
+        if (alerts.length > 0) {
+            banner.innerHTML = `
+                <div style="font-size:18px;">📢</div>
+                <div style="flex:1;">
+                    <div style="font-size:14px; font-weight:800; color:#9c4221; margin-bottom:2px;">
+                        ${currentTeacher} 선생님 지도 당번 알림
+                    </div>
+                    ${alerts.map(a => `<div>${a}</div>`).join('')}
+                </div>
+            `;
+            banner.style.display = 'flex';
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    // 급식 탭 내의 중식 지도 요약 렌더링
+    function renderLunchDutyInMealTab() {
+        const container = document.getElementById('lunchDutySummaryInMealTab');
+        if (!container) return;
+        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
+        const todayIso = getTodayIsoDate();
+        const entry = data[todayIso] || data[currentDutyDateStr];
+
+        if (!entry) {
+            container.innerHTML = '<div style="font-size:12px; color:var(--gray-600);">오늘 배정된 중식지도 정보가 없습니다.</div>';
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="display:flex; gap:8px;">
+                <div style="flex:1; background:#f7fafc; border:1px solid var(--gray-300); border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:var(--gray-600); font-weight:bold;">3층 (3학년/2학년)</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${entry.lunch.floor3}')">${entry.lunch.floor3}T</div>
+                </div>
+                <div style="flex:1; background:#f7fafc; border:1px solid var(--gray-300); border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:var(--gray-600); font-weight:bold;">4층 (3학년/1학년)</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${entry.lunch.floor4}')">${entry.lunch.floor4}T</div>
+                </div>
+            </div>
+            <div style="font-size:11px; color:var(--gray-600); margin-top:6px; text-align:right;">
+                등교지도: 본관 [${entry.morning.main}T], 별관 [${entry.morning.annex}T]
+            </div>
+        `;
+    }
+
+    // 전체 명단 및 수칙 모달 열기/닫기
+    function openDutyAllModal() {
+        const modal = document.getElementById('dutyAllModal');
+        const body = document.getElementById('dutyAllModalBody');
+        if (!modal || !body) return;
+
+        const dutyData = window.DUTY_SCHEDULE_DATA || { dates: {} };
+        const dates = dutyData.dates || {};
+        const allKeys = Object.keys(dates).sort();
+        const todayIso = getTodayIsoDate();
+
+        let tableRows = '';
+        allKeys.forEach(k => {
+            const row = dates[k];
+            const isToday = k === todayIso;
+            const isSelected = k === currentDutyDateStr;
+            const rowClass = isToday ? 'today-row' : '';
+            const rowStyle = isSelected ? 'border:2px solid var(--primary);' : '';
+
+            tableRows += `
+                <tr class="${rowClass}" style="${rowStyle}">
+                    <td style="font-weight:bold; white-space:nowrap;">
+                        ${row.displayDate} (${row.dayOfWeek})
+                        ${isToday ? '<br><span style="font-size:10px; color:var(--primary);">[오늘]</span>' : ''}
+                    </td>
+                    <td>${row.morning.main}</td>
+                    <td>${row.morning.annex}</td>
+                    <td>${row.lunch.floor3}</td>
+                    <td>${row.lunch.floor4}</td>
+                </tr>
+            `;
+        });
+
+        body.innerHTML = `
+            <!-- 유의사항 안내 박스 -->
+            <div style="background:#fffaf0; border:1px solid #fbd38d; border-radius:10px; padding:12px; margin-bottom:14px; font-size:12px; color:#744210; line-height:1.6;">
+                <div style="font-weight:800; font-size:13px; margin-bottom:4px; color:#c05621;">★ 학생 지도 안내사항 ★</div>
+                <div><b>🌅 등교지도 (본관 07:30~08:00, 별관 07:30~07:50)</b></div>
+                <div style="margin-left:6px; color:#975a16; margin-bottom:6px;">
+                    - 교복 단정 착용 지도 (상하의 및 운동화)<br>
+                    - 지도 위치: 지도1교사 본관 입구, 지도2교사 별관 입구(50분 출입문 통제)<br>
+                    - 벌점계 명렬표 인계 (주1회 금요일 황상희T)
+                </div>
+                <div><b>🍱 중식지도 (12:10~13:10)</b></div>
+                <div style="margin-left:6px; color:#975a16;">
+                    - 착석 지도: 3학년(3,4층) / 2학년(3층) / 1학년(4층)<br>
+                    - 식사 중 정숙 및 개인 위생 지도
+                </div>
+            </div>
+
+            <!-- 일정표 테이블 -->
+            <div style="font-weight:800; font-size:14px; color:var(--primary-dark); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span>📅 월별 지도 배정표 (총 ${allKeys.length}일)</span>
+                <span style="font-size:11px; font-weight:normal; color:var(--gray-600);">오늘 행은 하늘색 표시</span>
+            </div>
+            <div class="duty-table-scroll">
+                <table class="duty-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">날짜</th>
+                            <th colspan="2" style="background:#feebc8; color:#9c4221;">등교지도</th>
+                            <th colspan="2" style="background:#bee3f8; color:#2b6cb0;">중식지도</th>
+                        </tr>
+                        <tr>
+                            <th style="background:#fffaf0; color:#c05621;">본관</th>
+                            <th style="background:#fffaf0; color:#c05621;">별관</th>
+                            <th style="background:#ebf8ff; color:#2c5282;">3층</th>
+                            <th style="background:#ebf8ff; color:#2c5282;">4층</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows || '<tr><td colspan="5">등록된 지도 일정이 없습니다.</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        modal.classList.add('show');
+    }
+
+    function closeDutyAllModal(e) {
+        const modal = document.getElementById('dutyAllModal');
+        if (modal) modal.classList.remove('show');
+    }
+
 
     window.onload = function() {
         initDateBadge();

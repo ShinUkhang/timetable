@@ -1,0 +1,11 @@
+{
+  "name": "baehwa-timetable",
+  "version": "1.0.0",
+  "description": "Baehwa Timetable",
+  "scripts": {
+    "update": "node update_duty.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}
