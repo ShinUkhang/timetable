@@ -115,7 +115,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 4px 0;
+        padding: 4px 1px;
         background: none;
         border: none;
         cursor: pointer;
@@ -125,8 +125,8 @@
     }
     .nav-item:active { transform: scale(0.92); }
     .nav-item.active { color: var(--primary); font-weight: bold; }
-    .nav-icon { font-size: 20px; line-height: 1.2; margin-bottom: 2px; }
-    .nav-label { font-size: 11px; }
+    .nav-icon { font-size: 19px; line-height: 1.2; margin-bottom: 2px; }
+    .nav-label { font-size: 10.5px; white-space: nowrap; letter-spacing: -0.6px; }
 
     /* 모바일 카드 스타일 */
     .m-card {
@@ -801,6 +801,173 @@
         border-radius: 6px;
     }
 
+    /* 행사 및 단축수업 전용 스타일 */
+    .event-hero-banner {
+        background: linear-gradient(135deg, #4c51bf 0%, #6b46c1 50%, #805ad5 100%);
+        border-radius: var(--card-radius);
+        padding: 16px;
+        color: white;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 14px rgba(107, 70, 193, 0.25);
+    }
+    .event-hero-title {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: -0.3px;
+    }
+    .event-hero-sub {
+        font-size: 12px;
+        opacity: 0.95;
+        line-height: 1.5;
+    }
+    .event-badge-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+    }
+    .event-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+    }
+    .event-badge-warn {
+        background: #feebc8;
+        color: #c05621;
+    }
+    .event-badge-purple {
+        background: #e9d8fd;
+        color: #553c9e;
+    }
+    .event-badge-green {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+    .event-badge-info {
+        background: #ebf8ff;
+        color: #2b6cb0;
+    }
+
+    /* 시제표 테이블 */
+    .timetable-event-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 13px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--gray-200);
+    }
+    .timetable-event-table th {
+        background: #f7fafc;
+        color: var(--gray-700);
+        padding: 9px 6px;
+        font-weight: 700;
+        border-bottom: 2px solid var(--gray-300);
+        text-align: center;
+        font-size: 12px;
+    }
+    .timetable-event-table td {
+        padding: 8px 6px;
+        text-align: center;
+        border-bottom: 1px solid var(--gray-200);
+        font-size: 12px;
+    }
+    .timetable-event-table tr.row-short {
+        background-color: #fffaf0;
+    }
+    .timetable-event-table tr.row-worship {
+        background-color: #faf5ff;
+    }
+    .timetable-event-table tr.row-lunch {
+        background-color: #f0fff4;
+    }
+    .timetable-event-table tr.row-normal {
+        background-color: #ffffff;
+    }
+
+    /* 단축 시간표 카드 및 아이템 */
+    .event-schedule-card {
+        background: #f8fafc;
+        border: 1px solid var(--gray-200);
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 10px;
+    }
+    .event-schedule-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 12px;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        border: 1px solid var(--gray-200);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .event-schedule-period {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .event-period-num {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--primary);
+        min-width: 42px;
+    }
+    .event-period-time {
+        font-size: 11px;
+        color: var(--gray-500);
+    }
+    .event-schedule-content {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--gray-800);
+        text-align: right;
+    }
+    .event-orig-tag {
+        font-size: 11px;
+        color: #805ad5;
+        background: #f3e8ff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 5px;
+        font-weight: 600;
+    }
+    .event-toggle-btn-group {
+        display: flex;
+        background: #edf2f7;
+        padding: 3px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    .event-toggle-btn {
+        flex: 1;
+        padding: 6px;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .event-toggle-btn.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
 </style>
 </head>
 <body>
@@ -988,6 +1155,153 @@
             <div id="allTeachersGrid" class="teacher-grid-list"></div>
         </div>
     </section>
+
+    <!-- ==================== 탭 6: 9.23.(수) 행사 및 단축 시간표 ==================== -->
+    <section id="tab-event" class="tab-content">
+        <!-- 상단 행사 안내 히어로 배너 -->
+        <div class="event-hero-banner">
+            <div class="event-hero-title">
+                <span>⏱️</span> 9.23.(수) 학교장 취임 예배 & 단축 수업
+            </div>
+            <div class="event-hero-sub">
+                9월 23일(수) 학교장 취임 예배 행사로 인해 <strong>오전 40분 단축수업</strong> 및 <strong>수업 교시 변경</strong>이 진행됩니다.
+            </div>
+            <div class="event-badge-group">
+                <span class="event-badge event-badge-warn">⚠️ 1~3교시는 수2, 수3, 수4 수업 진행!</span>
+                <span class="event-badge event-badge-purple">⛪ 4교시(11:00~12:00) 취임 예배</span>
+                <span class="event-badge event-badge-green">🍱 12:10 ~ 13:10 중식</span>
+                <span class="event-badge event-badge-info">📖 5~7교시 정상수업(50분)</span>
+            </div>
+        </div>
+
+        <!-- 1. 선생님 / 학급별 맞춤 단축 시간표 조회기 -->
+        <div class="m-card">
+            <div class="m-card-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>✨ 9/23(수) 맞춤 단축시간표 조회</span>
+                <span style="font-size:11px; font-weight:normal; color:var(--primary); background:#ebf8ff; padding:2px 6px; border-radius:4px;">실시간 변환</span>
+            </div>
+            
+            <!-- 교사 / 학급 전환 토글 -->
+            <div class="event-toggle-btn-group">
+                <button id="eventToggleTeacherBtn" class="event-toggle-btn active" onclick="setEventMode('teacher')">👤 교사별 조회</button>
+                <button id="eventToggleClassBtn" class="event-toggle-btn" onclick="setEventMode('class')">🏫 학급별 조회</button>
+            </div>
+
+            <!-- 교사 선택 바 -->
+            <div id="eventTeacherSelectRow" style="display:flex; gap:8px; margin-bottom:10px;">
+                <select id="eventTeacherSelect" class="m-select" style="flex:1;" onchange="renderEventTeacherSchedule(this.value)">
+                    <option value="">선생님을 선택하세요</option>
+                </select>
+                <button class="m-btn-secondary" style="padding:0 12px; font-size:12px; white-space:nowrap;" onclick="syncEventTeacherFromMy()">내 시간표 연동</button>
+            </div>
+
+            <!-- 학급 선택 바 (기본 숨김) -->
+            <div id="eventClassSelectRow" style="display:none; gap:8px; margin-bottom:10px;">
+                <select id="eventClassSelect" class="m-select" style="flex:1;" onchange="renderEventClassSchedule(this.value)">
+                    <option value="">학급을 선택하세요</option>
+                </select>
+            </div>
+
+            <!-- 단축 시간표 렌더링 영역 -->
+            <div id="eventScheduleResultArea">
+                <div style="text-align:center; padding:20px; color:var(--gray-500); font-size:13px;">
+                    선생님 또는 학급을 선택하시면 9/23 변경 시간표가 표시됩니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 9.23 전체 시제표 및 수업 변경 대조표 -->
+        <div class="m-card">
+            <div class="m-card-title">📋 9.23.(수) 전체 시제표 & 수업 변경 대조</div>
+            <div style="overflow-x:auto;">
+                <table class="timetable-event-table">
+                    <thead>
+                        <tr>
+                            <th style="width:16%;">교시</th>
+                            <th style="width:30%;">시각 (소요)</th>
+                            <th style="width:36%;">진행 수업 내용</th>
+                            <th style="width:18%;">비고</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-short">
+                            <td><strong>1교시</strong></td>
+                            <td>08:20 ~ 09:00<br><span style="font-size:10.5px; color:#dd6b20; font-weight:700;">(40분 단축)</span></td>
+                            <td><span style="font-weight:700; color:#4a5568;">기존 수요일</span> <span style="background:#e9d8fd; color:#553c9e; padding:2px 5px; border-radius:4px; font-weight:800; font-size:11.5px;">2교시 수업</span></td>
+                            <td><span class="event-badge event-badge-warn" style="font-size:10px; padding:2px 4px;">수업 당김</span></td>
+                        </tr>
+                        <tr class="row-short">
+                            <td><strong>2교시</strong></td>
+                            <td>09:10 ~ 09:50<br><span style="font-size:10.5px; color:#dd6b20; font-weight:700;">(40분 단축)</span></td>
+                            <td><span style="font-weight:700; color:#4a5568;">기존 수요일</span> <span style="background:#e9d8fd; color:#553c9e; padding:2px 5px; border-radius:4px; font-weight:800; font-size:11.5px;">3교시 수업</span></td>
+                            <td><span class="event-badge event-badge-warn" style="font-size:10px; padding:2px 4px;">수업 당김</span></td>
+                        </tr>
+                        <tr class="row-short">
+                            <td><strong>3교시</strong></td>
+                            <td>10:00 ~ 10:40<br><span style="font-size:10.5px; color:#dd6b20; font-weight:700;">(40분 단축)</span></td>
+                            <td><span style="font-weight:700; color:#4a5568;">기존 수요일</span> <span style="background:#e9d8fd; color:#553c9e; padding:2px 5px; border-radius:4px; font-weight:800; font-size:11.5px;">4교시 수업</span></td>
+                            <td><span class="event-badge event-badge-warn" style="font-size:10px; padding:2px 4px;">수업 당김</span></td>
+                        </tr>
+                        <tr style="background:#f7fafc; color:#718096; font-size:11.5px;">
+                            <td><strong>이동</strong></td>
+                            <td>10:40 ~ 11:00</td>
+                            <td colspan="2">강당/예배 장소 이동 및 착석 (20분간)</td>
+                        </tr>
+                        <tr class="row-worship">
+                            <td><strong>4교시</strong></td>
+                            <td>11:00 ~ 12:00<br><span style="font-size:10.5px; color:#6b46c1; font-weight:700;">(60분)</span></td>
+                            <td colspan="2"><span style="font-weight:800; color:#553c9e;">⛪ 학교장 취임 예배</span></td>
+                        </tr>
+                        <tr class="row-lunch">
+                            <td><strong>점심</strong></td>
+                            <td>12:10 ~ 13:10<br><span style="font-size:10.5px; color:#276749; font-weight:700;">(60분)</span></td>
+                            <td colspan="2"><span style="font-weight:800; color:#22543d;">🍱 중식 (교실 출발)</span></td>
+                        </tr>
+                        <tr class="row-normal">
+                            <td><strong>5교시</strong></td>
+                            <td>13:10 ~ 14:00<br><span style="font-size:10.5px; color:#718096;">(50분)</span></td>
+                            <td><span style="font-weight:700;">기존 수요일</span> <span style="font-weight:800; color:#2b6cb0;">5교시 수업</span></td>
+                            <td><span class="event-badge event-badge-green" style="font-size:10px; padding:2px 4px;">정상</span></td>
+                        </tr>
+                        <tr class="row-normal">
+                            <td><strong>6교시</strong></td>
+                            <td>14:10 ~ 15:00<br><span style="font-size:10.5px; color:#718096;">(50분)</span></td>
+                            <td><span style="font-weight:700;">기존 수요일</span> <span style="font-weight:800; color:#2b6cb0;">6교시 수업</span></td>
+                            <td><span class="event-badge event-badge-green" style="font-size:10px; padding:2px 4px;">정상</span></td>
+                        </tr>
+                        <tr class="row-normal">
+                            <td><strong>7교시</strong></td>
+                            <td>15:10 ~ 16:00<br><span style="font-size:10.5px; color:#718096;">(50분)</span></td>
+                            <td><span style="font-weight:700;">기존 수요일</span> <span style="font-weight:800; color:#2b6cb0;">7교시 수업</span></td>
+                            <td><span class="event-badge event-badge-green" style="font-size:10px; padding:2px 4px;">정상</span></td>
+                        </tr>
+                        <tr style="background:#f7fafc; color:#718096; font-size:11.5px;">
+                            <td><strong>종례</strong></td>
+                            <td>16:00 ~</td>
+                            <td colspan="2">🧹 종례 및 청소 지도</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:10px; font-size:11px; color:var(--gray-600); line-height:1.4;">
+                * <strong>주의</strong>: 수요일 1교시 수업은 행사 당일 진행되지 않으며, 4교시는 전교생 예배입니다.
+            </div>
+        </div>
+
+        <!-- 3. 공문 원본 확인 카드 -->
+        <div class="m-card">
+            <div class="m-card-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>🖼️ 공문 원본 사진 확인</span>
+                <button class="m-btn-secondary" style="font-size:11px; padding:3px 8px;" onclick="toggleEventImgView()">
+                    <span id="eventImgToggleText">접기 ▲</span>
+                </button>
+            </div>
+            <div id="eventImgWrapper" style="text-align:center; margin-top:8px;">
+                <p style="font-size:12px; color:var(--gray-600); margin-bottom:8px;">사진을 터치하면 크게 볼 수 있습니다.</p>
+                <img src="./event_sep23.png" alt="9월 23일 행사 단축수업 공문" style="width:100%; max-width:550px; border-radius:8px; border:1px solid var(--gray-300); cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.06);" onclick="openEventImgModal()">
+            </div>
+        </div>
+    </section>
 </main>
 
 <!-- 하단 고정 탭 바 (귀여운 노란 고양이 이모티콘 탑재!) -->
@@ -1004,6 +1318,10 @@
         <span class="nav-icon">🍱</span>
         <span class="nav-label">급식·점심</span>
     </button>
+    <button class="nav-item" onclick="switchTab('tab-event', this)">
+        <span class="nav-icon">⏱️</span>
+        <span class="nav-label">행사·단축</span>
+    </button>
     <button class="nav-item" onclick="switchTab('tab-phone', this)">
         <span class="nav-icon">📞</span>
         <span class="nav-label">교직원전화</span>
@@ -1013,6 +1331,17 @@
         <span class="nav-label">공강·전체</span>
     </button>
 </nav>
+
+<!-- 공문 이미지 크게 보기 모달 -->
+<div id="eventImgModal" class="modal-backdrop" onclick="closeEventImgModal(event)">
+    <div style="background:white; border-radius:12px; padding:12px; max-width:92%; max-height:90vh; overflow:auto; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.3);" onclick="event.stopPropagation()">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div style="font-weight:bold; font-size:14px;">📄 공문 원본 크게보기</div>
+            <button style="border:none; background:#edf2f7; border-radius:50%; width:28px; height:28px; font-size:16px; cursor:pointer;" onclick="closeEventImgModal()">✕</button>
+        </div>
+        <img id="eventImgModalSrc" src="./event_sep23.png" style="width:100%; border-radius:6px; display:block;" alt="공문 크게보기">
+    </div>
+</div>
 
 <!-- 수업 교환/보강 모달 바텀시트 -->
 
@@ -4529,11 +4858,19 @@ window.DUTY_SCHEDULE_DATA = {
         // 2. 교직원(선생님) 이름 오름차순(가나다순) 정렬!
         teachers.sort((a, b) => a.localeCompare(b, 'ko'));
 
-        // 정렬된 순서대로 내 시간표 셀렉트 & 전체 교사 퀵 버튼 생성
+        const eventTeacherSel = document.getElementById('eventTeacherSelect');
+
+        // 정렬된 순서대로 내 시간표 셀렉트 & 전체 교사 퀵 버튼 & 행사 탭 셀렉트 생성
         teachers.forEach(name => {
             let opt = document.createElement('option');
             opt.value = name; opt.text = name + " 선생님";
             sel.appendChild(opt);
+
+            if (eventTeacherSel) {
+                let optEv = document.createElement('option');
+                optEv.value = name; optEv.text = name + " 선생님";
+                eventTeacherSel.appendChild(optEv);
+            }
 
             let btn = document.createElement('button');
             btn.className = 'teacher-chip-btn';
@@ -4617,6 +4954,7 @@ window.DUTY_SCHEDULE_DATA = {
         }
         
         const sel = document.getElementById('classSelect');
+        const eventClassSel = document.getElementById('eventClassSelect');
         let sortedClasses = Array.from(classNames).sort((a, b) => {
             let [gradeA, classNumA] = a.split('-').map(Number);
             let [gradeB, classNumB] = b.split('-').map(Number);
@@ -4628,6 +4966,12 @@ window.DUTY_SCHEDULE_DATA = {
             let opt = document.createElement('option');
             opt.value = c; opt.text = c + "반 시간표";
             sel.appendChild(opt);
+
+            if (eventClassSel) {
+                let optEv = document.createElement('option');
+                optEv.value = c; optEv.text = c + "반 시간표";
+                eventClassSel.appendChild(optEv);
+            }
         });
     }
 
@@ -5780,12 +6124,322 @@ window.DUTY_SCHEDULE_DATA = {
         if (modal) modal.classList.remove('show');
     }
 
+    // ==================== 9/23 행사 및 단축수업 로직 ====================
+    let currentEventMode = 'teacher';
+
+    function setEventMode(mode) {
+        currentEventMode = mode;
+        const teacherBtn = document.getElementById('eventToggleTeacherBtn');
+        const classBtn = document.getElementById('eventToggleClassBtn');
+        const teacherRow = document.getElementById('eventTeacherSelectRow');
+        const classRow = document.getElementById('eventClassSelectRow');
+
+        if (mode === 'teacher') {
+            teacherBtn.classList.add('active');
+            classBtn.classList.remove('active');
+            teacherRow.style.display = 'flex';
+            classRow.style.display = 'none';
+            renderEventTeacherSchedule(document.getElementById('eventTeacherSelect').value);
+        } else {
+            classBtn.classList.add('active');
+            teacherBtn.classList.remove('active');
+            classRow.style.display = 'flex';
+            teacherRow.style.display = 'none';
+            renderEventClassSchedule(document.getElementById('eventClassSelect').value);
+        }
+    }
+
+    function syncEventTeacherFromMy() {
+        const myTeacher = document.getElementById('myTeacherSelect')?.value || localStorage.getItem('bae_my_teacher');
+        if (myTeacher) {
+            document.getElementById('eventTeacherSelect').value = myTeacher;
+            renderEventTeacherSchedule(myTeacher);
+            showToast(`${myTeacher} 선생님 시간표로 조회되었습니다!`);
+        } else {
+            showToast('내 시간표에서 선생님을 먼저 선택해 주세요.');
+        }
+    }
+
+    function renderEventTeacherSchedule(teacherName) {
+        const area = document.getElementById('eventScheduleResultArea');
+        if (!area) return;
+
+        if (!teacherName || !schedule[teacherName]) {
+            area.innerHTML = `
+                <div style="text-align:center; padding:20px; color:var(--gray-500); font-size:13px;">
+                    선생님을 선택하시면 9/23 단축 시간표가 표시됩니다.
+                </div>`;
+            return;
+        }
+
+        const periodsDef = [
+            { period: 1, time: '08:20 ~ 09:00', duration: '40분', origPeriod: 2, note: '수2 당김', isShort: true },
+            { period: 2, time: '09:10 ~ 09:50', duration: '40분', origPeriod: 3, note: '수3 당김', isShort: true },
+            { period: 3, time: '10:00 ~ 10:40', duration: '40분', origPeriod: 4, note: '수4 당김', isShort: true },
+            { period: 4, time: '11:00 ~ 12:00', duration: '60분', isWorship: true, title: '⛪ 학교장 취임 예배' },
+            { period: '중식', time: '12:10 ~ 13:10', duration: '60분', isLunch: true, title: '🍱 중식 (교실 출발)' },
+            { period: 5, time: '13:10 ~ 14:00', duration: '50분', origPeriod: 5, note: '수5 정상', isNormal: true },
+            { period: 6, time: '14:10 ~ 15:00', duration: '50분', origPeriod: 6, note: '수6 정상', isNormal: true },
+            { period: 7, time: '15:10 ~ 16:00', duration: '50분', origPeriod: 7, note: '수7 정상', isNormal: true }
+        ];
+
+        let listHtml = '';
+        periodsDef.forEach(item => {
+            if (item.isWorship) {
+                listHtml += `
+                    <div class="event-schedule-item" style="background:#faf5ff; border-left:4px solid #805ad5;">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num" style="color:#6b46c1;">4교시</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                <span style="font-size:10px; color:#6b46c1; font-weight:700;">[취임예배 60분]</span>
+                            </div>
+                        </div>
+                        <div class="event-schedule-content" style="color:#553c9e; font-weight:800;">
+                            ⛪ 학교장 취임 예배
+                        </div>
+                    </div>
+                `;
+            } else if (item.isLunch) {
+                listHtml += `
+                    <div class="event-schedule-item" style="background:#f0fff4; border-left:4px solid #38a169;">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num" style="color:#276749;">중식</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                <span style="font-size:10px; color:#276749; font-weight:700;">[점심시간 60분]</span>
+                            </div>
+                        </div>
+                        <div class="event-schedule-content" style="color:#22543d; font-weight:800;">
+                            🍱 중식 (교실 출발)
+                        </div>
+                    </div>
+                `;
+            } else {
+                const text = schedule[teacherName]?.[item.origPeriod]?.['수'] || '';
+                let contentHtml = '';
+                let isFreePeriod = false;
+
+                if (text && text.trim() !== '') {
+                    let parts = text.split('\n');
+                    let subj = parts[0]?.trim() || '';
+                    let cls = parts[1]?.trim() || '';
+                    contentHtml = `
+                        <div>
+                            <span style="font-weight:800; font-size:13.5px; color:#2d3748;">${cls ? cls + ' ' : ''}${subj}</span>
+                            <span class="event-orig-tag">${item.note}</span>
+                        </div>
+                    `;
+                } else {
+                    isFreePeriod = true;
+                    contentHtml = `
+                        <div>
+                            <span style="color:var(--gray-400); font-weight:600; font-size:12px;">(공강)</span>
+                            <span class="event-orig-tag" style="background:#edf2f7; color:#718096;">원래 수${item.origPeriod} 공강</span>
+                        </div>
+                    `;
+                }
+
+                const borderLeft = item.isShort ? 'border-left:4px solid #ed8936;' : 'border-left:4px solid #4299e1;';
+                const tag = item.isShort 
+                    ? `<span style="font-size:10px; color:#dd6b20; font-weight:700;">[단축 40분]</span>`
+                    : `<span style="font-size:10px; color:#3182ce; font-weight:700;">[정상 50분]</span>`;
+
+                listHtml += `
+                    <div class="event-schedule-item" style="${borderLeft} ${isFreePeriod ? 'opacity:0.8;' : ''}">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num">${item.period}교시</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                ${tag}
+                            </div>
+                        </div>
+                        <div class="event-schedule-content">
+                            ${contentHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        area.innerHTML = `
+            <div class="event-schedule-card">
+                <div style="font-weight:800; font-size:14px; margin-bottom:10px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
+                    <span>✨ ${teacherName} 선생님 단축 시간표</span>
+                    <span style="background:#e9d8fd; color:#553c9e; font-size:11px; padding:2px 6px; border-radius:4px; font-weight:bold;">9/23(수) 적용</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    ${listHtml}
+                </div>
+                <div style="margin-top:10px; font-size:11px; color:var(--gray-600); text-align:right;">
+                    * 10:40~11:00 강당 이동 및 착석 | 16:00~ 종례 및 청소 지도
+                </div>
+            </div>
+        `;
+    }
+
+    function renderEventClassSchedule(className) {
+        const area = document.getElementById('eventScheduleResultArea');
+        if (!area) return;
+
+        if (!className || !classSchedule[className]) {
+            area.innerHTML = `
+                <div style="text-align:center; padding:20px; color:var(--gray-500); font-size:13px;">
+                    학급을 선택하시면 9/23 단축 시간표가 표시됩니다.
+                </div>`;
+            return;
+        }
+
+        const periodsDef = [
+            { period: 1, time: '08:20 ~ 09:00', duration: '40분', origPeriod: 2, note: '수2 당김', isShort: true },
+            { period: 2, time: '09:10 ~ 09:50', duration: '40분', origPeriod: 3, note: '수3 당김', isShort: true },
+            { period: 3, time: '10:00 ~ 10:40', duration: '40분', origPeriod: 4, note: '수4 당김', isShort: true },
+            { period: 4, time: '11:00 ~ 12:00', duration: '60분', isWorship: true, title: '⛪ 학교장 취임 예배' },
+            { period: '중식', time: '12:10 ~ 13:10', duration: '60분', isLunch: true, title: '🍱 중식 (교실 출발)' },
+            { period: 5, time: '13:10 ~ 14:00', duration: '50분', origPeriod: 5, note: '수5 정상', isNormal: true },
+            { period: 6, time: '14:10 ~ 15:00', duration: '50분', origPeriod: 6, note: '수6 정상', isNormal: true },
+            { period: 7, time: '15:10 ~ 16:00', duration: '50분', origPeriod: 7, note: '수7 정상', isNormal: true }
+        ];
+
+        let listHtml = '';
+        periodsDef.forEach(item => {
+            if (item.isWorship) {
+                listHtml += `
+                    <div class="event-schedule-item" style="background:#faf5ff; border-left:4px solid #805ad5;">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num" style="color:#6b46c1;">4교시</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                <span style="font-size:10px; color:#6b46c1; font-weight:700;">[취임예배 60분]</span>
+                            </div>
+                        </div>
+                        <div class="event-schedule-content" style="color:#553c9e; font-weight:800;">
+                            ⛪ 학교장 취임 예배
+                        </div>
+                    </div>
+                `;
+            } else if (item.isLunch) {
+                listHtml += `
+                    <div class="event-schedule-item" style="background:#f0fff4; border-left:4px solid #38a169;">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num" style="color:#276749;">중식</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                <span style="font-size:10px; color:#276749; font-weight:700;">[점심시간 60분]</span>
+                            </div>
+                        </div>
+                        <div class="event-schedule-content" style="color:#22543d; font-weight:800;">
+                            🍱 중식 (교실 출발)
+                        </div>
+                    </div>
+                `;
+            } else {
+                const items = classSchedule[className]?.[item.origPeriod]?.['수'] || [];
+                let contentHtml = '';
+
+                if (items.length > 0) {
+                    const desc = items.map(it => `<span style="font-weight:800; font-size:13.5px; color:#2d3748;">${it.subject}</span> <span style="font-size:11.5px; color:var(--gray-600);">(${it.teacher})</span>`).join(', ');
+                    contentHtml = `
+                        <div>
+                            ${desc}
+                            <span class="event-orig-tag">${item.note}</span>
+                        </div>
+                    `;
+                } else {
+                    contentHtml = `
+                        <div>
+                            <span style="color:var(--gray-400); font-weight:600; font-size:12px;">(수업 없음)</span>
+                            <span class="event-orig-tag" style="background:#edf2f7; color:#718096;">원래 수${item.origPeriod} 없음</span>
+                        </div>
+                    `;
+                }
+
+                const borderLeft = item.isShort ? 'border-left:4px solid #ed8936;' : 'border-left:4px solid #4299e1;';
+                const tag = item.isShort 
+                    ? `<span style="font-size:10px; color:#dd6b20; font-weight:700;">[단축 40분]</span>`
+                    : `<span style="font-size:10px; color:#3182ce; font-weight:700;">[정상 50분]</span>`;
+
+                listHtml += `
+                    <div class="event-schedule-item" style="${borderLeft}">
+                        <div class="event-schedule-period">
+                            <span class="event-period-num">${item.period}교시</span>
+                            <div style="display:flex; flex-direction:column;">
+                                <span class="event-period-time">${item.time}</span>
+                                ${tag}
+                            </div>
+                        </div>
+                        <div class="event-schedule-content">
+                            ${contentHtml}
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        area.innerHTML = `
+            <div class="event-schedule-card">
+                <div style="font-weight:800; font-size:14px; margin-bottom:10px; color:var(--primary-dark); display:flex; justify-content:space-between; align-items:center;">
+                    <span>🏫 ${className}반 단축 시간표</span>
+                    <span style="background:#e9d8fd; color:#553c9e; font-size:11px; padding:2px 6px; border-radius:4px; font-weight:bold;">9/23(수) 적용</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    ${listHtml}
+                </div>
+                <div style="margin-top:10px; font-size:11px; color:var(--gray-600); text-align:right;">
+                    * 10:40~11:00 강당 이동 및 착석 | 16:00~ 종례 및 청소 지도
+                </div>
+            </div>
+        `;
+    }
+
+    function initEventTab() {
+        const saved = localStorage.getItem('bae_my_teacher');
+        const sel = document.getElementById('eventTeacherSelect');
+        if (sel) {
+            if (saved && teachers.includes(saved)) {
+                sel.value = saved;
+                renderEventTeacherSchedule(saved);
+            } else if (teachers.length > 0) {
+                sel.value = teachers[0];
+                renderEventTeacherSchedule(teachers[0]);
+            }
+        }
+        const clsSel = document.getElementById('eventClassSelect');
+        if (clsSel && clsSel.options.length > 1) {
+            clsSel.selectedIndex = 1;
+        }
+    }
+
+    function toggleEventImgView() {
+        const wrapper = document.getElementById('eventImgWrapper');
+        const text = document.getElementById('eventImgToggleText');
+        if (!wrapper || !text) return;
+        if (wrapper.style.display === 'none') {
+            wrapper.style.display = 'block';
+            text.innerText = '접기 ▲';
+        } else {
+            wrapper.style.display = 'none';
+            text.innerText = '보기 ▼';
+        }
+    }
+
+    function openEventImgModal() {
+        const modal = document.getElementById('eventImgModal');
+        if (modal) modal.classList.add('show');
+    }
+
+    function closeEventImgModal(e) {
+        const modal = document.getElementById('eventImgModal');
+        if (modal) modal.classList.remove('show');
+    }
+
 
     window.onload = function() {
         renderDutyUI();
         initDateBadge();
         initData();
         buildClassSchedule();
+        initEventTab();
         renderMyTimetable();
         renderClassTimetable();
         renderLunchPair();
