@@ -306,9 +306,42 @@ async function parseGoogleSheetsNightDuty() {
     }
 }
 
+function syncEventFiles() {
+    const eventDir = path.join(__dirname, '행사');
+    if (!fs.existsSync(eventDir)) {
+        console.log('   ℹ 행사 폴더가 없어 파일 복사를 건너뜁니다.');
+        return;
+    }
+
+    console.log('[행사 데이터 및 공문 동기화 중...]');
+    try {
+        const files = fs.readdirSync(eventDir);
+        let count = 0;
+        files.forEach(f => {
+            const fullPath = path.join(eventDir, f);
+            if (fs.statSync(fullPath).isFile()) {
+                const ext = path.extname(f).toLowerCase();
+                if (['.png', '.jpg', '.jpeg', '.webp'].includes(ext)) {
+                    // 9월 23일 행사 이미지의 경우 웹 루트의 event_sep23.png로 복사
+                    if (f.includes('9월') && f.includes('23')) {
+                        const targetPath = path.join(__dirname, 'event_sep23.png');
+                        fs.copyFileSync(fullPath, targetPath);
+                        console.log(`   ✔ 행사 이미지 동기화: ${f} -> event_sep23.png`);
+                        count++;
+                    }
+                }
+            }
+        });
+        console.log(`   ✔ 행사 파일 동기화 완료 (총 ${count}개 파일 반영)`);
+    } catch (err) {
+        console.warn('   ⚠ 행사 파일 동기화 중 경고:', err.message);
+    }
+}
+
 async function main() {
     parseLocalExcel();
     await parseGoogleSheetsNightDuty();
+    syncEventFiles();
 
     const sortedDates = Object.keys(dutyData.dates).sort();
     console.log(`[통합 완료] 총 ${sortedDates.length}일간의 등교·급식·야자 데이터 구축 완료!`);
