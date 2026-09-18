@@ -520,32 +520,31 @@
         margin-top: 8px;
     }
 
-    /* ================= 등교·급식 지도 스타일 ================= */
+    
+    /* ================= 등교·급식·야자 지도 통합 스타일 ================= */
     .duty-summary-card {
         background: white;
         border-radius: var(--card-radius);
         border: 1px solid var(--gray-200);
         padding: 14px;
         margin-bottom: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .duty-date-nav {
+    .duty-week-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 12px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--gray-200);
+        margin-bottom: 10px;
         flex-wrap: wrap;
         gap: 6px;
     }
     .duty-date-title {
-        font-size: 14px;
+        font-size: 15px;
         font-weight: 800;
         color: var(--primary-dark);
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
     }
     .duty-nav-btn-group {
         display: flex;
@@ -568,14 +567,68 @@
         background: var(--gray-200);
         transform: scale(0.95);
     }
-    .duty-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+    /* 요일 탭 바 (월 화 수 목 금) */
+    .duty-day-chips {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+        background: var(--gray-100);
+        padding: 4px;
+        border-radius: 10px;
     }
-    @media (max-width: 480px) {
-        .duty-grid {
+    .duty-day-btn {
+        flex: 1;
+        padding: 8px 4px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: bold;
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: 0.15s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        font-family: inherit;
+    }
+    .duty-day-btn:active { transform: scale(0.95); }
+    .duty-day-btn.active {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 2px 5px rgba(43,108,176,0.25);
+    }
+    .duty-day-btn .sub-date {
+        font-size: 10px;
+        font-weight: normal;
+        opacity: 0.85;
+    }
+    .duty-day-btn.today-highlight::after {
+        content: "오늘";
+        font-size: 9px;
+        background: #fbd38d;
+        color: #744210;
+        padding: 1px 4px;
+        border-radius: 6px;
+        margin-top: 1px;
+        font-weight: bold;
+    }
+    .duty-day-btn.active.today-highlight::after {
+        background: white;
+        color: var(--primary);
+    }
+
+    /* 3단 카드 그리드 (등교 / 급식 / 야자) */
+    .duty-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    @media (max-width: 600px) {
+        .duty-grid-3 {
             grid-template-columns: 1fr;
+            gap: 8px;
         }
     }
     .duty-box {
@@ -584,14 +637,20 @@
         display: flex;
         flex-direction: column;
         gap: 6px;
+        border-width: 1.5px;
+        border-style: solid;
     }
     .duty-box.morning {
         background: #fffaf0;
-        border: 1.5px solid #fbd38d;
+        border-color: #fbd38d;
     }
     .duty-box.lunch {
         background: #ebf8ff;
-        border: 1.5px solid #bee3f8;
+        border-color: #bee3f8;
+    }
+    .duty-box.night {
+        background: #faf5ff;
+        border-color: #d6bcfa;
     }
     .duty-box-title {
         font-size: 13px;
@@ -602,6 +661,8 @@
     }
     .duty-box.morning .duty-box-title { color: #c05621; }
     .duty-box.lunch .duty-box-title { color: #2b6cb0; }
+    .duty-box.night .duty-box-title { color: #6b46c1; }
+    
     .duty-box-time {
         font-size: 10px;
         font-weight: normal;
@@ -632,10 +693,27 @@
         border: 1px solid #e2e8f0;
         transition: 0.15s;
     }
-    .duty-teacher:hover, .duty-teacher:active {
+    .duty-teacher:active {
         background: var(--primary-light);
         color: var(--primary);
-        border-color: var(--primary-border);
+    }
+    .duty-change-badge {
+        font-size: 9px;
+        background: #feebc8;
+        color: #c05621;
+        padding: 1px 4px;
+        border-radius: 4px;
+        margin-left: 2px;
+        font-weight: normal;
+    }
+    .duty-special-badge {
+        font-size: 12px;
+        color: #718096;
+        font-weight: bold;
+        background: white;
+        padding: 8px;
+        border-radius: 8px;
+        text-align: center;
     }
     .duty-my-alert {
         background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%);
@@ -651,40 +729,7 @@
         gap: 8px;
         box-shadow: 0 2px 8px rgba(237,137,54,0.2);
     }
-    .duty-empty-msg {
-        text-align: center;
-        padding: 16px;
-        color: var(--gray-600);
-        font-size: 13px;
-        background: #f8fafc;
-        border-radius: 10px;
-        border: 1px dashed var(--gray-300);
-    }
-    .duty-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-        text-align: center;
-    }
-    .duty-table th, .duty-table td {
-        border: 1px solid var(--gray-200);
-        padding: 6px 4px;
-    }
-    .duty-table th {
-        background: var(--gray-100);
-        font-weight: bold;
-        color: var(--gray-700);
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-    .duty-table tr.today-row {
-        background-color: #ebf8ff;
-        font-weight: bold;
-    }
-    .duty-table tr.today-row td {
-        border-color: #bee3f8;
-    }
+
 
 </style>
 </head>
@@ -703,25 +748,35 @@
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
 
-        <!-- 교사 본인 지도 당번 알림 배너 -->
+        <!-- 교사 본인 지도 당번 알림 배너 (등교/급식/야자) -->
         <div id="myDutyAlertBanner" class="duty-my-alert" style="display:none;"></div>
 
-        <!-- 🏫 오늘의 등교·급식 지도 위젯 -->
+        <!-- 🏫 요일별 등교·급식·야자 지도 위젯 -->
         <div class="duty-summary-card">
-            <div class="duty-date-nav">
+            <div class="duty-week-header">
                 <div class="duty-date-title">
                     <span>🏫</span>
-                    <span id="dutySelectedDateText">오늘의 지도교사</span>
+                    <span id="dutySelectedDateText">지도교사 (등교 · 급식 · 야자)</span>
                 </div>
                 <div class="duty-nav-btn-group">
-                    <button class="duty-nav-btn" onclick="shiftDutyDate(-1)" title="이전 날짜">◀</button>
-                    <button class="duty-nav-btn" onclick="resetDutyDateToday()" title="오늘로 이동">오늘</button>
-                    <button class="duty-nav-btn" onclick="shiftDutyDate(1)" title="다음 날짜">▶</button>
+                    <button class="duty-nav-btn" onclick="shiftDutyWeek(-1)" title="이전 주">◀ 이전주</button>
+                    <button class="duty-nav-btn" onclick="resetDutyToToday()" title="오늘로 이동">이번주</button>
+                    <button class="duty-nav-btn" onclick="shiftDutyWeek(1)" title="다음 주">다음주 ▶</button>
                     <button class="duty-nav-btn" onclick="triggerDutyDatePicker()" title="날짜 직접 선택">📅</button>
-                    <button class="duty-nav-btn" style="background:#edf2f7; color:var(--primary); font-weight:bold;" onclick="openDutyAllModal()" title="전체 일정 및 안내사항">📋 전체</button>
+                    <button class="duty-nav-btn" style="background:#edf2f7; color:var(--primary); font-weight:bold;" onclick="openDutyAllModal()" title="전체 일정 및 수칙">📋 전체</button>
                     <input type="date" id="dutyDatePicker" style="position:absolute; opacity:0; pointer-events:none; width:0; height:0;" onchange="onDutyDatePicked(this.value)">
                 </div>
             </div>
+
+            <!-- 월 화 수 목 금 요일 탭 바 -->
+            <div class="duty-day-chips" id="dutyDayChipsContainer">
+                <!-- JS로 월~금 버튼 동적 렌더링 -->
+            </div>
+
+            <div id="dutyCardContent">
+                <!-- JS로 등교/급식/야자 3단 카드 렌더링 -->
+            </div>
+        </div>
             <div id="dutyCardContent">
                 <!-- JS로 등교/중식 지도 카드 렌더링 -->
             </div>
@@ -975,13 +1030,21 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-18T05:17:43.789Z",
-  "noticeMorning": "★ 학생 등교지도 안내 사항★\r\n\r\n- 학생들이 아침 등교시 교복을 단정히 입었는지 지도 바랍니다.\r\n  (교복 상하의 및 운동화를 착용하고 교내로 들어오도록 지도해주세요)\r\n- 지도 시간 : 본관- 7:30-8:00, 별관 7:30-7:50\r\n- 지도 위치 : 지도1교사 -본관 입구, 지도2교사 -별관 입구(50분에 출입문 통제)\r\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 주1회 금요일 (황상희)\r\n  * 1학년 : 강주혁 선생님,  2학년 : 양진택 선생님, 3학년 : 김지혜 선생님",
-  "noticeLunch": "★학생 중식지도 안내사항★\r\n\r\n - 학생 착석 지도 : 3학년-3,4층/ 2학년-3층/ 1학년-4층\r\n    (우측 열 뒤부터 앞좌석 순으로 앉도록 안내 부탁드립니다. )\r\n - 중식 중 정숙 지도 (식사 중 말은 최소화 하도록 지도)\r\n - 식사시 개인 위생 지도\r\n\r\n\r\n※ 선생님들께서는 위의 내용을 꼭! 숙지 하시고 중식지도를 부탁드리겠습니다^^",
+  "updatedAt": "2026-09-18T05:37:37.653Z",
+  "links": {
+    "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
+    "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0"
+  },
+  "noticeMorning": "★ 학생 등교지도 안내 사항★\n- 지도 시간 : 본관 07:30~08:00, 별관 07:30~07:50\n- 지도 위치 : 지도1교사 - 본관 입구, 지도2교사 - 별관 입구(50분에 출입문 통제)\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 (주1회 금요일 황상희T)",
+  "noticeLunch": "★ 학생 중식지도 안내사항★\n- 지도 시간 : 12:10~13:10\n- 학생 착석 지도 : 3학년 - 3,4층 / 2학년 - 3층 / 1학년 - 4층 (우측 열 뒤부터 앞좌석 순)\n- 중식 중 정숙 지도 및 개인 위생 지도",
+  "noticeNight": "★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 1학년: 믿음방\n- 2,3학년: 학습카페, 설렘온\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재",
   "dates": {
     "2026-09-01": {
       "dateStr": "2026-09-01",
       "displayDate": "9월 1일",
+      "year": 2026,
+      "month": 9,
+      "day": 1,
       "dayOfWeek": "화",
       "morning": {
         "main": "이수진",
@@ -993,11 +1056,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "선소희",
         "floor4": "이수진",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "서진숙",
+          "original": "서진숙",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "윤종희",
+          "original": "윤종희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-02": {
       "dateStr": "2026-09-02",
       "displayDate": "9월 2일",
+      "year": 2026,
+      "month": 9,
+      "day": 2,
       "dayOfWeek": "수",
       "morning": {
         "main": "구인혜",
@@ -1009,11 +1091,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "이미나",
         "floor4": "박경화",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "학력평가 (석식X)",
+          "original": "-",
+          "changed": false,
+          "note": "학력평가 (석식X)",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "학평 및 모평",
+          "original": "-",
+          "changed": false,
+          "note": "학평 및 모평",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-03": {
       "dateStr": "2026-09-03",
       "displayDate": "9월 3일",
+      "year": 2026,
+      "month": 9,
+      "day": 3,
       "dayOfWeek": "목",
       "morning": {
         "main": "-",
@@ -1025,11 +1126,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "선민수",
         "floor4": "-",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "주탐방 (중석식X)",
+          "original": "-",
+          "changed": false,
+          "note": "주탐방 (중석식X)",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "양진택",
+          "original": "양진택",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-04": {
       "dateStr": "2026-09-04",
       "displayDate": "9월 4일",
+      "year": 2026,
+      "month": 9,
+      "day": 4,
       "dayOfWeek": "금",
       "morning": {
         "main": "송정하",
@@ -1041,11 +1161,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "우승훈",
         "floor4": "윤의국",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "박경화",
+          "original": "강주혁",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "선소희",
+          "original": "선소희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-07": {
       "dateStr": "2026-09-07",
       "displayDate": "9월 7일",
+      "year": 2026,
+      "month": 9,
+      "day": 7,
       "dayOfWeek": "월",
       "morning": {
         "main": "김선우",
@@ -1057,11 +1196,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "김지혜",
         "floor4": "김영주",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최재민",
+          "original": "윤의국",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "구성덕",
+          "original": "구성덕",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-08": {
       "dateStr": "2026-09-08",
       "displayDate": "9월 8일",
+      "year": 2026,
+      "month": 9,
+      "day": 8,
       "dayOfWeek": "화",
       "morning": {
         "main": "정주연",
@@ -1073,11 +1231,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "임성우",
         "floor4": "윤종희",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤의국",
+          "original": "최재민",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김수경",
+          "original": "김수경",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-09": {
       "dateStr": "2026-09-09",
       "displayDate": "9월 9일",
+      "year": 2026,
+      "month": 9,
+      "day": 9,
       "dayOfWeek": "수",
       "morning": {
         "main": "김동하",
@@ -1089,11 +1266,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "황상희",
         "floor4": "원종범",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "우서영",
+          "original": "우서영",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김민철",
+          "original": "김민철",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-10": {
       "dateStr": "2026-09-10",
       "displayDate": "9월 10일",
+      "year": 2026,
+      "month": 9,
+      "day": 10,
       "dayOfWeek": "목",
       "morning": {
         "main": "윤소연",
@@ -1105,11 +1301,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "전성민",
         "floor4": "강주혁",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "임진삼",
+          "original": "임진삼",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정은혜",
+          "original": "정은혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-11": {
       "dateStr": "2026-09-11",
       "displayDate": "9월 11일",
+      "year": 2026,
+      "month": 9,
+      "day": 11,
       "dayOfWeek": "금",
       "morning": {
         "main": "전성민",
@@ -1121,11 +1336,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "정은혜",
         "floor4": "양진택",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정태진",
+          "original": "선민수",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이미나",
+          "original": "이미나",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-14": {
       "dateStr": "2026-09-14",
       "displayDate": "9월 14일",
+      "year": 2026,
+      "month": 9,
+      "day": 14,
       "dayOfWeek": "월",
       "morning": {
         "main": "박경화",
@@ -1137,11 +1371,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "윤소연",
         "floor4": "김보라",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "강주혁",
+          "original": "박경화",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "노석후",
+          "original": "노석후",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-15": {
       "dateStr": "2026-09-15",
       "displayDate": "9월 15일",
+      "year": 2026,
+      "month": 9,
+      "day": 15,
       "dayOfWeek": "화",
       "morning": {
         "main": "선민수",
@@ -1153,11 +1406,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "최재민",
         "floor4": "정태진",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "신미경",
+          "original": "전성민",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김영주",
+          "original": "김영주",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-16": {
       "dateStr": "2026-09-16",
       "displayDate": "9월 16일",
+      "year": 2026,
+      "month": 9,
+      "day": 16,
       "dayOfWeek": "수",
       "morning": {
         "main": "이미나",
@@ -1169,11 +1441,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "우서영",
         "floor4": "백수정",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "전성민",
+          "original": "황상희",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김윤희",
+          "original": "김윤희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-17": {
       "dateStr": "2026-09-17",
       "displayDate": "9월 17일",
+      "year": 2026,
+      "month": 9,
+      "day": 17,
       "dayOfWeek": "목",
       "morning": {
         "main": "노석후",
@@ -1185,11 +1476,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "김동하",
         "floor4": "최연오",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤소연",
+          "original": "윤소연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신욱항",
+          "original": "신욱항",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-18": {
       "dateStr": "2026-09-18",
       "displayDate": "9월 18일",
+      "year": 2026,
+      "month": 9,
+      "day": 18,
       "dayOfWeek": "금",
       "morning": {
         "main": "정다영",
@@ -1201,11 +1511,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "정주연",
         "floor4": "김윤희",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김동하",
+          "original": "김동하",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신미경",
+          "original": "신미경",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-21": {
       "dateStr": "2026-09-21",
       "displayDate": "9월 21일",
+      "year": 2026,
+      "month": 9,
+      "day": 21,
       "dayOfWeek": "월",
       "morning": {
         "main": "김윤희",
@@ -1217,11 +1546,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "김수경",
         "floor4": "서진숙",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정주연",
+          "original": "정주연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정다영",
+          "original": "정다영",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-22": {
       "dateStr": "2026-09-22",
       "displayDate": "9월 22일",
+      "year": 2026,
+      "month": 9,
+      "day": 22,
       "dayOfWeek": "화",
       "morning": {
         "main": "신욱항",
@@ -1233,11 +1581,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "김선우",
         "floor4": "조성용",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김선우",
+          "original": "김선우",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김보라",
+          "original": "김보라",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-23": {
       "dateStr": "2026-09-23",
       "displayDate": "9월 23일",
+      "year": 2026,
+      "month": 9,
+      "day": 23,
       "dayOfWeek": "수",
       "morning": {
         "main": "신미경",
@@ -1249,11 +1616,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "구인혜",
         "floor4": "조혜림",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "선민수",
+          "original": "구인혜",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김지혜",
+          "original": "김지혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-28": {
       "dateStr": "2026-09-28",
       "displayDate": "9월 28일",
+      "year": 2026,
+      "month": 9,
+      "day": 28,
       "dayOfWeek": "월",
       "morning": {
         "main": "이효정",
@@ -1265,11 +1651,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "구성덕",
         "floor4": "이효정",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "이수진",
+          "original": "이수진",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "송정하",
+          "original": "송정하",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-29": {
       "dateStr": "2026-09-29",
       "displayDate": "9월 29일",
+      "year": 2026,
+      "month": 9,
+      "day": 29,
       "dayOfWeek": "화",
       "morning": {
         "main": "조혜림",
@@ -1281,11 +1686,30 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "배민욱",
         "floor4": "신미경",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최연오",
+          "original": "정태진",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "임성우",
+          "original": "임성우",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
       }
     },
     "2026-09-30": {
       "dateStr": "2026-09-30",
       "displayDate": "9월 30일",
+      "year": 2026,
+      "month": 9,
+      "day": 30,
       "dayOfWeek": "수",
       "morning": {
         "main": "조성용",
@@ -1297,6 +1721,2542 @@ window.DUTY_SCHEDULE_DATA = {
         "floor3": "송정하",
         "floor4": "신욱항",
         "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정태진",
+          "original": "최연오",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "우승훈",
+          "original": "우승훈",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-24": {
+      "dateStr": "2026-08-24",
+      "displayDate": "8월 24일",
+      "year": 2026,
+      "month": 8,
+      "day": 24,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "조혜림",
+          "original": "조혜림",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "배민욱",
+          "original": "배민욱",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-25": {
+      "dateStr": "2026-08-25",
+      "displayDate": "8월 25일",
+      "year": 2026,
+      "month": 8,
+      "day": 25,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "이수진",
+          "original": "이수진",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정은혜",
+          "original": "정은혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-26": {
+      "dateStr": "2026-08-26",
+      "displayDate": "8월 26일",
+      "year": 2026,
+      "month": 8,
+      "day": 26,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "구인혜",
+          "original": "정태진",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "임성우",
+          "original": "임성우",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-27": {
+      "dateStr": "2026-08-27",
+      "displayDate": "8월 27일",
+      "year": 2026,
+      "month": 8,
+      "day": 27,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "전성민",
+          "original": "최연오",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "우승훈",
+          "original": "우승훈",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-28": {
+      "dateStr": "2026-08-28",
+      "displayDate": "8월 28일",
+      "year": 2026,
+      "month": 8,
+      "day": 28,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "백수정",
+          "original": "백수정",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이효정",
+          "original": "이효정",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-31": {
+      "dateStr": "2026-08-31",
+      "displayDate": "8월 31일",
+      "year": 2026,
+      "month": 8,
+      "day": 31,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "조성용",
+          "original": "조성용",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "원종범",
+          "original": "원종범",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-09-24": {
+      "dateStr": "2026-09-24",
+      "displayDate": "9월 24일",
+      "year": 2026,
+      "month": 9,
+      "day": 24,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "추석연휴",
+          "original": "-",
+          "changed": false,
+          "note": "추석연휴",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "배민욱",
+          "original": "배민욱",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-09-25": {
+      "dateStr": "2026-09-25",
+      "displayDate": "9월 25일",
+      "year": 2026,
+      "month": 9,
+      "day": 25,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "추석",
+          "original": "-",
+          "changed": false,
+          "note": "추석",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-01": {
+      "dateStr": "2026-10-01",
+      "displayDate": "10월 1일",
+      "year": 2026,
+      "month": 10,
+      "day": 1,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "백수정",
+          "original": "백수정",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이효정",
+          "original": "이효정",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-02": {
+      "dateStr": "2026-10-02",
+      "displayDate": "10월 2일",
+      "year": 2026,
+      "month": 10,
+      "day": 2,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "재량휴업일",
+          "original": "-",
+          "changed": false,
+          "note": "재량휴업일",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-05": {
+      "dateStr": "2026-10-05",
+      "displayDate": "10월 5일",
+      "year": 2026,
+      "month": 10,
+      "day": 5,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "대체공휴일",
+          "original": "-",
+          "changed": false,
+          "note": "대체공휴일",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-06": {
+      "dateStr": "2026-10-06",
+      "displayDate": "10월 6일",
+      "year": 2026,
+      "month": 10,
+      "day": 6,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사 전날",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사 전날",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "중간고사 전날",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사 전날",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-07": {
+      "dateStr": "2026-10-07",
+      "displayDate": "10월 7일",
+      "year": 2026,
+      "month": 10,
+      "day": 7,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-08": {
+      "dateStr": "2026-10-08",
+      "displayDate": "10월 8일",
+      "year": 2026,
+      "month": 10,
+      "day": 8,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-09": {
+      "dateStr": "2026-10-09",
+      "displayDate": "10월 9일",
+      "year": 2026,
+      "month": 10,
+      "day": 9,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-12": {
+      "dateStr": "2026-10-12",
+      "displayDate": "10월 12일",
+      "year": 2026,
+      "month": 10,
+      "day": 12,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-13": {
+      "dateStr": "2026-10-13",
+      "displayDate": "10월 13일",
+      "year": 2026,
+      "month": 10,
+      "day": 13,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-14": {
+      "dateStr": "2026-10-14",
+      "displayDate": "10월 14일",
+      "year": 2026,
+      "month": 10,
+      "day": 14,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "중간고사",
+          "original": "-",
+          "changed": false,
+          "note": "중간고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-15": {
+      "dateStr": "2026-10-15",
+      "displayDate": "10월 15일",
+      "year": 2026,
+      "month": 10,
+      "day": 15,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "조성용",
+          "original": "조성용",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "원종범",
+          "original": "원종범",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-16": {
+      "dateStr": "2026-10-16",
+      "displayDate": "10월 16일",
+      "year": 2026,
+      "month": 10,
+      "day": 16,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "조혜림",
+          "original": "조혜림",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "윤종희",
+          "original": "윤종희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-19": {
+      "dateStr": "2026-10-19",
+      "displayDate": "10월 19일",
+      "year": 2026,
+      "month": 10,
+      "day": 19,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "서진숙",
+          "original": "서진숙",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "양진택",
+          "original": "양진택",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-20": {
+      "dateStr": "2026-10-20",
+      "displayDate": "10월 20일",
+      "year": 2026,
+      "month": 10,
+      "day": 20,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "학력평가",
+          "original": "-",
+          "changed": false,
+          "note": "학력평가",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "1,2,3 학력평가",
+          "original": "-",
+          "changed": false,
+          "note": "1,2,3 학력평가",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-21": {
+      "dateStr": "2026-10-21",
+      "displayDate": "10월 21일",
+      "year": 2026,
+      "month": 10,
+      "day": 21,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "강주혁",
+          "original": "강주혁",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "선소희",
+          "original": "선소희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-22": {
+      "dateStr": "2026-10-22",
+      "displayDate": "10월 22일",
+      "year": 2026,
+      "month": 10,
+      "day": 22,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤의국",
+          "original": "윤의국",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "구성덕",
+          "original": "구성덕",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-23": {
+      "dateStr": "2026-10-23",
+      "displayDate": "10월 23일",
+      "year": 2026,
+      "month": 10,
+      "day": 23,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최재민",
+          "original": "최재민",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김수경",
+          "original": "김수경",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-26": {
+      "dateStr": "2026-10-26",
+      "displayDate": "10월 26일",
+      "year": 2026,
+      "month": 10,
+      "day": 26,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "우서영",
+          "original": "우서영",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김민철",
+          "original": "김민철",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-27": {
+      "dateStr": "2026-10-27",
+      "displayDate": "10월 27일",
+      "year": 2026,
+      "month": 10,
+      "day": 27,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "임진삼",
+          "original": "임진삼",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "송정하",
+          "original": "송정하",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-28": {
+      "dateStr": "2026-10-28",
+      "displayDate": "10월 28일",
+      "year": 2026,
+      "month": 10,
+      "day": 28,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "선민수",
+          "original": "선민수",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이미나",
+          "original": "이미나",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-29": {
+      "dateStr": "2026-10-29",
+      "displayDate": "10월 29일",
+      "year": 2026,
+      "month": 10,
+      "day": 29,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "난원제 준비",
+          "original": "-",
+          "changed": false,
+          "note": "난원제 준비",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "난원제준비",
+          "original": "-",
+          "changed": false,
+          "note": "난원제준비",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-10-30": {
+      "dateStr": "2026-10-30",
+      "displayDate": "10월 30일",
+      "year": 2026,
+      "month": 10,
+      "day": 30,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "난원제",
+          "original": "-",
+          "changed": false,
+          "note": "난원제",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "난원제",
+          "original": "-",
+          "changed": false,
+          "note": "난원제",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-02": {
+      "dateStr": "2026-11-02",
+      "displayDate": "11월 2일",
+      "year": 2026,
+      "month": 11,
+      "day": 2,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "박경화",
+          "original": "박경화",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "노석후",
+          "original": "노석후",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-03": {
+      "dateStr": "2026-11-03",
+      "displayDate": "11월 3일",
+      "year": 2026,
+      "month": 11,
+      "day": 3,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "전성민",
+          "original": "전성민",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정다영",
+          "original": "정다영",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-04": {
+      "dateStr": "2026-11-04",
+      "displayDate": "11월 4일",
+      "year": 2026,
+      "month": 11,
+      "day": 4,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "황상희",
+          "original": "황상희",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김윤희",
+          "original": "김윤희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-05": {
+      "dateStr": "2026-11-05",
+      "displayDate": "11월 5일",
+      "year": 2026,
+      "month": 11,
+      "day": 5,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤소연",
+          "original": "윤소연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신욱항",
+          "original": "신욱항",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-06": {
+      "dateStr": "2026-11-06",
+      "displayDate": "11월 6일",
+      "year": 2026,
+      "month": 11,
+      "day": 6,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김동하",
+          "original": "김동하",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신미경",
+          "original": "신미경",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-09": {
+      "dateStr": "2026-11-09",
+      "displayDate": "11월 9일",
+      "year": 2026,
+      "month": 11,
+      "day": 9,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정주연",
+          "original": "정주연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김영주",
+          "original": "김영주",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-10": {
+      "dateStr": "2026-11-10",
+      "displayDate": "11월 10일",
+      "year": 2026,
+      "month": 11,
+      "day": 10,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김선우",
+          "original": "김선우",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김보라",
+          "original": "김보라",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-11": {
+      "dateStr": "2026-11-11",
+      "displayDate": "11월 11일",
+      "year": 2026,
+      "month": 11,
+      "day": 11,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "구인혜",
+          "original": "구인혜",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김지혜",
+          "original": "김지혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-12": {
+      "dateStr": "2026-11-12",
+      "displayDate": "11월 12일",
+      "year": 2026,
+      "month": 11,
+      "day": 12,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "이수진",
+          "original": "이수진",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "배민욱",
+          "original": "배민욱",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-13": {
+      "dateStr": "2026-11-13",
+      "displayDate": "11월 13일",
+      "year": 2026,
+      "month": 11,
+      "day": 13,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정태진",
+          "original": "정태진",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정은혜",
+          "original": "정은혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-16": {
+      "dateStr": "2026-11-16",
+      "displayDate": "11월 16일",
+      "year": 2026,
+      "month": 11,
+      "day": 16,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최연오",
+          "original": "최연오",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "임성우",
+          "original": "임성우",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-17": {
+      "dateStr": "2026-11-17",
+      "displayDate": "11월 17일",
+      "year": 2026,
+      "month": 11,
+      "day": 17,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "백수정",
+          "original": "백수정",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "우승훈",
+          "original": "우승훈",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-23": {
+      "dateStr": "2026-11-23",
+      "displayDate": "11월 23일",
+      "year": 2026,
+      "month": 11,
+      "day": 23,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "조성용",
+          "original": "조성용",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이효정",
+          "original": "이효정",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-24": {
+      "dateStr": "2026-11-24",
+      "displayDate": "11월 24일",
+      "year": 2026,
+      "month": 11,
+      "day": 24,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "원종범",
+          "original": "원종범",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-25": {
+      "dateStr": "2026-11-25",
+      "displayDate": "11월 25일",
+      "year": 2026,
+      "month": 11,
+      "day": 25,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "윤종희",
+          "original": "윤종희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-26": {
+      "dateStr": "2026-11-26",
+      "displayDate": "11월 26일",
+      "year": 2026,
+      "month": 11,
+      "day": 26,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "양진택",
+          "original": "양진택",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-27": {
+      "dateStr": "2026-11-27",
+      "displayDate": "11월 27일",
+      "year": 2026,
+      "month": 11,
+      "day": 27,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "선소희",
+          "original": "선소희",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-30": {
+      "dateStr": "2026-11-30",
+      "displayDate": "11월 30일",
+      "year": 2026,
+      "month": 11,
+      "day": 30,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "구성덕",
+          "original": "구성덕",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-01": {
+      "dateStr": "2026-12-01",
+      "displayDate": "12월 1일",
+      "year": 2026,
+      "month": 12,
+      "day": 1,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-02": {
+      "dateStr": "2026-12-02",
+      "displayDate": "12월 2일",
+      "year": 2026,
+      "month": 12,
+      "day": 2,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-03": {
+      "dateStr": "2026-12-03",
+      "displayDate": "12월 3일",
+      "year": 2026,
+      "month": 12,
+      "day": 3,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-04": {
+      "dateStr": "2026-12-04",
+      "displayDate": "12월 4일",
+      "year": 2026,
+      "month": 12,
+      "day": 4,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사 전날",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사 전날",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-07": {
+      "dateStr": "2026-12-07",
+      "displayDate": "12월 7일",
+      "year": 2026,
+      "month": 12,
+      "day": 7,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-08": {
+      "dateStr": "2026-12-08",
+      "displayDate": "12월 8일",
+      "year": 2026,
+      "month": 12,
+      "day": 8,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-09": {
+      "dateStr": "2026-12-09",
+      "displayDate": "12월 9일",
+      "year": 2026,
+      "month": 12,
+      "day": 9,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-10": {
+      "dateStr": "2026-12-10",
+      "displayDate": "12월 10일",
+      "year": 2026,
+      "month": 12,
+      "day": 10,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-11": {
+      "dateStr": "2026-12-11",
+      "displayDate": "12월 11일",
+      "year": 2026,
+      "month": 12,
+      "day": 11,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "기말고사",
+          "original": "-",
+          "changed": false,
+          "note": "기말고사",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-14": {
+      "dateStr": "2026-12-14",
+      "displayDate": "12월 14일",
+      "year": 2026,
+      "month": 12,
+      "day": 14,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-15": {
+      "dateStr": "2026-12-15",
+      "displayDate": "12월 15일",
+      "year": 2026,
+      "month": 12,
+      "day": 15,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-16": {
+      "dateStr": "2026-12-16",
+      "displayDate": "12월 16일",
+      "year": 2026,
+      "month": 12,
+      "day": 16,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-17": {
+      "dateStr": "2026-12-17",
+      "displayDate": "12월 17일",
+      "year": 2026,
+      "month": 12,
+      "day": 17,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-18": {
+      "dateStr": "2026-12-18",
+      "displayDate": "12월 18일",
+      "year": 2026,
+      "month": 12,
+      "day": 18,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-21": {
+      "dateStr": "2026-12-21",
+      "displayDate": "12월 21일",
+      "year": 2026,
+      "month": 12,
+      "day": 21,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-22": {
+      "dateStr": "2026-12-22",
+      "displayDate": "12월 22일",
+      "year": 2026,
+      "month": 12,
+      "day": 22,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-12-23": {
+      "dateStr": "2026-12-23",
+      "displayDate": "12월 23일",
+      "year": 2026,
+      "month": 12,
+      "day": 23,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-18": {
+      "dateStr": "2026-08-18",
+      "displayDate": "8월 18일",
+      "year": 2026,
+      "month": 8,
+      "day": 18,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신미경",
+          "original": "신미경",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-19": {
+      "dateStr": "2026-08-19",
+      "displayDate": "8월 19일",
+      "year": 2026,
+      "month": 8,
+      "day": 19,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김영주",
+          "original": "김영주",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-20": {
+      "dateStr": "2026-08-20",
+      "displayDate": "8월 20일",
+      "year": 2026,
+      "month": 8,
+      "day": 20,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김보라",
+          "original": "김보라",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-08-21": {
+      "dateStr": "2026-08-21",
+      "displayDate": "8월 21일",
+      "year": 2026,
+      "month": 8,
+      "day": 21,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김지혜",
+          "original": "김지혜",
+          "changed": false,
+          "note": "",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-18": {
+      "dateStr": "2026-11-18",
+      "displayDate": "11월 18일",
+      "year": 2026,
+      "month": 11,
+      "day": 18,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "수능 예비소집",
+          "original": "-",
+          "changed": false,
+          "note": "수능 예비소집",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-19": {
+      "dateStr": "2026-11-19",
+      "displayDate": "11월 19일",
+      "year": 2026,
+      "month": 11,
+      "day": 19,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "수능",
+          "original": "-",
+          "changed": false,
+          "note": "수능",
+          "place": "학습카페/설렘온"
+        }
+      }
+    },
+    "2026-11-20": {
+      "dateStr": "2026-11-20",
+      "displayDate": "11월 20일",
+      "year": 2026,
+      "month": 11,
+      "day": 20,
+      "dayOfWeek": "",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "-",
+          "original": "-",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "수능 재량휴일",
+          "original": "-",
+          "changed": false,
+          "note": "수능 재량휴일",
+          "place": "학습카페/설렘온"
+        }
       }
     }
   }
@@ -2109,9 +5069,10 @@ window.DUTY_SCHEDULE_DATA = {
 
     
     // ==========================================
-    // 등교·급식 지도 관리 로직
+    // 등교·급식·야자 지도 관리 로직 (요일별 자동 연동)
     // ==========================================
     let currentDutyDateStr = getTodayIsoDate();
+    let currentWeekMondayIso = getMondayIsoOf(currentDutyDateStr);
 
     function getTodayIsoDate() {
         const now = new Date();
@@ -2119,6 +5080,26 @@ window.DUTY_SCHEDULE_DATA = {
         const m = String(now.getMonth() + 1).padStart(2, '0');
         const d = String(now.getDate()).padStart(2, '0');
         return `${y}-${m}-${d}`;
+    }
+
+    function getMondayIsoOf(isoStr) {
+        const d = new Date(isoStr + 'T00:00:00');
+        const day = d.getDay(); // 0: 일, 1: 월, ..., 6: 토
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // 주의 월요일
+        const monday = new Date(d.setDate(diff));
+        const y = monday.getFullYear();
+        const m = String(monday.getMonth() + 1).padStart(2, '0');
+        const dt = String(monday.getDate()).padStart(2, '0');
+        return `${y}-${m}-${dt}`;
+    }
+
+    function addDays(isoStr, n) {
+        const d = new Date(isoStr + 'T00:00:00');
+        d.setDate(d.getDate() + n);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dt = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${dt}`;
     }
 
     function triggerDutyDatePicker() {
@@ -2134,55 +5115,129 @@ window.DUTY_SCHEDULE_DATA = {
     function onDutyDatePicked(val) {
         if (!val) return;
         currentDutyDateStr = val;
+        currentWeekMondayIso = getMondayIsoOf(val);
         renderDutyUI();
+        setTimeout(fetchLiveGoogleSheetsNightDuty, 1500);
     }
 
-    function resetDutyDateToday() {
+    function resetDutyToToday() {
         currentDutyDateStr = getTodayIsoDate();
+        currentWeekMondayIso = getMondayIsoOf(currentDutyDateStr);
         renderDutyUI();
     }
 
-    function shiftDutyDate(offset) {
-        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
-        const allKeys = Object.keys(data).sort();
-        if (allKeys.length === 0) return;
+    function shiftDutyWeek(offset) {
+        currentWeekMondayIso = addDays(currentWeekMondayIso, offset * 7);
+        // 월요일로 이동하거나 현재 요일 유지
+        const curD = new Date(currentDutyDateStr + 'T00:00:00').getDay();
+        const dayOffset = (curD >= 1 && curD <= 5) ? (curD - 1) : 0;
+        currentDutyDateStr = addDays(currentWeekMondayIso, dayOffset);
+        renderDutyUI();
+    }
 
-        let curIdx = allKeys.indexOf(currentDutyDateStr);
-        if (curIdx === -1) {
-            // 현재 날짜가 목록에 없으면 가장 가까운 날짜 탐색
-            if (offset > 0) {
-                const nextKey = allKeys.find(k => k > currentDutyDateStr);
-                currentDutyDateStr = nextKey || allKeys[allKeys.length - 1];
-            } else {
-                const prevKeys = allKeys.filter(k => k < currentDutyDateStr);
-                currentDutyDateStr = prevKeys.length > 0 ? prevKeys[prevKeys.length - 1] : allKeys[0];
-            }
-        } else {
-            let nextIdx = curIdx + offset;
-            if (nextIdx < 0) nextIdx = 0;
-            if (nextIdx >= allKeys.length) nextIdx = allKeys.length - 1;
-            currentDutyDateStr = allKeys[nextIdx];
+    function selectDutyDay(isoStr) {
+        currentDutyDateStr = isoStr;
+        renderDutyUI();
+    }
+
+    function renderDutyDayChips() {
+        const container = document.getElementById('dutyDayChipsContainer');
+        if (!container) return;
+
+        const dayNames = ['월', '화', '수', '목', '금'];
+        const todayIso = getTodayIsoDate();
+        let html = '';
+
+        for (let i = 0; i < 5; i++) {
+            const dateIso = addDays(currentWeekMondayIso, i);
+            const d = new Date(dateIso + 'T00:00:00');
+            const m = d.getMonth() + 1;
+            const dt = d.getDate();
+            const isActive = dateIso === currentDutyDateStr;
+            const isToday = dateIso === todayIso;
+
+            let classes = ['duty-day-btn'];
+            if (isActive) classes.push('active');
+            if (isToday) classes.push('today-highlight');
+
+            html += `
+                <button class="${classes.join(' ')}" onclick="selectDutyDay('${dateIso}')">
+                    <span>${dayNames[i]}</span>
+                    <span class="sub-date">${m}.${dt}</span>
+                </button>
+            `;
         }
-        renderDutyUI();
+        container.innerHTML = html;
     }
+
+    
+    // 구글 스프레드시트 실시간 변경 감지 (온라인 백그라운드 fetch)
+    async function fetchLiveGoogleSheetsNightDuty() {
+        const url1 = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=1066659445';
+        const url2 = 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/export?format=csv&gid=0';
+
+        let updated = false;
+
+        // 1학년
+        try {
+            const res = await fetch(url1);
+            if (res.ok) {
+                const text = await res.text();
+                const rows = text.split(/\r?\n/).map(l => l.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
+                for (let i = 2; i < rows.length; i++) {
+                    const r = rows[i];
+                    if (!r || r.length < 4) continue;
+                    const dMatch = r[1].match(/(\d+)월\s*(\d+)일/);
+                    if (!dMatch) continue;
+                    const m = String(parseInt(dMatch[1])).padStart(2, '0');
+                    const d = String(parseInt(dMatch[2])).padStart(2, '0');
+                    const key = `2026-${m}-${d}`;
+
+                    const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : null;
+                    if (data && data[key]) {
+                        const rawOrig = r[3] || '';
+                        const rawChange = r[4] || '';
+                        if (!rawOrig.includes('고사') && !rawOrig.includes('평가')) {
+                            const changeT = rawChange.replace(/선생님/g, '').trim();
+                            const origT = rawOrig.replace(/선생님/g, '').trim();
+                            if (changeT && data[key].night.grade1.teacher !== changeT) {
+                                data[key].night.grade1.teacher = changeT;
+                                data[key].night.grade1.changed = true;
+                                data[key].night.grade1.original = origT;
+                                updated = true;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn('Live gsheet fetch 1 failed:', e.message);
+        }
+
+        if (updated) {
+            console.log('실시간 구글 시트 야자감독 변경사항이 반영되었습니다.');
+            renderDutyUI();
+        }
+    }
+
 
     function renderDutyUI() {
-        renderDutySummary();
+        renderDutyDayChips();
+        renderDutyCards();
         renderLunchDutyInMealTab();
         checkMyDutyAlert();
     }
 
-    function renderDutySummary() {
+    function renderDutyCards() {
         const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
         const entry = data[currentDutyDateStr];
         const titleEl = document.getElementById('dutySelectedDateText');
         const container = document.getElementById('dutyCardContent');
         if (!titleEl || !container) return;
 
-        // 날짜 표시
         const todayIso = getTodayIsoDate();
         const isToday = currentDutyDateStr === todayIso;
-        
+
         let dateObj = new Date(currentDutyDateStr + 'T00:00:00');
         let m = dateObj.getMonth() + 1;
         let d = dateObj.getDate();
@@ -2200,63 +5255,105 @@ window.DUTY_SCHEDULE_DATA = {
         if (!entry) {
             container.innerHTML = `
                 <div class="duty-empty-msg">
-                    <div>🏖️ <b>${m}월 ${d}일(${dayStr})</b>에는 배정된 등교·중식 지도가 없습니다.</div>
+                    <div>🏖️ <b>${m}월 ${d}일(${dayStr})</b>에는 배정된 등교·급식·야자 지도가 없습니다.</div>
                     <div style="font-size:11px; color:var(--gray-500); margin-top:4px;">(주말, 공휴일, 재량휴업일 등)</div>
-                    <button class="m-btn m-btn-outline m-btn-sm" style="margin-top:10px;" onclick="shiftDutyDate(1)">가장 가까운 지도일 보기 ▶</button>
+                    <button class="m-btn m-btn-outline m-btn-sm" style="margin-top:10px;" onclick="resetDutyToToday()">오늘 지도 보기</button>
                 </div>
             `;
             return;
         }
 
-        const mMain = entry.morning.main || '-';
-        const mAnnex = entry.morning.annex || '-';
-        const lF3 = entry.lunch.floor3 || '-';
-        const lF4 = entry.lunch.floor4 || '-';
+        const mMain = (entry.morning && entry.morning.main) ? entry.morning.main : '-';
+        const mAnnex = (entry.morning && entry.morning.annex) ? entry.morning.annex : '-';
+        const lF3 = (entry.lunch && entry.lunch.floor3) ? entry.lunch.floor3 : '-';
+        const lF4 = (entry.lunch && entry.lunch.floor4) ? entry.lunch.floor4 : '-';
+
+        const nG1 = (entry.night && entry.night.grade1) ? entry.night.grade1 : { teacher: '-', changed: false, note: '' };
+        const nG23 = (entry.night && entry.night.grade23) ? entry.night.grade23 : { teacher: '-', changed: false, note: '' };
+
+        // 1학년 야자 표시
+        let g1Html = '';
+        if (nG1.note && !nG1.teacher) {
+            g1Html = `<span style="font-size:12px; color:var(--gray-600);">${nG1.note}</span>`;
+        } else if (nG1.teacher && nG1.teacher !== '-') {
+            g1Html = `
+                <span class="duty-teacher" onclick="selectTeacherAndGo('${nG1.teacher}')">${nG1.teacher}T</span>
+                ${nG1.changed ? `<span class="duty-change-badge" title="원래: ${nG1.original}">변경</span>` : ''}
+            `;
+        } else {
+            g1Html = '<span style="color:var(--gray-500); font-size:12px;">-</span>';
+        }
+
+        // 2,3학년 야자 표시
+        let g23Html = '';
+        if (nG23.note && !nG23.teacher) {
+            g23Html = `<span style="font-size:12px; color:var(--gray-600);">${nG23.note}</span>`;
+        } else if (nG23.teacher && nG23.teacher !== '-') {
+            g23Html = `<span class="duty-teacher" onclick="selectTeacherAndGo('${nG23.teacher}')">${nG23.teacher}T</span>`;
+        } else {
+            g23Html = '<span style="color:var(--gray-500); font-size:12px;">-</span>';
+        }
 
         container.innerHTML = `
-            <div class="duty-grid">
-                <!-- 등교지도 박스 -->
+            <div class="duty-grid-3">
+                <!-- 1. 등교지도 박스 -->
                 <div class="duty-box morning">
                     <div class="duty-box-title">
                         <span>🌅 등교지도</span>
-                        <span class="duty-box-time">본관 07:30~08:00 / 별관 07:30~07:50</span>
+                        <span class="duty-box-time">07:30~08:00</span>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">🏛️ 본관 입구</span>
+                        <span class="duty-label">🏛️ 본관</span>
                         <span class="duty-teacher" onclick="selectTeacherAndGo('${mMain}')">${mMain}T</span>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">🏫 별관 입구</span>
+                        <span class="duty-label">🏫 별관</span>
                         <span class="duty-teacher" onclick="selectTeacherAndGo('${mAnnex}')">${mAnnex}T</span>
                     </div>
                 </div>
 
-                <!-- 중식지도 박스 -->
+                <!-- 2. 중식지도 박스 -->
                 <div class="duty-box lunch">
                     <div class="duty-box-title">
-                        <span>🍱 중식지도</span>
-                        <span class="duty-box-time">12:10~13:10 (착석 및 정숙 지도)</span>
+                        <span>🍱 급식지도</span>
+                        <span class="duty-box-time">12:10~13:10</span>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">3️⃣ 3층 식당</span>
+                        <span class="duty-label">3️⃣ 3층</span>
                         <span class="duty-teacher" onclick="selectTeacherAndGo('${lF3}')">${lF3}T</span>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">4️⃣ 4층 식당</span>
+                        <span class="duty-label">4️⃣ 4층</span>
                         <span class="duty-teacher" onclick="selectTeacherAndGo('${lF4}')">${lF4}T</span>
+                    </div>
+                </div>
+
+                <!-- 3. 야자감독 박스 -->
+                <div class="duty-box night">
+                    <div class="duty-box-title">
+                        <span>🌙 야자감독</span>
+                        <span class="duty-box-time">자기주도학습</span>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">1️⃣ 믿음방</span>
+                        <div>${g1Html}</div>
+                    </div>
+                    <div class="duty-item">
+                        <span class="duty-label">2·3층 카페</span>
+                        <div>${g23Html}</div>
                     </div>
                 </div>
             </div>
             <div style="font-size:11px; color:var(--gray-500); margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
                 <span>💡 선생님 이름을 누르면 해당 시간표로 즉시 이동합니다.</span>
-                <span style="text-decoration:underline; cursor:pointer;" onclick="openDutyAllModal()">수칙 보기</span>
+                <span style="text-decoration:underline; cursor:pointer;" onclick="openDutyAllModal()">전체 일정 및 수칙</span>
             </div>
         `;
     }
 
     // 선택한 교사의 시간표로 이동
     function selectTeacherAndGo(teacherName) {
-        if (!teacherName || teacherName === '-') return;
+        if (!teacherName || teacherName === '-' || teacherName.includes('고사') || teacherName.includes('평가')) return;
         const cleanName = teacherName.replace('T', '').trim();
         const sel = document.getElementById('myTeacherSelect');
         if (sel && teachers.includes(cleanName)) {
@@ -2269,7 +5366,7 @@ window.DUTY_SCHEDULE_DATA = {
         }
     }
 
-    // 내 시간표 선택 교사의 당번 알림 확인
+    // 내 시간표 선택 교사의 당번 알림 (등교 / 급식 / 야자)
     function checkMyDutyAlert() {
         const banner = document.getElementById('myDutyAlertBanner');
         const sel = document.getElementById('myTeacherSelect');
@@ -2288,17 +5385,34 @@ window.DUTY_SCHEDULE_DATA = {
         const isToday = currentDutyDateStr === getTodayIsoDate();
         const timePrefix = isToday ? '오늘' : entry.displayDate;
 
-        if (entry.morning.main === currentTeacher) {
-            alerts.push(`🌅 ${timePrefix} <b>【본관 등교지도】</b> 당번입니다! (07:30~08:00, 본관 입구)`);
+        // 1. 등교지도
+        if (entry.morning) {
+            if (entry.morning.main === currentTeacher) {
+                alerts.push(`🌅 ${timePrefix} <b>【본관 등교지도】</b> 당번입니다! (07:30~08:00, 본관 입구)`);
+            }
+            if (entry.morning.annex === currentTeacher) {
+                alerts.push(`🌅 ${timePrefix} <b>【별관 등교지도】</b> 당번입니다! (07:30~07:50, 별관 입구)`);
+            }
         }
-        if (entry.morning.annex === currentTeacher) {
-            alerts.push(`🌅 ${timePrefix} <b>【별관 등교지도】</b> 당번입니다! (07:30~07:50, 별관 입구)`);
+
+        // 2. 급식지도
+        if (entry.lunch) {
+            if (entry.lunch.floor3 === currentTeacher) {
+                alerts.push(`🍱 ${timePrefix} <b>【급식지도 (3층)】</b> 당번입니다! (12:10~13:10)`);
+            }
+            if (entry.lunch.floor4 === currentTeacher) {
+                alerts.push(`🍱 ${timePrefix} <b>【급식지도 (4층)】</b> 당번입니다! (12:10~13:10)`);
+            }
         }
-        if (entry.lunch.floor3 === currentTeacher) {
-            alerts.push(`🍱 ${timePrefix} <b>【중식지도 (3층)】</b> 당번입니다! (12:10~13:10)`);
-        }
-        if (entry.lunch.floor4 === currentTeacher) {
-            alerts.push(`🍱 ${timePrefix} <b>【중식지도 (4층)】</b> 당번입니다! (12:10~13:10)`);
+
+        // 3. 야자감독
+        if (entry.night) {
+            if (entry.night.grade1 && entry.night.grade1.teacher === currentTeacher) {
+                alerts.push(`🌙 ${timePrefix} <b>【1학년 야자감독 (믿음방)】</b> 당번입니다!`);
+            }
+            if (entry.night.grade23 && entry.night.grade23.teacher === currentTeacher) {
+                alerts.push(`🌙 ${timePrefix} <b>【2·3학년 야자감독 (학습카페, 설렘온)】</b> 당번입니다!`);
+            }
         }
 
         if (alerts.length > 0) {
@@ -2317,7 +5431,7 @@ window.DUTY_SCHEDULE_DATA = {
         }
     }
 
-    // 급식 탭 내의 중식 지도 요약 렌더링
+    // 급식 탭 내의 중식지도 & 야자 요약 렌더링
     function renderLunchDutyInMealTab() {
         const container = document.getElementById('lunchDutySummaryInMealTab');
         if (!container) return;
@@ -2326,23 +5440,36 @@ window.DUTY_SCHEDULE_DATA = {
         const entry = data[todayIso] || data[currentDutyDateStr];
 
         if (!entry) {
-            container.innerHTML = '<div style="font-size:12px; color:var(--gray-600);">오늘 배정된 중식지도 정보가 없습니다.</div>';
+            container.innerHTML = '<div style="font-size:12px; color:var(--gray-600);">오늘 배정된 지도 정보가 없습니다.</div>';
             return;
         }
 
+        const f3 = (entry.lunch && entry.lunch.floor3) ? entry.lunch.floor3 : '-';
+        const f4 = (entry.lunch && entry.lunch.floor4) ? entry.lunch.floor4 : '-';
+        const n1 = (entry.night && entry.night.grade1) ? entry.night.grade1.teacher : '-';
+        const n23 = (entry.night && entry.night.grade23) ? entry.night.grade23.teacher : '-';
+
         container.innerHTML = `
             <div style="display:flex; gap:8px;">
-                <div style="flex:1; background:#f7fafc; border:1px solid var(--gray-300); border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:var(--gray-600); font-weight:bold;">3층 (3학년/2학년)</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${entry.lunch.floor3}')">${entry.lunch.floor3}T</div>
+                <div style="flex:1; background:#ebf8ff; border:1px solid #bee3f8; border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:#2c5282; font-weight:bold;">급식 3층</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${f3}')">${f3}T</div>
                 </div>
-                <div style="flex:1; background:#f7fafc; border:1px solid var(--gray-300); border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:var(--gray-600); font-weight:bold;">4층 (3학년/1학년)</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${entry.lunch.floor4}')">${entry.lunch.floor4}T</div>
+                <div style="flex:1; background:#ebf8ff; border:1px solid #bee3f8; border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:#2c5282; font-weight:bold;">급식 4층</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${f4}')">${f4}T</div>
+                </div>
+                <div style="flex:1; background:#faf5ff; border:1px solid #d6bcfa; border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:#553c9a; font-weight:bold;">야자 1학년</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--purple); margin-top:2px;" onclick="selectTeacherAndGo('${n1}')">${n1}T</div>
+                </div>
+                <div style="flex:1; background:#faf5ff; border:1px solid #d6bcfa; border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="font-size:11px; color:#553c9a; font-weight:bold;">야자 2·3학년</div>
+                    <div style="font-size:14px; font-weight:800; color:var(--purple); margin-top:2px;" onclick="selectTeacherAndGo('${n23}')">${n23}T</div>
                 </div>
             </div>
             <div style="font-size:11px; color:var(--gray-600); margin-top:6px; text-align:right;">
-                등교지도: 본관 [${entry.morning.main}T], 별관 [${entry.morning.annex}T]
+                등교지도: 본관 [${entry.morning ? entry.morning.main : '-'}T], 별관 [${entry.morning ? entry.morning.annex : '-'}T]
             </div>
         `;
     }
@@ -2366,41 +5493,65 @@ window.DUTY_SCHEDULE_DATA = {
             const rowClass = isToday ? 'today-row' : '';
             const rowStyle = isSelected ? 'border:2px solid var(--primary);' : '';
 
+            const mMain = (row.morning && row.morning.main) ? row.morning.main : '-';
+            const mAnnex = (row.morning && row.morning.annex) ? row.morning.annex : '-';
+            const l3 = (row.lunch && row.lunch.floor3) ? row.lunch.floor3 : '-';
+            const l4 = (row.lunch && row.lunch.floor4) ? row.lunch.floor4 : '-';
+            const n1 = (row.night && row.night.grade1) ? (row.night.grade1.teacher || '-') : '-';
+            const n23 = (row.night && row.night.grade23) ? (row.night.grade23.teacher || '-') : '-';
+
             tableRows += `
                 <tr class="${rowClass}" style="${rowStyle}">
                     <td style="font-weight:bold; white-space:nowrap;">
-                        ${row.displayDate} (${row.dayOfWeek})
+                        ${row.displayDate} (${row.dayOfWeek || '-'})
                         ${isToday ? '<br><span style="font-size:10px; color:var(--primary);">[오늘]</span>' : ''}
                     </td>
-                    <td>${row.morning.main}</td>
-                    <td>${row.morning.annex}</td>
-                    <td>${row.lunch.floor3}</td>
-                    <td>${row.lunch.floor4}</td>
+                    <td>${mMain}</td>
+                    <td>${mAnnex}</td>
+                    <td>${l3}</td>
+                    <td>${l4}</td>
+                    <td>${n1}</td>
+                    <td>${n23}</td>
                 </tr>
             `;
         });
 
         body.innerHTML = `
+            <!-- 구글 스프레드시트 바로가기 버튼들 -->
+            <div style="display:flex; gap:6px; margin-bottom:12px;">
+                <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
+                    🔗 1학년 야자시트
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
+                    🔗 2·3학년 야자시트
+                </a>
+            </div>
+
             <!-- 유의사항 안내 박스 -->
             <div style="background:#fffaf0; border:1px solid #fbd38d; border-radius:10px; padding:12px; margin-bottom:14px; font-size:12px; color:#744210; line-height:1.6;">
                 <div style="font-weight:800; font-size:13px; margin-bottom:4px; color:#c05621;">★ 학생 지도 안내사항 ★</div>
                 <div><b>🌅 등교지도 (본관 07:30~08:00, 별관 07:30~07:50)</b></div>
                 <div style="margin-left:6px; color:#975a16; margin-bottom:6px;">
                     - 교복 단정 착용 지도 (상하의 및 운동화)<br>
-                    - 지도 위치: 지도1교사 본관 입구, 지도2교사 별관 입구(50분 출입문 통제)<br>
+                    - 지도 위치: 본관 입구, 별관 입구(50분 출입문 통제)<br>
                     - 벌점계 명렬표 인계 (주1회 금요일 황상희T)
                 </div>
-                <div><b>🍱 중식지도 (12:10~13:10)</b></div>
-                <div style="margin-left:6px; color:#975a16;">
+                <div><b>🍱 급식지도 (12:10~13:10)</b></div>
+                <div style="margin-left:6px; color:#975a16; margin-bottom:6px;">
                     - 착석 지도: 3학년(3,4층) / 2학년(3층) / 1학년(4층)<br>
                     - 식사 중 정숙 및 개인 위생 지도
+                </div>
+                <div><b>🌙 야자감독 (자기주도학습)</b></div>
+                <div style="margin-left:6px; color:#975a16;">
+                    - 1학년: 믿음방 / 2,3학년: 학습카페, 설렘온<br>
+                    - 감독 변경 시 구글 시트 기재
                 </div>
             </div>
 
             <!-- 일정표 테이블 -->
             <div style="font-weight:800; font-size:14px; color:var(--primary-dark); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                <span>📅 월별 지도 배정표 (총 ${allKeys.length}일)</span>
-                <span style="font-size:11px; font-weight:normal; color:var(--gray-600);">오늘 행은 하늘색 표시</span>
+                <span>📅 등교·급식·야자 전체 배정표 (총 ${allKeys.length}일)</span>
+                <span style="font-size:11px; font-weight:normal; color:var(--gray-600);">오늘 행 하늘색</span>
             </div>
             <div class="duty-table-scroll">
                 <table class="duty-table">
@@ -2408,17 +5559,20 @@ window.DUTY_SCHEDULE_DATA = {
                         <tr>
                             <th rowspan="2">날짜</th>
                             <th colspan="2" style="background:#feebc8; color:#9c4221;">등교지도</th>
-                            <th colspan="2" style="background:#bee3f8; color:#2b6cb0;">중식지도</th>
+                            <th colspan="2" style="background:#bee3f8; color:#2b6cb0;">급식지도</th>
+                            <th colspan="2" style="background:#e9d8fd; color:#553c9a;">야자감독</th>
                         </tr>
                         <tr>
                             <th style="background:#fffaf0; color:#c05621;">본관</th>
                             <th style="background:#fffaf0; color:#c05621;">별관</th>
                             <th style="background:#ebf8ff; color:#2c5282;">3층</th>
                             <th style="background:#ebf8ff; color:#2c5282;">4층</th>
+                            <th style="background:#faf5ff; color:#6b46c1;">1학년</th>
+                            <th style="background:#faf5ff; color:#6b46c1;">2·3학년</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${tableRows || '<tr><td colspan="5">등록된 지도 일정이 없습니다.</td></tr>'}
+                        ${tableRows || '<tr><td colspan="7">등록된 지도 일정이 없습니다.</td></tr>'}
                     </tbody>
                 </table>
             </div>
