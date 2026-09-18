@@ -21,7 +21,7 @@ const dutyData = {
     },
     noticeMorning: '★ 학생 등교지도 안내 사항★\n- 지도 시간 : 본관 07:30~08:00, 별관 07:30~07:50\n- 지도 위치 : 지도1교사 - 본관 입구, 지도2교사 - 별관 입구(50분에 출입문 통제)\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 (주1회 금요일 황상희T)',
     noticeLunch: '★ 학생 중식지도 안내사항★\n- 지도 시간 : 12:10~13:10\n- 학생 착석 지도 : 3학년 - 3,4층 / 2학년 - 3층 / 1학년 - 4층 (우측 열 뒤부터 앞좌석 순)\n- 중식 중 정숙 지도 및 개인 위생 지도',
-    noticeNight: '★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 1학년: 믿음방\n- 2,3학년: 학습카페, 설렘온\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재',
+    noticeNight: '★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 1학년: 믿음방\n- 2,3학년: 별관 4층\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재',
     dates: {}
 };
 
@@ -41,7 +41,7 @@ function getOrCreateDate(key, defaultYear = 2026) {
             lunch: { floor3: '-', floor4: '-', time: '12:10~13:10' },
             night: {
                 grade1: { teacher: '-', original: '-', changed: false, note: '', place: '믿음방' },
-                grade23: { teacher: '-', original: '-', changed: false, note: '', place: '학습카페/설렘온' }
+                grade23: { teacher: '-', original: '-', changed: false, note: '', place: '별관 4층' }
             }
         };
     }
@@ -262,7 +262,7 @@ async function parseGoogleSheetsNightDuty() {
         console.warn('   ⚠ 1학년 야자감독 시트 가져오기 실패 (네트워크 확인):', e.message);
     }
 
-    // (B) 2,3학년 야자 (학습카페, 설렘온)
+    // (B) 2,3학년 야자 (별관 4층)
     try {
         console.log(' - 2·3학년 야자감독 시트 다운로드...');
         const res23 = await fetch(GSHEET_URL_GRADE23);
