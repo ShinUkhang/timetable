@@ -1431,7 +1431,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-18T06:42:20.385Z",
+  "updatedAt": "2026-09-21T00:18:26.099Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0"
@@ -2447,8 +2447,8 @@ window.DUTY_SCHEDULE_DATA = {
           "place": "믿음방"
         },
         "grade23": {
-          "teacher": "이효정",
-          "original": "이효정",
+          "teacher": "이미나",
+          "original": "이미나",
           "changed": false,
           "note": "",
           "place": "별관 4층"
@@ -5592,16 +5592,74 @@ window.DUTY_SCHEDULE_DATA = {
         const url1 = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=1066659445';
         const url2 = 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/export?format=csv&gid=0';
 
+        if (!window.DUTY_SCHEDULE_DATA) window.DUTY_SCHEDULE_DATA = { dates: {} };
+        if (!window.DUTY_SCHEDULE_DATA.dates) window.DUTY_SCHEDULE_DATA.dates = {};
+        const data = window.DUTY_SCHEDULE_DATA.dates;
+
+        function getOrCreateEntry(key, m, d) {
+            if (!data[key]) {
+                data[key] = {
+                    dateStr: key,
+                    displayDate: `${m}월 ${d}일`,
+                    year: 2026,
+                    month: parseInt(m),
+                    day: parseInt(d),
+                    dayOfWeek: '',
+                    morning: { main: '-', annex: '-', timeMain: '07:30~08:00', timeAnnex: '07:30~07:50' },
+                    lunch: { floor3: '-', floor4: '-', time: '12:10~13:10' },
+                    night: {
+                        grade1: { teacher: '-', original: '-', changed: false, note: '', place: '믿음방' },
+                        grade23: { teacher: '-', original: '-', changed: false, note: '', place: '별관 4층' }
+                    }
+                };
+            }
+            return data[key];
+        }
+
+        function parseCSVLine(text) {
+            const rows = [];
+            const lines = text.split(/\r?\n/);
+            for (let line of lines) {
+                if (!line.trim()) continue;
+                const row = [];
+                let inQuote = false;
+                let cur = '';
+                for (let i = 0; i < line.length; i++) {
+                    const c = line[i];
+                    if (c === '"') {
+                        inQuote = !inQuote;
+                    } else if (c === ',' && !inQuote) {
+                        row.push(cur.replace(/^"|"$/g, '').trim());
+                        cur = '';
+                    } else {
+                        cur += c;
+                    }
+                }
+                row.push(cur.replace(/^"|"$/g, '').trim());
+                rows.push(row);
+            }
+            return rows;
+        }
+
+        function cleanT(name) {
+            if (!name) return '';
+            return name.replace(/선생님/g, '').replace(/T/g, '').replace(/\s+/g, '').trim();
+        }
+
+        function isSpecial(val) {
+            if (!val) return false;
+            return val.includes('평가') || val.includes('고사') || val.includes('탐방') || val.includes('총회') || val.includes('휴일') || val.includes('수능') || val.includes('난원제') || val.includes('석식X');
+        }
+
         let updated = false;
 
-        // 1학년
+        // (1) 1학년 야자감독 (믿음방)
         try {
-            const res = await fetch(url1);
-            if (res.ok) {
-                const text = await res.text();
-                const rows = text.split(/\r?\n/).map(l => l.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
-                for (let i = 2; i < rows.length; i++) {
-                    const r = rows[i];
+            const res1 = await fetch(url1);
+            if (res1.ok) {
+                const rows1 = parseCSVLine(await res1.text());
+                for (let i = 2; i < rows1.length; i++) {
+                    const r = rows1[i];
                     if (!r || r.length < 4) continue;
                     const dMatch = r[1].match(/(\d+)월\s*(\d+)일/);
                     if (!dMatch) continue;
@@ -5609,17 +5667,31 @@ window.DUTY_SCHEDULE_DATA = {
                     const d = String(parseInt(dMatch[2])).padStart(2, '0');
                     const key = `2026-${m}-${d}`;
 
-                    const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : null;
-                    if (data && data[key]) {
-                        const rawOrig = r[3] || '';
-                        const rawChange = r[4] || '';
-                        if (!rawOrig.includes('고사') && !rawOrig.includes('평가')) {
-                            const changeT = rawChange.replace(/선생님/g, '').trim();
-                            const origT = rawOrig.replace(/선생님/g, '').trim();
-                            if (changeT && data[key].night.grade1.teacher !== changeT) {
-                                data[key].night.grade1.teacher = changeT;
-                                data[key].night.grade1.changed = true;
-                                data[key].night.grade1.original = origT;
+                    const entry = getOrCreateEntry(key, m, d);
+                    const day = r[2] ? r[2].replace('요일', '').trim() : '';
+                    if (day && !entry.dayOfWeek) entry.dayOfWeek = day;
+
+                    const rawOrig = r[3] || '';
+                    const rawChange = r[4] || '';
+
+                    if (isSpecial(rawOrig)) {
+                        entry.night.grade1.note = rawOrig;
+                        entry.night.grade1.teacher = rawOrig;
+                    } else {
+                        const origT = cleanT(rawOrig);
+                        const changeT = cleanT(rawChange);
+                        if (changeT) {
+                            if (entry.night.grade1.teacher !== changeT || !entry.night.grade1.changed) {
+                                entry.night.grade1.teacher = changeT;
+                                entry.night.grade1.original = origT || '-';
+                                entry.night.grade1.changed = true;
+                                updated = true;
+                            }
+                        } else if (origT) {
+                            if (entry.night.grade1.teacher !== origT) {
+                                entry.night.grade1.teacher = origT;
+                                entry.night.grade1.original = origT;
+                                entry.night.grade1.changed = false;
                                 updated = true;
                             }
                         }
@@ -5630,8 +5702,53 @@ window.DUTY_SCHEDULE_DATA = {
             console.warn('Live gsheet fetch 1 failed:', e.message);
         }
 
+        // (2) 2·3학년 야자감독 (별관 4층)
+        try {
+            const res23 = await fetch(url2);
+            if (res23.ok) {
+                const rows23 = parseCSVLine(await res23.text());
+                const blocks = [
+                    { startRow: 30, endRow: 41, colDate: 5, colTeacher: 6 }, // 8월
+                    { startRow: 4, endRow: 25, colDate: 5, colTeacher: 6 },  // 9월
+                    { startRow: 4, endRow: 20, colDate: 8, colTeacher: 9 },  // 10월
+                    { startRow: 4, endRow: 25, colDate: 11, colTeacher: 12 } // 11월
+                ];
+
+                blocks.forEach(b => {
+                    for (let i = b.startRow; i <= b.endRow; i++) {
+                        const r = rows23[i];
+                        if (!r || r.length <= b.colTeacher) continue;
+                        const dStr = r[b.colDate];
+                        const rawT = r[b.colTeacher];
+                        if (!dStr || !rawT) continue;
+
+                        const dMatch = dStr.match(/(\d+)\/(\d+)/);
+                        if (!dMatch) continue;
+                        const m = String(parseInt(dMatch[1])).padStart(2, '0');
+                        const d = String(parseInt(dMatch[2])).padStart(2, '0');
+                        const key = `2026-${m}-${d}`;
+
+                        const entry = getOrCreateEntry(key, m, d);
+                        if (isSpecial(rawT)) {
+                            entry.night.grade23.note = rawT;
+                            entry.night.grade23.teacher = rawT;
+                        } else {
+                            const t = cleanT(rawT);
+                            if (t && entry.night.grade23.teacher !== t) {
+                                entry.night.grade23.teacher = t;
+                                entry.night.grade23.original = t;
+                                updated = true;
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (e) {
+            console.warn('Live gsheet fetch 23 failed:', e.message);
+        }
+
         if (updated) {
-            console.log('실시간 구글 시트 야자감독 변경사항이 반영되었습니다.');
+            console.log('✔ 실시간 구글 시트 야자감독 최신 데이터가 반영되었습니다.');
             renderDutyUI();
         }
     }
@@ -5870,14 +5987,20 @@ window.DUTY_SCHEDULE_DATA = {
                 <div class="duty-box night">
                     <div class="duty-box-title">
                         <span>🌙 야자감독</span>
-                        <span class="duty-box-time">자기주도학습</span>
+                        <span class="duty-box-time" style="color:#6b46c1; font-weight:bold;">구글시트 연동</span>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">1️⃣ 믿음방</span>
+                        <span class="duty-label">
+                            1️⃣ 믿음방
+                            <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445" target="_blank" title="1학년 야자 구글시트 열기" style="font-size:10px; color:#805ad5; text-decoration:underline; margin-left:3px;">[시트↗]</a>
+                        </span>
                         <div>${g1Html}</div>
                     </div>
                     <div class="duty-item">
-                        <span class="duty-label">별관 4층</span>
+                        <span class="duty-label">
+                            별관 4층
+                            <a href="https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0" target="_blank" title="2·3학년 야자 구글시트 열기" style="font-size:10px; color:#805ad5; text-decoration:underline; margin-left:3px;">[시트↗]</a>
+                        </span>
                         <div>${g23Html}</div>
                     </div>
                 </div>
@@ -6444,6 +6567,7 @@ window.DUTY_SCHEDULE_DATA = {
         renderClassTimetable();
         renderLunchPair();
         fetchNeisLunch();
+        fetchLiveGoogleSheetsNightDuty();
         filterPhone();
         renderGroupChips();
 
