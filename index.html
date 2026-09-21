@@ -1696,7 +1696,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-21T01:17:00.425Z",
+  "updatedAt": "2026-09-21T01:21:59.860Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5107,7 +5107,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-21T01:17:00.425Z",
+  "updatedAt": "2026-09-21T01:21:59.860Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5134,54 +5134,6 @@ window.SUBSTITUTE_DATA = {
     },
     {
       "type": "substitute",
-      "origTeacher": "최재민",
-      "origDate": "9/23(수)",
-      "origTime": "수3",
-      "origDay": "수",
-      "origPeriod": 3,
-      "subjectClass": "신A (C인공)",
-      "subTeacher": "신미경",
-      "reason": "개인사유"
-    },
-    {
-      "type": "substitute",
-      "origTeacher": "최재민",
-      "origDate": "9/23(수)",
-      "origTime": "수4",
-      "origDay": "수",
-      "origPeriod": 4,
-      "subjectClass": "1-2 (체2A)",
-      "subTeacher": "원종범",
-      "reason": ""
-    },
-    {
-      "type": "swap",
-      "origTeacher": "조성용",
-      "origDate": "9/23(수)",
-      "origTime": "수4",
-      "origDay": "수",
-      "origPeriod": 4,
-      "subjectClass": "1-3 (국어 1-3)",
-      "newDate": "9/21(월)",
-      "newTime": "월7",
-      "newDay": "월",
-      "newPeriod": 7,
-      "newClass": "1-3",
-      "reason": "개인사유"
-    },
-    {
-      "type": "substitute",
-      "origTeacher": "최재민",
-      "origDate": "9/23(수)",
-      "origTime": "수6",
-      "origDay": "수",
-      "origPeriod": 6,
-      "subjectClass": "2-6 (스포츠생활)",
-      "subTeacher": "양진택",
-      "reason": "개인사유"
-    },
-    {
-      "type": "substitute",
       "origTeacher": "이수진",
       "origDate": "9/21(월)",
       "origTime": "월7",
@@ -5204,6 +5156,54 @@ window.SUBSTITUTE_DATA = {
       "newDay": "수",
       "newPeriod": 4,
       "newClass": "1-3",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수3",
+      "origDay": "수",
+      "origPeriod": 3,
+      "subjectClass": "신A (C인공)",
+      "subTeacher": "신미경",
+      "reason": "개인사유"
+    },
+    {
+      "type": "swap",
+      "origTeacher": "조성용",
+      "origDate": "9/23(수)",
+      "origTime": "수4",
+      "origDay": "수",
+      "origPeriod": 4,
+      "subjectClass": "1-3 (국어 1-3)",
+      "newDate": "9/21(월)",
+      "newTime": "월7",
+      "newDay": "월",
+      "newPeriod": 7,
+      "newClass": "1-3",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수4",
+      "origDay": "수",
+      "origPeriod": 4,
+      "subjectClass": "1-2 (체2A)",
+      "subTeacher": "원종범",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수6",
+      "origDay": "수",
+      "origPeriod": 6,
+      "subjectClass": "2-6 (스포츠생활)",
+      "subTeacher": "양진택",
       "reason": "개인사유"
     },
     {
@@ -7274,6 +7274,36 @@ window.SUBSTITUTE_DATA = {
     // ==================== 결·보강 실시간 연동 및 탭 렌더링 ====================
     window.currentSubFilterDate = '전체';
 
+    // 결·보강 목록을 항상 날짜 및 교시 오름차순(1교시 -> 7교시)으로 정렬하는 함수
+    function sortSubstituteList(list) {
+        if (!list || !Array.isArray(list)) return [];
+        const dayOrder = { '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6, '일': 7 };
+        return list.sort((a, b) => {
+            // 1. 날짜 (월/일) 오름차순
+            const aMatch = (a.origDate || '').match(/(\d+)[\/\.](\d+)/);
+            const bMatch = (b.origDate || '').match(/(\d+)[\/\.](\d+)/);
+            const aM = aMatch ? parseInt(aMatch[1]) : 0;
+            const aD = aMatch ? parseInt(aMatch[2]) : 0;
+            const bM = bMatch ? parseInt(bMatch[1]) : 0;
+            const bD = bMatch ? parseInt(bMatch[2]) : 0;
+            if (aM !== bM) return aM - bM;
+            if (aD !== bD) return aD - bD;
+
+            // 2. 요일 오름차순
+            const aDayVal = dayOrder[a.origDay] || 0;
+            const bDayVal = dayOrder[b.origDay] || 0;
+            if (aDayVal !== bDayVal) return aDayVal - bDayVal;
+
+            // 3. 교시 오름차순 (1교시 -> 7교시)
+            const aP = a.origPeriod || 0;
+            const bP = b.origPeriod || 0;
+            if (aP !== bP) return aP - bP;
+
+            // 4. 교사 이름 가나다 오름차순
+            return (a.origTeacher || '').localeCompare(b.origTeacher || '', 'ko');
+        });
+    }
+
     // 메인 탭 상단 '오늘의 결·보강' 상시 노출 배너
     function renderTodayAutoSubBanner() {
         const banner = document.getElementById('todayAutoSubBanner');
@@ -7284,7 +7314,7 @@ window.SUBSTITUTE_DATA = {
         const m = now.getMonth() + 1;
         const d = now.getDate();
 
-        const todaySubs = subList.filter(item => {
+        const rawTodaySubs = subList.filter(item => {
             if (!item.origDate) return false;
             const match = item.origDate.match(/(\d+)[\/\.](\d+)/);
             if (match) {
@@ -7292,6 +7322,8 @@ window.SUBSTITUTE_DATA = {
             }
             return item.origDate.includes(`${m}/${d}`) || item.origDate.includes(`${m}.${d}`);
         });
+
+        const todaySubs = sortSubstituteList(rawTodaySubs);
 
         if (todaySubs.length === 0) {
             banner.style.display = 'none';
@@ -7403,7 +7435,7 @@ window.SUBSTITUTE_DATA = {
         const todayM = now.getMonth() + 1;
         const todayD = now.getDate();
 
-        const filtered = subList.filter(item => {
+        const rawFiltered = subList.filter(item => {
             // 날짜 필터링
             if (filterDate === '오늘') {
                 if (!item.origDate) return false;
@@ -7424,6 +7456,9 @@ window.SUBSTITUTE_DATA = {
             }
             return true;
         });
+
+        // 항상 날짜 및 교시 오름차순(1교시 -> 7교시) 정렬
+        const filtered = sortSubstituteList(rawFiltered);
 
         if (countBadge) {
             countBadge.innerText = `${filtered.length}건`;
@@ -7600,6 +7635,9 @@ window.SUBSTITUTE_DATA = {
                     });
                 }
             }
+
+            // 항상 날짜 및 교시 오름차순(1교시 -> 7교시) 정렬
+            sortSubstituteList(newList);
 
             if (!window.SUBSTITUTE_DATA) window.SUBSTITUTE_DATA = { list: [] };
             window.SUBSTITUTE_DATA.list = newList;

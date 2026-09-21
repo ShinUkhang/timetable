@@ -479,7 +479,31 @@ async function parseGoogleSheetsSubstitute() {
                     });
                 }
             }
-            console.log(`   ✔ 결보강 데이터 수집 완료 (총 ${substituteData.list.length}건)`);
+
+            // 날짜 및 교시 오름차순 정렬 (월/일 -> 요일 -> 1교시~7교시 -> 교사명)
+            const dayOrder = { '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6, '일': 7 };
+            substituteData.list.sort((a, b) => {
+                const aMatch = (a.origDate || '').match(/(\d+)[\/\.](\d+)/);
+                const bMatch = (b.origDate || '').match(/(\d+)[\/\.](\d+)/);
+                const aM = aMatch ? parseInt(aMatch[1]) : 0;
+                const aD = aMatch ? parseInt(aMatch[2]) : 0;
+                const bM = bMatch ? parseInt(bMatch[1]) : 0;
+                const bD = bMatch ? parseInt(bMatch[2]) : 0;
+                if (aM !== bM) return aM - bM;
+                if (aD !== bD) return aD - bD;
+
+                const aDayVal = dayOrder[a.origDay] || 0;
+                const bDayVal = dayOrder[b.origDay] || 0;
+                if (aDayVal !== bDayVal) return aDayVal - bDayVal;
+
+                const aP = a.origPeriod || 0;
+                const bP = b.origPeriod || 0;
+                if (aP !== bP) return aP - bP;
+
+                return (a.origTeacher || '').localeCompare(b.origTeacher || '', 'ko');
+            });
+
+            console.log(`   ✔ 결보강 데이터 수집 및 정렬 완료 (총 ${substituteData.list.length}건)`);
         }
     } catch (e) {
         console.warn('   ⚠ 결보강 시트 가져오기 실패:', e.message);
