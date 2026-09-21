@@ -115,7 +115,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 4px 1px;
+        padding: 4px 0.5px;
         background: none;
         border: none;
         cursor: pointer;
@@ -125,8 +125,180 @@
     }
     .nav-item:active { transform: scale(0.92); }
     .nav-item.active { color: var(--primary); font-weight: bold; }
-    .nav-icon { font-size: 19px; line-height: 1.2; margin-bottom: 2px; }
-    .nav-label { font-size: 10.5px; white-space: nowrap; letter-spacing: -0.6px; }
+    .nav-icon { font-size: 18px; line-height: 1.2; margin-bottom: 2px; }
+    .nav-label { font-size: 10px; white-space: nowrap; letter-spacing: -0.8px; }
+
+    /* ================= 결·보강 전용 스타일 ================= */
+    .sub-hero-banner {
+        background: linear-gradient(135deg, #2b6cb0 0%, #319795 100%);
+        border-radius: var(--card-radius);
+        padding: 16px;
+        color: white;
+        margin-bottom: 14px;
+        box-shadow: 0 4px 14px rgba(43, 108, 176, 0.2);
+    }
+    .sub-hero-title {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .sub-hero-sub {
+        font-size: 12px;
+        opacity: 0.95;
+        line-height: 1.5;
+    }
+    .sub-hero-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+    .sub-link-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        transition: 0.15s;
+    }
+    .sub-link-btn:active {
+        background: rgba(255, 255, 255, 0.35);
+    }
+    .sub-card {
+        background: white;
+        border-radius: var(--card-radius);
+        border: 1px solid var(--gray-200);
+        padding: 14px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .sub-card:active {
+        transform: translateY(1px);
+    }
+    .sub-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px dashed var(--gray-200);
+    }
+    .sub-card-time {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .sub-tag-substitute {
+        background: #feebc8;
+        color: #c05621;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 7px;
+        border-radius: 6px;
+    }
+    .sub-tag-swap {
+        background: #e9d8fd;
+        color: #553c9e;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 3px 7px;
+        border-radius: 6px;
+    }
+    .sub-body-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-size: 13px;
+    }
+    .sub-teacher-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: var(--primary-light);
+        color: var(--primary);
+        border: 1px solid var(--primary-border);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.15s;
+    }
+    .sub-teacher-btn:active {
+        background: var(--primary);
+        color: white;
+    }
+    .sub-teacher-btn.sub {
+        background: #f0fff4;
+        color: #276749;
+        border-color: #9ae6b4;
+    }
+    .sub-teacher-btn.sub:active {
+        background: #276749;
+        color: white;
+    }
+    .sub-reason-badge {
+        font-size: 11px;
+        color: var(--gray-600);
+        background: var(--gray-100);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    /* 시간표 셀 내 결보강 배지 스타일 */
+    .t-cell-orig-sub {
+        position: relative;
+        background-color: #fffaf0 !important;
+        border: 1.5px dashed #dd6b20 !important;
+    }
+    .t-cell-sub-entry {
+        position: relative;
+        background-color: #f0fff4 !important;
+        border: 1.5px solid #38a169 !important;
+    }
+    .t-cell-swap-entry {
+        position: relative;
+        background-color: #faf5ff !important;
+        border: 1.5px dashed #805ad5 !important;
+    }
+    .sub-badge-in-cell {
+        display: block;
+        margin-top: 3px;
+        font-size: 10px;
+        font-weight: 800;
+        line-height: 1.2;
+        padding: 2px 3px;
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .sub-badge-in-cell.orig {
+        background: #feebc8;
+        color: #c05621;
+    }
+    .sub-badge-in-cell.sub {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+    .sub-badge-in-cell.swap {
+        background: #e9d8fd;
+        color: #553c9e;
+    }
 
     /* 모바일 카드 스타일 */
     .m-card {
@@ -1302,6 +1474,45 @@
                 <img src="./event_sep23.png" alt="9월 23일 행사 단축수업 공문" style="width:100%; max-width:550px; border-radius:8px; border:1px solid var(--gray-300); cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.06);" onclick="openEventImgModal()">
             </div>
         </div>
+    <!-- ==================== 탭 7: 결·보강 실시간 현황 ==================== -->
+    <section id="tab-substitute" class="tab-content">
+        <!-- 상단 결·보강 안내 배너 -->
+        <div class="sub-hero-banner">
+            <div class="sub-hero-title">
+                <span>🔄</span> 결·보강 실시간 현황
+            </div>
+            <div class="sub-hero-sub">
+                구글 스프레드시트와 실시간 연동됩니다. 선생님 이름을 터치하면 <strong>해당 시간표로 즉시 이동</strong>합니다.
+            </div>
+            <div class="sub-hero-actions">
+                <a href="https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="sub-link-btn">
+                    📊 구글 시트에서 수정 ↗
+                </a>
+                <button onclick="fetchLiveGoogleSheetsSubstitute(true)" class="sub-link-btn" style="cursor:pointer; background:rgba(255,255,255,0.25);">
+                    🔄 새로고침
+                </button>
+            </div>
+        </div>
+
+        <!-- 날짜 및 검색 필터 카드 -->
+        <div class="m-card" style="padding:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:14px; color:var(--primary-dark);">📅 결·보강 내역 조회</span>
+                <span id="substituteCountBadge" style="font-size:11px; color:var(--primary); font-weight:bold; background:var(--primary-light); padding:2px 8px; border-radius:10px;">0건</span>
+            </div>
+            <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:8px;" id="subDateFilterChips">
+                <button class="phone-filter-chip active sub-date-chip" onclick="filterSubstituteDate('전체', this)">전체</button>
+                <button class="phone-filter-chip sub-date-chip" onclick="filterSubstituteDate('오늘', this)">오늘</button>
+            </div>
+            <input type="text" id="subSearchInput" class="m-input" placeholder="선생님 이름 또는 과목 검색 (예: 김지혜, 수학)" oninput="renderSubstituteList()" style="padding:8px 12px; font-size:13px;">
+        </div>
+
+        <!-- 결·보강 카드 목록 렌더링 영역 -->
+        <div id="substituteListArea">
+            <div style="text-align:center; padding:30px 15px; color:var(--gray-500); font-size:13px;">
+                결·보강 정보를 불러오는 중입니다... ⏳
+            </div>
+        </div>
     </section>
 </main>
 
@@ -1314,6 +1525,10 @@
     <button class="nav-item" onclick="switchTab('tab-class', this)">
         <span class="nav-icon">🏫</span>
         <span class="nav-label">반별시간표</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tab-substitute', this)">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-label">결·보강</span>
     </button>
     <button class="nav-item" onclick="switchTab('tab-lunch', this)">
         <span class="nav-icon">🍱</span>
@@ -1432,7 +1647,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-21T00:28:28.244Z",
+  "updatedAt": "2026-09-21T00:48:44.231Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -4840,6 +5055,123 @@ window.DUTY_SCHEDULE_DATA = {
 };
 </script>
 <!-- DUTY_DATA_END -->
+<!-- SUBSTITUTE_DATA_START -->
+<script>
+window.SUBSTITUTE_DATA = {
+  "updatedAt": "2026-09-21T00:48:44.229Z",
+  "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
+  "list": [
+    {
+      "type": "substitute",
+      "origTeacher": "이수진",
+      "origDate": "9/21(월)",
+      "origTime": "월2",
+      "origDay": "월",
+      "origPeriod": 2,
+      "subjectClass": "설렘 (언매)",
+      "subTeacher": "선민수",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "이수진",
+      "origDate": "9/21(월)",
+      "origTime": "월3",
+      "origDay": "월",
+      "origPeriod": 3,
+      "subjectClass": "설렘 (언매)",
+      "subTeacher": "정은혜",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수3",
+      "origDay": "수",
+      "origPeriod": 3,
+      "subjectClass": "신A (C인공)",
+      "subTeacher": "신미경",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수4",
+      "origDay": "수",
+      "origPeriod": 4,
+      "subjectClass": "1-2 (체2A)",
+      "subTeacher": "원종범",
+      "reason": ""
+    },
+    {
+      "type": "swap",
+      "origTeacher": "조성용",
+      "origDate": "9/23(수)",
+      "origTime": "수4",
+      "origDay": "수",
+      "origPeriod": 4,
+      "subjectClass": "1-3 (국어 1-3)",
+      "newDate": "9/22(화)",
+      "newTime": "화7",
+      "newDay": "화",
+      "newPeriod": 7,
+      "newClass": "1-3",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수6",
+      "origDay": "수",
+      "origPeriod": 6,
+      "subjectClass": "2-6 (스포츠생활)",
+      "subTeacher": "양진택",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "이수진",
+      "origDate": "9/21(월)",
+      "origTime": "월7",
+      "origDay": "월",
+      "origPeriod": 7,
+      "subjectClass": "2-6 (화언B)",
+      "subTeacher": "최재민",
+      "reason": "개인사유"
+    },
+    {
+      "type": "swap",
+      "origTeacher": "전성민",
+      "origDate": "9/22(화)",
+      "origTime": "화7",
+      "origDay": "화",
+      "origPeriod": 7,
+      "subjectClass": "1-3 (미술 1-3)",
+      "newDate": "9/23(수)",
+      "newTime": "수4",
+      "newDay": "수",
+      "newPeriod": 4,
+      "newClass": "1-3",
+      "reason": "개인사유"
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최재민",
+      "origDate": "9/23(수)",
+      "origTime": "수7",
+      "origDay": "수",
+      "origPeriod": 7,
+      "subjectClass": "3-5 (운건)",
+      "subTeacher": "김민철",
+      "reason": "개인사유"
+    }
+  ]
+};
+</script>
+<!-- SUBSTITUTE_DATA_END -->
 <script>
     const schedule = {};
     const days = ['월', '화', '수', '목', '금'];
@@ -5242,14 +5574,60 @@ window.DUTY_SCHEDULE_DATA = {
         }
         html += '</tr>';
 
+        const subList = (window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) ? window.SUBSTITUTE_DATA.list : [];
+
         for(let p=1; p<=7; p++) {
             html += `<tr><td class="period-col">${p}</td>`;
             for(let d of days) {
                 const isToday = (d === todayStr);
                 const todayClass = isToday ? ' today-col' : '';
-                let cellText = schedule[t][p]?.[d] || '';
+                let cellText = schedule[t]?.[p]?.[d] || '';
 
-                if (isFree(cellText)) {
+                // 결보강 내역 탐색
+                // 1. 원래 수업 결강/보강된 경우
+                const origSubs = subList.filter(item => item.origTeacher === t && item.origDay === d && item.origPeriod === p);
+                // 2. 다른 선생님 대신 보강 들어가는 경우
+                const mySubIns = subList.filter(item => item.type === 'substitute' && item.subTeacher === t && item.origDay === d && item.origPeriod === p);
+                // 3. 맞교환으로 옮겨온 수업인 경우
+                const mySwapIns = subList.filter(item => item.type === 'swap' && item.origTeacher === t && item.newDay === d && item.newPeriod === p);
+
+                if (origSubs.length > 0) {
+                    // 원래 수업 결강/보강 처리
+                    let badgesHtml = '';
+                    for (const s of origSubs) {
+                        if (s.type === 'substitute') {
+                            badgesHtml += `<span class="sub-badge-in-cell orig" title="사유: ${s.reason || '미기재'}">🔴 결강 (보강: ${s.subTeacher}T)</span>`;
+                        } else if (s.type === 'swap') {
+                            badgesHtml += `<span class="sub-badge-in-cell swap" title="사유: ${s.reason || '미기재'}">↔️ 교환 (${s.newDate} ${s.newTime})</span>`;
+                        }
+                    }
+                    html += `<td class="t-cell-class t-cell-orig-sub${todayClass}" style="cursor:pointer;" onclick="openSwapModal('${t}', '${d}', ${p}, '${cellText.replace(/\n/g, ' ')}')">
+                        <div style="text-decoration: line-through; opacity: 0.6; font-size: 11.5px;">${cellText.replace(/\n/g, '<br>')}</div>
+                        ${badgesHtml}
+                    </td>`;
+                } else if (mySubIns.length > 0) {
+                    // 보강으로 들어가는 수업
+                    let badgesHtml = '';
+                    for (const s of mySubIns) {
+                        badgesHtml += `<span class="sub-badge-in-cell sub" title="사유: ${s.reason || '미기재'}">🟢 [보강] ${s.subjectClass}</span>
+                        <div style="font-size:9.5px; color:#22543d; font-weight:bold; margin-top:2px;">(${s.origTeacher}T 대리 / ${s.origDate})</div>`;
+                    }
+                    const origCellDisplay = cellText && !isFree(cellText) ? `<div style="font-size:10px; color:var(--gray-500); text-decoration:line-through;">원래: ${cellText.replace(/\n/g, ' ')}</div>` : '';
+                    html += `<td class="t-cell-class t-cell-sub-entry${todayClass}" style="cursor:pointer;" onclick="showToast('[보강 수업] ${mySubIns[0].subjectClass} (${mySubIns[0].origTeacher}T 대리)')">
+                        ${origCellDisplay}
+                        ${badgesHtml}
+                    </td>`;
+                } else if (mySwapIns.length > 0) {
+                    // 맞교환으로 옮겨온 수업
+                    let badgesHtml = '';
+                    for (const s of mySwapIns) {
+                        badgesHtml += `<span class="sub-badge-in-cell swap" title="사유: ${s.reason || '미기재'}">↔️ [교환] ${s.newClass || s.subjectClass}</span>
+                        <div style="font-size:9.5px; color:#553c9e; font-weight:bold; margin-top:2px;">(${s.origDate} ${s.origTime} 수업 이동)</div>`;
+                    }
+                    html += `<td class="t-cell-class t-cell-swap-entry${todayClass}" style="cursor:pointer;" onclick="showToast('[교환 수업] ${mySwapIns[0].newClass || mySwapIns[0].subjectClass} (${mySwapIns[0].origDate} ${mySwapIns[0].origTime}에서 이동)')">
+                        ${badgesHtml}
+                    </td>`;
+                } else if (isFree(cellText)) {
                     html += `<td class="t-cell-free${todayClass}">${cellText || '공강'}</td>`;
                 } else if (isPureClass(cellText)) {
                     let cleanText = cellText.replace(/\n/g, ' ');
@@ -6844,6 +7222,270 @@ window.DUTY_SCHEDULE_DATA = {
         if (modal) modal.classList.remove('show');
     }
 
+    // ==================== 결·보강 실시간 연동 및 탭 렌더링 ====================
+    window.currentSubFilterDate = '전체';
+
+    function filterSubstituteDate(dateVal, btnElem) {
+        window.currentSubFilterDate = dateVal;
+        document.querySelectorAll('.sub-date-chip').forEach(b => b.classList.remove('active'));
+        if (btnElem) btnElem.classList.add('active');
+        renderSubstituteList();
+    }
+
+    function renderSubstituteDateChips() {
+        const container = document.getElementById('subDateFilterChips');
+        if (!container) return;
+
+        const subList = (window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) ? window.SUBSTITUTE_DATA.list : [];
+        const dateSet = new Set();
+        subList.forEach(item => {
+            if (item.origDate) dateSet.add(item.origDate);
+        });
+
+        const dates = Array.from(dateSet).sort();
+        let html = `<button class="phone-filter-chip ${window.currentSubFilterDate === '전체' ? 'active' : ''} sub-date-chip" onclick="filterSubstituteDate('전체', this)">전체</button>`;
+        html += `<button class="phone-filter-chip ${window.currentSubFilterDate === '오늘' ? 'active' : ''} sub-date-chip" onclick="filterSubstituteDate('오늘', this)">오늘</button>`;
+
+        dates.forEach(d => {
+            const isActive = (window.currentSubFilterDate === d);
+            html += `<button class="phone-filter-chip ${isActive ? 'active' : ''} sub-date-chip" onclick="filterSubstituteDate('${d}', this)">${d}</button>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function renderSubstituteList() {
+        const area = document.getElementById('substituteListArea');
+        const countBadge = document.getElementById('substituteCountBadge');
+        if (!area) return;
+
+        const subList = (window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) ? window.SUBSTITUTE_DATA.list : [];
+        const keyword = (document.getElementById('subSearchInput')?.value || '').trim().toLowerCase();
+        const filterDate = window.currentSubFilterDate || '전체';
+
+        // 오늘 날짜 문자열 계산 (예: 9/21, 9.21 등)
+        const now = new Date();
+        const todayM = now.getMonth() + 1;
+        const todayD = now.getDate();
+        const todayShort1 = `${todayM}/${todayD}`;
+        const todayShort2 = `${todayM}.${todayD}`;
+        const todayShort3 = `${todayM}월 ${todayD}일`;
+
+        const filtered = subList.filter(item => {
+            // 날짜 필터링
+            if (filterDate === '오늘') {
+                const d = item.origDate || '';
+                const isToday = d.includes(todayShort1) || d.includes(todayShort2) || d.includes(todayShort3) || d === `${todayM}/${todayD}`;
+                if (!isToday) return false;
+            } else if (filterDate !== '전체') {
+                if (item.origDate !== filterDate) return false;
+            }
+
+            // 검색어 필터링
+            if (keyword) {
+                const combined = `${item.origTeacher} ${item.subTeacher || ''} ${item.subjectClass || ''} ${item.reason || ''} ${item.origDate || ''} ${item.origTime || ''}`.toLowerCase();
+                if (!combined.includes(keyword)) return false;
+            }
+            return true;
+        });
+
+        if (countBadge) {
+            countBadge.innerText = `${filtered.length}건`;
+        }
+
+        if (filtered.length === 0) {
+            area.innerHTML = `
+                <div style="text-align:center; padding:35px 15px; color:var(--gray-500); font-size:13px; background:white; border-radius:12px; border:1px solid var(--gray-200);">
+                    <div style="font-size:24px; margin-bottom:8px;">🔍</div>
+                    <div>해당 조건에 맞는 결·보강 내역이 없습니다.</div>
+                    <div style="font-size:11px; color:var(--gray-400); margin-top:4px;">상단 '전체' 칩을 누르시거나 구글 스프레드시트에 등록해주세요.</div>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach(item => {
+            const isSub = (item.type === 'substitute');
+            const typeBadge = isSub ? `<span class="sub-tag-substitute">🔄 보강</span>` : `<span class="sub-tag-swap">↔️ 교환</span>`;
+            const reasonBadge = item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : '';
+
+            let detailHtml = '';
+            if (isSub) {
+                detailHtml = `
+                    <div class="sub-body-row">
+                        <span style="color:var(--gray-600); font-size:12px;">원래 수업:</span>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span style="font-weight:700; color:var(--gray-800);">${item.subjectClass}</span>
+                            <button class="sub-teacher-btn" onclick="selectTeacherAndGo('${item.origTeacher}')" title="${item.origTeacher} 선생님 시간표 보기">
+                                <span>👤 ${item.origTeacher}T</span>
+                                <span style="font-size:10px;">➔</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="sub-body-row" style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--gray-200);">
+                        <span style="color:#276749; font-weight:700; font-size:12px;">보강 담당:</span>
+                        <button class="sub-teacher-btn sub" onclick="selectTeacherAndGo('${item.subTeacher}')" title="${item.subTeacher} 선생님 시간표 보기">
+                            <span>🟢 ${item.subTeacher}T (대리 수업)</span>
+                            <span style="font-size:10px;">➔</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                detailHtml = `
+                    <div class="sub-body-row">
+                        <span style="color:var(--gray-600); font-size:12px;">원래 수업:</span>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span style="font-weight:700; color:var(--gray-800);">${item.subjectClass}</span>
+                            <button class="sub-teacher-btn" onclick="selectTeacherAndGo('${item.origTeacher}')" title="${item.origTeacher} 선생님 시간표 보기">
+                                <span>👤 ${item.origTeacher}T</span>
+                                <span style="font-size:10px;">➔</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="sub-body-row" style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--gray-200);">
+                        <span style="color:#553c9e; font-weight:700; font-size:12px;">변경 일시:</span>
+                        <span style="font-weight:800; color:#553c9e; font-size:13px;">${item.newDate} ${item.newTime} (${item.newClass || item.subjectClass})</span>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="sub-card">
+                    <div class="sub-card-header">
+                        <div class="sub-card-time">
+                            <span>📅 ${item.origDate} (${item.origTime})</span>
+                            ${typeBadge}
+                        </div>
+                        ${reasonBadge}
+                    </div>
+                    ${detailHtml}
+                </div>
+            `;
+        });
+
+        area.innerHTML = html;
+    }
+
+    async function fetchLiveGoogleSheetsSubstitute(showToastMsg = false) {
+        const url = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/export?format=csv&gid=0';
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const text = await res.text();
+            
+            // CSV 파싱
+            const lines = text.split(/\r?\n/);
+            const newList = [];
+
+            function cleanName(raw) {
+                if (!raw) return '';
+                let name = String(raw).replace(/선생님/g, '').replace(/\s+/g, '').trim();
+                const pMatch = name.match(/^([가-힣]{2,4})\(/);
+                if (pMatch) name = pMatch[1];
+                return name;
+            }
+
+            for (let i = 2; i < lines.length; i++) {
+                const line = lines[i];
+                if (!line.trim()) continue;
+
+                const row = [];
+                let inQuote = false;
+                let cur = '';
+                for (let j = 0; j < line.length; j++) {
+                    const c = line[j];
+                    if (c === '"') {
+                        inQuote = !inQuote;
+                    } else if (c === ',' && !inQuote) {
+                        row.push(cur.replace(/^"|"$/g, '').trim());
+                        cur = '';
+                    } else {
+                        cur += c;
+                    }
+                }
+                row.push(cur.replace(/^"|"$/g, '').trim());
+
+                if (row.length < 5) continue;
+                const origTeacher = cleanName(row[1]);
+                if (!origTeacher) continue;
+
+                const origDate = row[2] ? row[2].trim() : '';
+                const origTime = row[3] ? row[3].trim() : '';
+                const subjectClass = row[4] ? row[4].trim() : '';
+                const changeTarget = row[5] ? row[5].trim() : '';
+                const newTime = row[6] ? row[6].trim() : '';
+                const newClass = row[7] ? row[7].trim() : '';
+                const reason = row[8] ? row[8].trim() : '';
+
+                let origDay = '';
+                let origPeriod = 0;
+                const timeMatch = origTime.match(/([월화수목금])(\d+)/);
+                if (timeMatch) {
+                    origDay = timeMatch[1];
+                    origPeriod = parseInt(timeMatch[2]);
+                }
+
+                if (changeTarget.includes('보강')) {
+                    const subTeacher = cleanName(changeTarget.replace(/보강/g, ''));
+                    newList.push({
+                        type: 'substitute',
+                        origTeacher,
+                        origDate,
+                        origTime,
+                        origDay,
+                        origPeriod,
+                        subjectClass,
+                        subTeacher,
+                        reason
+                    });
+                } else if (changeTarget.match(/\d+[\/\.]\d+/) || newTime) {
+                    let newDay = '';
+                    let newPeriod = 0;
+                    const newTimeMatch = newTime.match(/([월화수목금])(\d+)/);
+                    if (newTimeMatch) {
+                        newDay = newTimeMatch[1];
+                        newPeriod = parseInt(newTimeMatch[2]);
+                    }
+                    newList.push({
+                        type: 'swap',
+                        origTeacher,
+                        origDate,
+                        origTime,
+                        origDay,
+                        origPeriod,
+                        subjectClass,
+                        newDate: changeTarget,
+                        newTime,
+                        newDay,
+                        newPeriod,
+                        newClass,
+                        reason
+                    });
+                }
+            }
+
+            if (!window.SUBSTITUTE_DATA) window.SUBSTITUTE_DATA = { list: [] };
+            window.SUBSTITUTE_DATA.list = newList;
+            window.SUBSTITUTE_DATA.updatedAt = new Date().toISOString();
+
+            renderSubstituteDateChips();
+            renderSubstituteList();
+            renderMyTimetable();
+
+            if (showToastMsg) {
+                showToast(`결·보강 ${newList.length}건이 최신 동기화되었습니다. 🔄`);
+            }
+        } catch (e) {
+            console.warn('결·보강 실시간 구글 시트 fetch 실패:', e);
+            renderSubstituteDateChips();
+            renderSubstituteList();
+            if (showToastMsg) {
+                showToast('구글 시트 연동 중 일시적 오류가 발생했습니다.');
+            }
+        }
+    }
+
 
     window.onload = function() {
         renderDutyUI();
@@ -6856,6 +7498,7 @@ window.DUTY_SCHEDULE_DATA = {
         renderLunchPair();
         fetchNeisLunch();
         fetchLiveGoogleSheetsNightDuty();
+        fetchLiveGoogleSheetsSubstitute();
         filterPhone();
         renderGroupChips();
 

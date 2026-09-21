@@ -16,6 +16,16 @@ const GSHEET_URL_GRADE23 = 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-
 const GSHEET_URL_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=669404717';
 const GSHEET_WEB_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=669404717#gid=669404717';
 
+// 결보강 구글 스프레드시트 링크
+const GSHEET_URL_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/export?format=csv&gid=0';
+const GSHEET_WEB_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing';
+
+const substituteData = {
+    updatedAt: new Date().toISOString(),
+    sheetUrl: GSHEET_WEB_SUBSTITUTE,
+    list: []
+};
+
 const dutyData = {
     updatedAt: new Date().toISOString(),
     links: {
@@ -403,9 +413,83 @@ function syncEventFiles() {
     }
 }
 
+async function parseGoogleSheetsSubstitute() {
+    console.log('[3] 결보강 구글 스프레드시트 수집 중...');
+    try {
+        const res = await fetch(GSHEET_URL_SUBSTITUTE);
+        if (res.ok) {
+            const rows = parseCSV(await res.text());
+            for (let i = 2; i < rows.length; i++) {
+                const r = rows[i];
+                if (!r || r.length < 5) continue;
+                const origTeacher = cleanTeacherName(r[1]);
+                if (!origTeacher) continue;
+
+                const origDate = r[2] ? r[2].trim() : '';
+                const origTime = r[3] ? r[3].trim() : '';
+                const subjectClass = r[4] ? r[4].trim() : '';
+                const changeTarget = r[5] ? r[5].trim() : '';
+                const newTime = r[6] ? r[6].trim() : '';
+                const newClass = r[7] ? r[7].trim() : '';
+                const reason = r[8] ? r[8].trim() : '';
+
+                let origDay = '';
+                let origPeriod = 0;
+                const timeMatch = origTime.match(/([월화수목금])(\d+)/);
+                if (timeMatch) {
+                    origDay = timeMatch[1];
+                    origPeriod = parseInt(timeMatch[2]);
+                }
+
+                if (changeTarget.includes('보강')) {
+                    const subTeacher = cleanTeacherName(changeTarget.replace(/보강/g, ''));
+                    substituteData.list.push({
+                        type: 'substitute',
+                        origTeacher,
+                        origDate,
+                        origTime,
+                        origDay,
+                        origPeriod,
+                        subjectClass,
+                        subTeacher,
+                        reason
+                    });
+                } else if (changeTarget.match(/\d+[\/\.]\d+/) || newTime) {
+                    let newDay = '';
+                    let newPeriod = 0;
+                    const newTimeMatch = newTime.match(/([월화수목금])(\d+)/);
+                    if (newTimeMatch) {
+                        newDay = newTimeMatch[1];
+                        newPeriod = parseInt(newTimeMatch[2]);
+                    }
+                    substituteData.list.push({
+                        type: 'swap',
+                        origTeacher,
+                        origDate,
+                        origTime,
+                        origDay,
+                        origPeriod,
+                        subjectClass,
+                        newDate: changeTarget,
+                        newTime,
+                        newDay,
+                        newPeriod,
+                        newClass,
+                        reason
+                    });
+                }
+            }
+            console.log(`   ✔ 결보강 데이터 수집 완료 (총 ${substituteData.list.length}건)`);
+        }
+    } catch (e) {
+        console.warn('   ⚠ 결보강 시트 가져오기 실패:', e.message);
+    }
+}
+
 async function main() {
     parseLocalExcel();
     await parseGoogleSheetsNightDuty();
+    await parseGoogleSheetsSubstitute();
     syncEventFiles();
 
     const sortedDates = Object.keys(dutyData.dates).sort();
@@ -421,23 +505,45 @@ async function main() {
 
     let html = fs.readFileSync(htmlPath, 'utf8');
 
-    const injectionScript = `<!-- DUTY_DATA_START -->
+    // 1. 등교·급식·야자 데이터 주입
+    const dutyInjection = `<!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = ${JSON.stringify(dutyData, null, 2)};
 </script>
 <!-- DUTY_DATA_END -->`;
 
     if (html.includes('<!-- DUTY_DATA_START -->')) {
-        html = html.replace(/<!-- DUTY_DATA_START -->[\s\S]*?<!-- DUTY_DATA_END -->/, injectionScript);
+        html = html.replace(/<!-- DUTY_DATA_START -->[\s\S]*?<!-- DUTY_DATA_END -->/, dutyInjection);
         console.log('[업데이트] index.html의 등교·급식·야자 데이터 블록을 갱신했습니다.');
     } else {
         const scriptIdx = html.indexOf('<script>');
         if (scriptIdx !== -1) {
-            html = html.slice(0, scriptIdx) + injectionScript + '\n' + html.slice(scriptIdx);
+            html = html.slice(0, scriptIdx) + dutyInjection + '\n' + html.slice(scriptIdx);
         } else {
-            html = html.replace('</body>', injectionScript + '\n</body>');
+            html = html.replace('</body>', dutyInjection + '\n</body>');
         }
         console.log('[삽입 완료] index.html에 등교·급식·야자 데이터 블록을 추가했습니다.');
+    }
+
+    // 2. 결보강 데이터 주입
+    const subInjection = `<!-- SUBSTITUTE_DATA_START -->
+<script>
+window.SUBSTITUTE_DATA = ${JSON.stringify(substituteData, null, 2)};
+</script>
+<!-- SUBSTITUTE_DATA_END -->`;
+
+    if (html.includes('<!-- SUBSTITUTE_DATA_START -->')) {
+        html = html.replace(/<!-- SUBSTITUTE_DATA_START -->[\s\S]*?<!-- SUBSTITUTE_DATA_END -->/, subInjection);
+        console.log('[업데이트] index.html의 결보강 데이터 블록을 갱신했습니다.');
+    } else {
+        const dutyEndIdx = html.indexOf('<!-- DUTY_DATA_END -->');
+        if (dutyEndIdx !== -1) {
+            const insertPos = dutyEndIdx + '<!-- DUTY_DATA_END -->'.length;
+            html = html.slice(0, insertPos) + '\n' + subInjection + html.slice(insertPos);
+        } else {
+            html = html.replace('</body>', subInjection + '\n</body>');
+        }
+        console.log('[삽입 완료] index.html에 결보강 데이터 블록을 추가했습니다.');
     }
 
     fs.writeFileSync(htmlPath, html, 'utf8');
