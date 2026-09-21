@@ -12,16 +12,20 @@ console.log('====================================================');
 // 구글 스프레드시트 야자감독 링크
 const GSHEET_URL_GRADE1 = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=1066659445';
 const GSHEET_URL_GRADE23 = 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/export?format=csv&gid=0';
+// 10월 15일부터 단독 참고하는 통합 야자감독 시트 (별관 4층)
+const GSHEET_URL_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=669404717';
+const GSHEET_WEB_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=669404717#gid=669404717';
 
 const dutyData = {
     updatedAt: new Date().toISOString(),
     links: {
         nightGrade1: 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445',
-        nightGrade23: 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0'
+        nightGrade23: 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0',
+        nightOct15Unified: GSHEET_WEB_OCT15_UNIFIED
     },
     noticeMorning: '★ 학생 등교지도 안내 사항★\n- 지도 시간 : 본관 07:30~08:00, 별관 07:30~07:50\n- 지도 위치 : 지도1교사 - 본관 입구, 지도2교사 - 별관 입구(50분에 출입문 통제)\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 (주1회 금요일 황상희T)',
     noticeLunch: '★ 학생 중식지도 안내사항★\n- 지도 시간 : 12:10~13:10\n- 학생 착석 지도 : 3학년 - 3,4층 / 2학년 - 3층 / 1학년 - 4층 (우측 열 뒤부터 앞좌석 순)\n- 중식 중 정숙 지도 및 개인 위생 지도',
-    noticeNight: '★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 1학년: 믿음방\n- 2,3학년: 별관 4층\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재',
+    noticeNight: '★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 10/14 이전: 1학년(믿음방) / 2,3학년(별관 4층)\n- 10/15 이후: 별관 4층 통합 감독\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재',
     dates: {}
 };
 
@@ -218,9 +222,9 @@ function parseLocalExcel() {
 async function parseGoogleSheetsNightDuty() {
     console.log('[2] 구글 스프레드시트 야자감독 데이터 수집 중...');
     
-    // (A) 1학년 야자 (믿음방)
+    // (A) 1학년 야자 (믿음방, ~10/14)
     try {
-        console.log(' - 1학년 야자감독 시트 다운로드...');
+        console.log(' - 1학년 야자감독 시트 다운로드 (~10/14)...');
         const res1 = await fetch(GSHEET_URL_GRADE1);
         if (res1.ok) {
             const rows1 = parseCSV(await res1.text());
@@ -229,6 +233,9 @@ async function parseGoogleSheetsNightDuty() {
                 if (!r || r.length < 4) continue;
                 const dObj = parseDateCell(r[1]);
                 if (!dObj) continue;
+
+                // 10월 15일 이후는 새 통합 시트에서만 참고!
+                if (dObj.key >= '2026-10-15') continue;
 
                 const entry = getOrCreateDate(dObj.key);
                 entry.displayDate = dObj.display;
@@ -256,15 +263,15 @@ async function parseGoogleSheetsNightDuty() {
                     }
                 }
             }
-            console.log('   ✔ 1학년 야자감독 수집 완료');
+            console.log('   ✔ 1학년 야자감독 수집 완료 (~10/14)');
         }
     } catch (e) {
         console.warn('   ⚠ 1학년 야자감독 시트 가져오기 실패 (네트워크 확인):', e.message);
     }
 
-    // (B) 2,3학년 야자 (별관 4층)
+    // (B) 2,3학년 야자 (별관 4층, ~10/14)
     try {
-        console.log(' - 2·3학년 야자감독 시트 다운로드...');
+        console.log(' - 2·3학년 야자감독 시트 다운로드 (~10/14)...');
         const res23 = await fetch(GSHEET_URL_GRADE23);
         if (res23.ok) {
             const rows23 = parseCSV(await res23.text());
@@ -286,6 +293,9 @@ async function parseGoogleSheetsNightDuty() {
                     const dObj = parseDateCell(dStr);
                     if (!dObj) continue;
 
+                    // 10월 15일 이후는 새 통합 시트에서만 참고!
+                    if (dObj.key >= '2026-10-15') continue;
+
                     const entry = getOrCreateDate(dObj.key);
                     entry.displayDate = dObj.display;
 
@@ -299,10 +309,65 @@ async function parseGoogleSheetsNightDuty() {
                     }
                 }
             });
-            console.log('   ✔ 2·3학년 야자감독 수집 완료');
+            console.log('   ✔ 2·3학년 야자감독 수집 완료 (~10/14)');
         }
     } catch (e) {
         console.warn('   ⚠ 2·3학년 야자감독 시트 가져오기 실패 (네트워크 확인):', e.message);
+    }
+
+    // (C) 10월 15일부터 통합 야자감독 시트 (별관 4층) - gid=669404717
+    try {
+        console.log(' - 10월 15일 이후 통합 야자감독 시트 다운로드 (gid=669404717)...');
+        const resOct = await fetch(GSHEET_URL_OCT15_UNIFIED);
+        if (resOct.ok) {
+            const rowsOct = parseCSV(await resOct.text());
+            for (let i = 1; i < rowsOct.length; i++) {
+                const r = rowsOct[i];
+                if (!r || r.length < 4) continue;
+                const dObj = parseDateCell(r[1]);
+                if (!dObj) continue;
+
+                // 10월 15일 이후 날짜만 반영!
+                if (dObj.key < '2026-10-15') continue;
+
+                const entry = getOrCreateDate(dObj.key);
+                entry.displayDate = dObj.display;
+                const day = r[2] ? String(r[2]).replace('요일', '').trim() : '';
+                if (day && !entry.dayOfWeek) entry.dayOfWeek = day;
+
+                const rawOrig = r[3] || '';
+                const rawChange = r[4] || '';
+
+                entry.night.unified = true;
+                entry.night.sheetUrl = GSHEET_WEB_OCT15_UNIFIED;
+
+                if (isSpecialEvent(rawOrig)) {
+                    entry.night.grade1.note = rawOrig;
+                    entry.night.grade1.teacher = rawOrig;
+                    entry.night.grade1.place = '별관 4층';
+                    entry.night.grade23.note = rawOrig;
+                    entry.night.grade23.teacher = rawOrig;
+                    entry.night.grade23.place = '별관 4층';
+                } else {
+                    const origT = cleanTeacherName(rawOrig);
+                    const changeT = cleanTeacherName(rawChange);
+                    const finalT = changeT || origT;
+
+                    entry.night.grade1.teacher = finalT;
+                    entry.night.grade1.original = origT || '-';
+                    entry.night.grade1.changed = Boolean(changeT);
+                    entry.night.grade1.place = '별관 4층';
+
+                    entry.night.grade23.teacher = finalT;
+                    entry.night.grade23.original = origT || '-';
+                    entry.night.grade23.changed = Boolean(changeT);
+                    entry.night.grade23.place = '별관 4층';
+                }
+            }
+            console.log('   ✔ 10월 15일 이후 통합 야자감독 수집 완료');
+        }
+    } catch (e) {
+        console.warn('   ⚠ 10월 15일 이후 통합 야자감독 시트 가져오기 실패:', e.message);
     }
 }
 
