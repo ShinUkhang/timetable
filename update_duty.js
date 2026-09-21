@@ -16,6 +16,11 @@ const GSHEET_URL_GRADE23 = 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-
 const GSHEET_URL_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/export?format=csv&gid=669404717';
 const GSHEET_WEB_OCT15_UNIFIED = 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=669404717#gid=669404717';
 
+// 10월 1일부터 적용되는 등교 및 중식지도 구글 스프레드시트 링크
+const GSHEET_URL_DUTY_OCT_MORNING = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/export?format=csv&gid=1493387912';
+const GSHEET_URL_DUTY_OCT_LUNCH = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/export?format=csv&gid=1305561620';
+const GSHEET_WEB_DUTY_OCT = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/edit?usp=sharing';
+
 // 결보강 구글 스프레드시트 링크
 const GSHEET_URL_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/export?format=csv&gid=0';
 const GSHEET_WEB_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing';
@@ -31,7 +36,8 @@ const dutyData = {
     links: {
         nightGrade1: 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445',
         nightGrade23: 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0',
-        nightOct15Unified: GSHEET_WEB_OCT15_UNIFIED
+        nightOct15Unified: GSHEET_WEB_OCT15_UNIFIED,
+        morningLunchOct: GSHEET_WEB_DUTY_OCT
     },
     noticeMorning: '★ 학생 등교지도 안내 사항★\n- 지도 시간 : 본관 07:30~08:00, 별관 07:30~07:50\n- 지도 위치 : 지도1교사 - 본관 입구, 지도2교사 - 별관 입구(50분에 출입문 통제)\n- 각 학년부 벌점계 선생님께 기록을 위해 명렬표 인계 (주1회 금요일 황상희T)',
     noticeLunch: '★ 학생 중식지도 안내사항★\n- 지도 시간 : 12:10~13:10\n- 학생 착석 지도 : 3학년 - 3,4층 / 2학년 - 3층 / 1학년 - 4층 (우측 열 뒤부터 앞좌석 순)\n- 중식 중 정숙 지도 및 개인 위생 지도',
@@ -413,6 +419,77 @@ function syncEventFiles() {
     }
 }
 
+// 2-2. 10월 1일부터 등교 및 중식지도 구글 스프레드시트 파싱
+async function parseGoogleSheetsMorningLunchDuty() {
+    console.log('[2-2] 구글 스프레드시트 등교·중식지도 데이터 수집 중 (10월 1일부터)...');
+
+    // (A) 등교지도 (gid=1493387912)
+    try {
+        console.log(' - 10월 등교지도 시트 다운로드 (gid=1493387912)...');
+        const resM = await fetch(GSHEET_URL_DUTY_OCT_MORNING);
+        if (resM.ok) {
+            const rowsM = parseCSV(await resM.text());
+            let countM = 0;
+            for (let i = 1; i < rowsM.length; i++) {
+                const r = rowsM[i];
+                if (!r || r.length < 3) continue;
+                const dObj = parseDateCell(r[0]);
+                if (!dObj) continue;
+
+                // 10월 1일부터 반영
+                if (dObj.key < '2026-10-01') continue;
+
+                const entry = getOrCreateDate(dObj.key, dObj.year);
+                entry.displayDate = dObj.display;
+                const dayStr = String(r[1] || '').replace('요일', '').trim();
+                if (dayStr) entry.dayOfWeek = dayStr;
+
+                const mainT = cleanTeacherName(r[2]);
+                const annexT = cleanTeacherName(r[3]);
+                if (mainT && mainT !== 'null' && mainT !== 'undefined') entry.morning.main = mainT;
+                if (annexT && annexT !== 'null' && annexT !== 'undefined') entry.morning.annex = annexT;
+                countM++;
+            }
+            console.log(`   ✔ 10월 등교지도 구글 시트 반영 완료 (${countM}일치)`);
+        }
+    } catch (e) {
+        console.warn('   ⚠ 10월 등교지도 시트 가져오기 실패:', e.message);
+    }
+
+    // (B) 중식지도 (gid=1305561620)
+    try {
+        console.log(' - 10월 중식지도 시트 다운로드 (gid=1305561620)...');
+        const resL = await fetch(GSHEET_URL_DUTY_OCT_LUNCH);
+        if (resL.ok) {
+            const rowsL = parseCSV(await resL.text());
+            let countL = 0;
+            for (let i = 1; i < rowsL.length; i++) {
+                const r = rowsL[i];
+                if (!r || r.length < 3) continue;
+                const dObj = parseDateCell(r[0]);
+                if (!dObj) continue;
+
+                // 10월 1일부터 반영
+                if (dObj.key < '2026-10-01') continue;
+
+                const entry = getOrCreateDate(dObj.key, dObj.year);
+                entry.displayDate = dObj.display;
+                const dayStr = String(r[1] || '').replace('요일', '').trim();
+                if (dayStr) entry.dayOfWeek = dayStr;
+
+                const f3 = cleanTeacherName(r[2]);
+                const f4 = cleanTeacherName(r[3]);
+                if (f3 && f3 !== 'null' && f3 !== 'undefined') entry.lunch.floor3 = f3;
+                if (f4 && f4 !== 'null' && f4 !== 'undefined') entry.lunch.floor4 = f4;
+                countL++;
+            }
+            console.log(`   ✔ 10월 중식지도 구글 시트 반영 완료 (${countL}일치)`);
+        }
+    } catch (e) {
+        console.warn('   ⚠ 10월 중식지도 시트 가져오기 실패:', e.message);
+    }
+}
+
 async function parseGoogleSheetsSubstitute() {
     console.log('[3] 결보강 구글 스프레드시트 수집 중...');
     try {
@@ -454,47 +531,28 @@ async function parseGoogleSheetsSubstitute() {
                         subTeacher,
                         reason
                     });
-                } else if (changeTarget.match(/\d+[\/\.]\d+/) || newTime) {
-                    let newDay = '';
-                    let newPeriod = 0;
-                    const newTimeMatch = newTime.match(/([월화수목금])(\d+)/);
-                    if (newTimeMatch) {
-                        newDay = newTimeMatch[1];
-                        newPeriod = parseInt(newTimeMatch[2]);
-                    }
+                } else if (changeTarget.includes('교체')) {
                     substituteData.list.push({
-                        type: 'swap',
+                        type: 'exchange',
                         origTeacher,
                         origDate,
                         origTime,
                         origDay,
                         origPeriod,
                         subjectClass,
-                        newDate: changeTarget,
+                        targetTeacher: cleanTeacherName(changeTarget.replace(/교체/g, '')),
                         newTime,
-                        newDay,
-                        newPeriod,
                         newClass,
                         reason
                     });
                 }
             }
 
-            // 날짜 및 교시 오름차순 정렬 (월/일 -> 요일 -> 1교시~7교시 -> 교사명)
-            const dayOrder = { '월': 1, '화': 2, '수': 3, '목': 4, '금': 5, '토': 6, '일': 7 };
+            // 정렬: 날짜 오름차순 -> 교시 오름차순 -> 교사명 오름차순
             substituteData.list.sort((a, b) => {
-                const aMatch = (a.origDate || '').match(/(\d+)[\/\.](\d+)/);
-                const bMatch = (b.origDate || '').match(/(\d+)[\/\.](\d+)/);
-                const aM = aMatch ? parseInt(aMatch[1]) : 0;
-                const aD = aMatch ? parseInt(aMatch[2]) : 0;
-                const bM = bMatch ? parseInt(bMatch[1]) : 0;
-                const bD = bMatch ? parseInt(bMatch[2]) : 0;
-                if (aM !== bM) return aM - bM;
-                if (aD !== bD) return aD - bD;
-
-                const aDayVal = dayOrder[a.origDay] || 0;
-                const bDayVal = dayOrder[b.origDay] || 0;
-                if (aDayVal !== bDayVal) return aDayVal - bDayVal;
+                const dA = a.origDate || '';
+                const dB = b.origDate || '';
+                if (dA !== dB) return dA.localeCompare(dB);
 
                 const aP = a.origPeriod || 0;
                 const bP = b.origPeriod || 0;
@@ -513,6 +571,7 @@ async function parseGoogleSheetsSubstitute() {
 async function main() {
     parseLocalExcel();
     await parseGoogleSheetsNightDuty();
+    await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
     syncEventFiles();
 
