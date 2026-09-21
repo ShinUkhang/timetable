@@ -259,45 +259,89 @@
         border-radius: 4px;
     }
 
-    /* 시간표 셀 내 결보강 배지 스타일 */
+    /* 오늘 결보강 자동 상시 노출 배너 */
+    .today-sub-banner {
+        background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+        border: 2px solid #e53e3e;
+        border-radius: var(--card-radius);
+        padding: 13px 15px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 12px rgba(229, 62, 62, 0.15);
+    }
+    .today-sub-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .today-sub-title {
+        font-size: 14px;
+        font-weight: 800;
+        color: #9b2c2c;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .today-sub-item {
+        background: white;
+        border-radius: 8px;
+        padding: 9px 12px;
+        margin-bottom: 6px;
+        border: 1px solid #feb2b2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .today-sub-item:last-child {
+        margin-bottom: 0;
+    }
+
+    /* 시간표 셀 내 결보강 배지 스타일 (시인성 대폭 강화) */
     .t-cell-orig-sub {
         position: relative;
-        background-color: #fffaf0 !important;
-        border: 1.5px dashed #dd6b20 !important;
+        background-color: #fff5f5 !important;
+        border: 2px solid #e53e3e !important;
+        box-shadow: 0 0 8px rgba(229, 62, 62, 0.25) !important;
     }
     .t-cell-sub-entry {
         position: relative;
         background-color: #f0fff4 !important;
-        border: 1.5px solid #38a169 !important;
+        border: 2px solid #38a169 !important;
+        box-shadow: 0 0 8px rgba(56, 161, 105, 0.25) !important;
     }
     .t-cell-swap-entry {
         position: relative;
         background-color: #faf5ff !important;
-        border: 1.5px dashed #805ad5 !important;
+        border: 2px dashed #805ad5 !important;
+        box-shadow: 0 0 8px rgba(128, 90, 213, 0.2) !important;
     }
     .sub-badge-in-cell {
         display: block;
         margin-top: 3px;
-        font-size: 10px;
+        font-size: 10.5px;
         font-weight: 800;
-        line-height: 1.2;
-        padding: 2px 3px;
-        border-radius: 4px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        line-height: 1.3;
+        padding: 3px 4px;
+        border-radius: 5px;
+        white-space: normal;
+        word-break: break-all;
     }
     .sub-badge-in-cell.orig {
-        background: #feebc8;
-        color: #c05621;
+        background: #fed7d7;
+        color: #9b2c2c;
+        border: 1px solid #feb2b2;
     }
     .sub-badge-in-cell.sub {
         background: #c6f6d5;
         color: #22543d;
+        border: 1px solid #9ae6b4;
     }
     .sub-badge-in-cell.swap {
         background: #e9d8fd;
         color: #553c9e;
+        border: 1px solid #d6bcfa;
     }
 
     /* 모바일 카드 스타일 */
@@ -1157,6 +1201,9 @@
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
 
+        <!-- 🔥 오늘 결·보강 실시간 알림 배너 (오늘 결보강 내역이 있으면 최상단 자동 노출) -->
+        <div id="todayAutoSubBanner" style="display:none;"></div>
+
         <!-- ⭐ 오늘(현재) 지도 당번 즉시 보기 배너 (안 눌러도 자동 표시) -->
         <div id="todayAutoDutyBanner" class="today-auto-duty-banner">
             <!-- JS로 오늘 당번 즉시 렌더링 -->
@@ -1474,6 +1521,8 @@
                 <img src="./event_sep23.png" alt="9월 23일 행사 단축수업 공문" style="width:100%; max-width:550px; border-radius:8px; border:1px solid var(--gray-300); cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.06);" onclick="openEventImgModal()">
             </div>
         </div>
+    </section>
+
     <!-- ==================== 탭 7: 결·보강 실시간 현황 ==================== -->
     <section id="tab-substitute" class="tab-content">
         <!-- 상단 결·보강 안내 배너 -->
@@ -1647,7 +1696,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-21T00:48:44.231Z",
+  "updatedAt": "2026-09-21T01:00:02.763Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5058,7 +5107,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-21T00:48:44.229Z",
+  "updatedAt": "2026-09-21T01:00:02.763Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -7225,6 +7274,92 @@ window.SUBSTITUTE_DATA = {
     // ==================== 결·보강 실시간 연동 및 탭 렌더링 ====================
     window.currentSubFilterDate = '전체';
 
+    // 메인 탭 상단 '오늘의 결·보강' 상시 노출 배너
+    function renderTodayAutoSubBanner() {
+        const banner = document.getElementById('todayAutoSubBanner');
+        if (!banner) return;
+
+        const subList = (window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) ? window.SUBSTITUTE_DATA.list : [];
+        const now = new Date();
+        const m = now.getMonth() + 1;
+        const d = now.getDate();
+
+        const todaySubs = subList.filter(item => {
+            if (!item.origDate) return false;
+            const match = item.origDate.match(/(\d+)[\/\.](\d+)/);
+            if (match) {
+                return parseInt(match[1]) === m && parseInt(match[2]) === d;
+            }
+            return item.origDate.includes(`${m}/${d}`) || item.origDate.includes(`${m}.${d}`);
+        });
+
+        if (todaySubs.length === 0) {
+            banner.style.display = 'none';
+            banner.innerHTML = '';
+            return;
+        }
+
+        banner.style.display = 'block';
+        let itemsHtml = '';
+        todaySubs.forEach(item => {
+            const isSub = (item.type === 'substitute');
+            const timeBadge = `<span style="background:var(--primary-light); color:var(--primary); font-weight:800; padding:2px 6px; border-radius:4px; font-size:11px;">⏰ ${item.origTime}</span>`;
+            const classInfo = `<span style="font-weight:bold; color:var(--gray-800); font-size:13px;">${item.subjectClass}</span>`;
+
+            if (isSub) {
+                itemsHtml += `
+                    <div class="today-sub-item">
+                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            ${timeBadge}
+                            ${classInfo}
+                            <span style="font-size:11px; color:#c53030; font-weight:bold;">(결강)</span>
+                            <button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.origTeacher}')">
+                                <span>👤 ${item.origTeacher}T</span>
+                            </button>
+                            <span style="font-size:11px; color:var(--gray-500);">➔</span>
+                            <button class="sub-teacher-btn sub" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.subTeacher}')">
+                                <span>🟢 ${item.subTeacher}T (보강)</span>
+                            </button>
+                        </div>
+                        ${item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : ''}
+                    </div>
+                `;
+            } else {
+                itemsHtml += `
+                    <div class="today-sub-item">
+                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                            ${timeBadge}
+                            ${classInfo}
+                            <span style="font-size:11px; color:#553c9e; font-weight:bold;">(교환)</span>
+                            <button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.origTeacher}')">
+                                <span>👤 ${item.origTeacher}T</span>
+                            </button>
+                            <span style="font-size:11px; color:var(--gray-500);">➔</span>
+                            <span style="font-weight:bold; color:#553c9e; font-size:12px;">${item.newDate} ${item.newTime}</span>
+                        </div>
+                        ${item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : ''}
+                    </div>
+                `;
+            }
+        });
+
+        banner.className = 'today-sub-banner';
+        banner.innerHTML = `
+            <div class="today-sub-header">
+                <div class="today-sub-title">
+                    <span>🔔</span>
+                    <span>오늘(${m}/${d}) 결·보강 알림 (총 ${todaySubs.length}건)</span>
+                </div>
+                <button onclick="switchTab('tab-substitute', document.querySelectorAll('.nav-item')[2])" style="background:white; border:1px solid #feb2b2; color:#c53030; font-size:11px; font-weight:bold; padding:3px 8px; border-radius:6px; cursor:pointer;">
+                    전체 목록 ➔
+                </button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                ${itemsHtml}
+            </div>
+        `;
+    }
+
     function filterSubstituteDate(dateVal, btnElem) {
         window.currentSubFilterDate = dateVal;
         document.querySelectorAll('.sub-date-chip').forEach(b => b.classList.remove('active'));
@@ -7263,20 +7398,21 @@ window.SUBSTITUTE_DATA = {
         const keyword = (document.getElementById('subSearchInput')?.value || '').trim().toLowerCase();
         const filterDate = window.currentSubFilterDate || '전체';
 
-        // 오늘 날짜 문자열 계산 (예: 9/21, 9.21 등)
+        // 오늘 날짜 계산
         const now = new Date();
         const todayM = now.getMonth() + 1;
         const todayD = now.getDate();
-        const todayShort1 = `${todayM}/${todayD}`;
-        const todayShort2 = `${todayM}.${todayD}`;
-        const todayShort3 = `${todayM}월 ${todayD}일`;
 
         const filtered = subList.filter(item => {
             // 날짜 필터링
             if (filterDate === '오늘') {
-                const d = item.origDate || '';
-                const isToday = d.includes(todayShort1) || d.includes(todayShort2) || d.includes(todayShort3) || d === `${todayM}/${todayD}`;
-                if (!isToday) return false;
+                if (!item.origDate) return false;
+                const match = item.origDate.match(/(\d+)[\/\.](\d+)/);
+                if (match) {
+                    if (parseInt(match[1]) !== todayM || parseInt(match[2]) !== todayD) return false;
+                } else {
+                    if (!item.origDate.includes(`${todayM}/${todayD}`) && !item.origDate.includes(`${todayM}.${todayD}`)) return false;
+                }
             } else if (filterDate !== '전체') {
                 if (item.origDate !== filterDate) return false;
             }
@@ -7469,6 +7605,7 @@ window.SUBSTITUTE_DATA = {
             window.SUBSTITUTE_DATA.list = newList;
             window.SUBSTITUTE_DATA.updatedAt = new Date().toISOString();
 
+            renderTodayAutoSubBanner();
             renderSubstituteDateChips();
             renderSubstituteList();
             renderMyTimetable();
@@ -7478,6 +7615,7 @@ window.SUBSTITUTE_DATA = {
             }
         } catch (e) {
             console.warn('결·보강 실시간 구글 시트 fetch 실패:', e);
+            renderTodayAutoSubBanner();
             renderSubstituteDateChips();
             renderSubstituteList();
             if (showToastMsg) {
@@ -7499,6 +7637,7 @@ window.SUBSTITUTE_DATA = {
         fetchNeisLunch();
         fetchLiveGoogleSheetsNightDuty();
         fetchLiveGoogleSheetsSubstitute();
+        renderTodayAutoSubBanner();
         filterPhone();
         renderGroupChips();
 
