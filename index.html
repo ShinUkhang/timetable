@@ -1696,7 +1696,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-21T01:00:02.763Z",
+  "updatedAt": "2026-09-21T01:17:00.425Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5107,7 +5107,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-21T01:00:02.763Z",
+  "updatedAt": "2026-09-21T01:17:00.425Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5162,9 +5162,9 @@ window.SUBSTITUTE_DATA = {
       "origDay": "수",
       "origPeriod": 4,
       "subjectClass": "1-3 (국어 1-3)",
-      "newDate": "9/22(화)",
-      "newTime": "화7",
-      "newDay": "화",
+      "newDate": "9/21(월)",
+      "newTime": "월7",
+      "newDay": "월",
       "newPeriod": 7,
       "newClass": "1-3",
       "reason": "개인사유"
@@ -5194,9 +5194,9 @@ window.SUBSTITUTE_DATA = {
     {
       "type": "swap",
       "origTeacher": "전성민",
-      "origDate": "9/22(화)",
-      "origTime": "화7",
-      "origDay": "화",
+      "origDate": "9/21(월)",
+      "origTime": "월7",
+      "origDay": "월",
       "origPeriod": 7,
       "subjectClass": "1-3 (미술 1-3)",
       "newDate": "9/23(수)",
@@ -5659,10 +5659,10 @@ window.SUBSTITUTE_DATA = {
                     let badgesHtml = '';
                     for (const s of mySubIns) {
                         badgesHtml += `<span class="sub-badge-in-cell sub" title="사유: ${s.reason || '미기재'}">🟢 [보강] ${s.subjectClass}</span>
-                        <div style="font-size:9.5px; color:#22543d; font-weight:bold; margin-top:2px;">(${s.origTeacher}T 대리 / ${s.origDate})</div>`;
+                        <div style="font-size:9.5px; color:#22543d; font-weight:bold; margin-top:2px;">(${s.origTeacher}T 보강 / ${s.origDate})</div>`;
                     }
                     const origCellDisplay = cellText && !isFree(cellText) ? `<div style="font-size:10px; color:var(--gray-500); text-decoration:line-through;">원래: ${cellText.replace(/\n/g, ' ')}</div>` : '';
-                    html += `<td class="t-cell-class t-cell-sub-entry${todayClass}" style="cursor:pointer;" onclick="showToast('[보강 수업] ${mySubIns[0].subjectClass} (${mySubIns[0].origTeacher}T 대리)')">
+                    html += `<td class="t-cell-class t-cell-sub-entry${todayClass}" style="cursor:pointer;" onclick="showToast('[보강 수업] ${mySubIns[0].subjectClass} (${mySubIns[0].origTeacher}T 보강)')">
                         ${origCellDisplay}
                         ${badgesHtml}
                     </td>`;
@@ -7462,7 +7462,7 @@ window.SUBSTITUTE_DATA = {
                     <div class="sub-body-row" style="margin-top:8px; padding-top:6px; border-top:1px dashed var(--gray-200);">
                         <span style="color:#276749; font-weight:700; font-size:12px;">보강 담당:</span>
                         <button class="sub-teacher-btn sub" onclick="selectTeacherAndGo('${item.subTeacher}')" title="${item.subTeacher} 선생님 시간표 보기">
-                            <span>🟢 ${item.subTeacher}T (대리 수업)</span>
+                            <span>🟢 ${item.subTeacher}T (보강)</span>
                             <span style="font-size:10px;">➔</span>
                         </button>
                     </div>
