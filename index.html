@@ -1241,6 +1241,216 @@
     }
     .top-notice-close-btn:hover { opacity: 1; }
 
+    /* ==================== 🪑 교직원 좌석배치표 전용 스타일 ==================== */
+    .seat-view-toggle {
+        display: flex;
+        background: #edf2f7;
+        padding: 4px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+    .seat-view-btn {
+        flex: 1;
+        padding: 8px 12px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .seat-view-btn.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .seat-control-card {
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        border: 1px solid var(--gray-200);
+    }
+    .seat-control-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .seat-day-group {
+        display: flex;
+        gap: 4px;
+    }
+    .seat-day-chip {
+        border: 1px solid var(--gray-300);
+        background: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        font-weight: 800;
+        cursor: pointer;
+        color: var(--gray-700);
+        transition: 0.15s;
+    }
+    .seat-day-chip.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    .seat-legend-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 11.5px;
+        font-weight: 700;
+        margin-top: 10px;
+        padding: 8px 10px;
+        background: #fffaf0;
+        border-radius: 8px;
+        border: 1px solid #feebc8;
+        color: #744210;
+    }
+    .legend-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .legend-color-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+        display: inline-block;
+    }
+    .legend-color-dot.free {
+        background: #fef08a;
+        border: 1.5px solid #ca8a04;
+    }
+    .legend-color-dot.busy {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e0;
+    }
+    .seat-scroll-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        background: white;
+        border-radius: var(--card-radius);
+        padding: 12px;
+        border: 1px solid var(--gray-200);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        margin-bottom: 16px;
+    }
+    .seat-map-wrapper {
+        min-width: 980px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .seat-section {
+        border: 1.5px solid #cbd5e0;
+        border-radius: 8px;
+        padding: 8px;
+        background: #f8fafc;
+    }
+    .seat-section-header {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: #1a202c;
+        padding: 3px 8px;
+        background: #edf2f7;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        text-align: center;
+        letter-spacing: -0.3px;
+    }
+    .seat-desk-grid {
+        display: grid;
+        gap: 5px;
+    }
+    .seat-desk-cell {
+        border: 1px solid #cbd5e0;
+        background: white;
+        border-radius: 6px;
+        padding: 5px 3px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.15s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        min-height: 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    .seat-desk-cell:active { transform: scale(0.96); }
+    .seat-desk-cell.at-desk {
+        background: #fef08a !important; /* 노란색: 자리에 있음 (공강) */
+        border: 2px solid #ca8a04 !important;
+        box-shadow: 0 2px 6px rgba(202, 138, 4, 0.25);
+    }
+    .seat-desk-cell.busy {
+        background: #f1f5f9;
+        color: #94a3b8;
+    }
+    .seat-desk-cell.empty-desk {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e0;
+        cursor: default;
+    }
+    .seat-teacher-name {
+        font-size: 12.5px;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #1e293b;
+    }
+    .seat-desk-cell.at-desk .seat-teacher-name {
+        color: #854d0e;
+    }
+    .seat-teacher-ext {
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 700;
+        margin-top: 2px;
+    }
+    .seat-desk-cell.at-desk .seat-teacher-ext {
+        color: #a16207;
+        font-weight: 800;
+    }
+    .seat-badge-status {
+        font-size: 9px;
+        font-weight: 800;
+        padding: 1px 4px;
+        border-radius: 3px;
+        margin-top: 2px;
+        white-space: nowrap;
+    }
+    .seat-desk-cell.at-desk .seat-badge-status {
+        background: #ca8a04;
+        color: white;
+    }
+    .seat-desk-cell.busy .seat-badge-status {
+        background: #e2e8f0;
+        color: #64748b;
+    }
+    .seat-door-label {
+        font-size: 10.5px;
+        color: #94a3b8;
+        border: 1px dashed #cbd5e0;
+        border-radius: 4px;
+        padding: 3px 6px;
+        text-align: center;
+        background: #f8fafc;
+        margin-top: 4px;
+    }
+
 </style>
 </head>
 <body>
@@ -1407,26 +1617,101 @@
         </div>
     </section>
 
-    <!-- ==================== 탭 4: 교직원 전화번호 및 교실 ==================== -->
+    <!-- ==================== 탭 4: 교직원 전화번호 및 좌석배치도 ==================== -->
     <section id="tab-phone" class="tab-content">
-        <div class="m-card">
-            <div class="m-card-title">📞 교직원 내선번호 & 좌석 (가나다순)</div>
-            <input type="text" id="phoneSearchInput" class="m-input" placeholder="이름, 부서, 위치 검색 (예: 김지혜, 1학년, 행정실)" oninput="filterPhone()">
-            <div class="phone-filter-bar" style="margin-top:10px; margin-bottom:0;">
-                <button class="phone-filter-chip active phone-dept-btn" onclick="setDeptFilter('전체', this)">전체</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('1학년', this)">1학년부</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('2학년', this)">2학년부</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('3학년', this)">3학년부</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('연구', this)">연구/교무</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('행정실', this)">행정실</button>
-                <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('특별교실', this)">특별실</button>
+        <!-- 보기 모드 전환 토글 -->
+        <div class="seat-view-toggle">
+            <button id="seatToggleMapBtn" class="seat-view-btn active" onclick="setSeatViewMode('map')">
+                <span>🪑</span> 좌석배치표 (자리유무 실시간)
+            </button>
+            <button id="seatToggleListBtn" class="seat-view-btn" onclick="setSeatViewMode('list')">
+                <span>📋</span> 가나다순 연락처 목록
+            </button>
+        </div>
+
+        <!-- 1. 좌석배치표 뷰 영역 -->
+        <div id="seatMapViewArea">
+            <!-- 요일 & 교시 컨트롤 바 -->
+            <div class="seat-control-card">
+                <div class="seat-control-row">
+                    <!-- 요일 선택 -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:12.5px; font-weight:800; color:var(--gray-700);">요일:</span>
+                        <div class="seat-day-group">
+                            <button class="seat-day-chip seat-day-btn" onclick="setSeatDay('월', this)">월</button>
+                            <button class="seat-day-chip seat-day-btn" onclick="setSeatDay('화', this)">화</button>
+                            <button class="seat-day-chip seat-day-btn" onclick="setSeatDay('수', this)">수</button>
+                            <button class="seat-day-chip seat-day-btn" onclick="setSeatDay('목', this)">목</button>
+                            <button class="seat-day-chip seat-day-btn" onclick="setSeatDay('금', this)">금</button>
+                        </div>
+                    </div>
+
+                    <!-- 교시 선택 드롭다운 -->
+                    <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:180px;">
+                        <span style="font-size:12.5px; font-weight:800; color:var(--gray-700); white-space:nowrap;">교시:</span>
+                        <select id="seatPeriodSelect" class="m-select" style="padding:5px 8px; font-size:12.5px; font-weight:bold;" onchange="onSeatPeriodChange(this.value)">
+                            <option value="auto">⚡ 현재 시간 자동</option>
+                            <option value="1">1교시 (08:20 ~ 09:10)</option>
+                            <option value="2">2교시 (09:20 ~ 10:10)</option>
+                            <option value="3">3교시 (10:20 ~ 11:10)</option>
+                            <option value="4">4교시 (11:20 ~ 12:10)</option>
+                            <option value="lunch">점심시간 (12:10 ~ 13:10)</option>
+                            <option value="5">5교시 (13:10 ~ 14:00)</option>
+                            <option value="6">6교시 (14:10 ~ 15:00)</option>
+                            <option value="7">7교시 (15:10 ~ 16:00)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 범례 -->
+                <div class="seat-legend-box">
+                    <span class="legend-indicator"><span class="legend-color-dot free"></span> <b>자리에 있음 (공강 - 전화 가능)</b></span>
+                    <span class="legend-indicator"><span class="legend-color-dot busy"></span> 수업 중 (교실 이동)</span>
+                    <span style="font-size:11px; color:#a16207; margin-left:auto;">💡 좌석 터치 시 전화걸기 / 시간표</span>
+                </div>
+            </div>
+
+            <!-- 교직원 좌석배치도 스크롤 컨테이너 (이미지 형식 100% 충실 재현) -->
+            <div class="seat-scroll-container">
+                <div id="seatMapGridContainer" class="seat-map-wrapper">
+                    <!-- JS로 동적 렌더링 -->
+                </div>
             </div>
         </div>
 
-        <div id="phoneListContainer">
-            <!-- JS 렌더링 (가나다 오름차순) -->
+        <!-- 2. 기존 가나다순 연락처 목록 뷰 영역 -->
+        <div id="phoneListViewArea" style="display:none;">
+            <div class="m-card">
+                <div class="m-card-title">📞 교직원 내선번호 & 좌석 (가나다순)</div>
+                <input type="text" id="phoneSearchInput" class="m-input" placeholder="이름, 부서, 위치 검색 (예: 김지혜, 1학년, 행정실)" oninput="filterPhone()">
+                <div class="phone-filter-bar" style="margin-top:10px; margin-bottom:0;">
+                    <button class="phone-filter-chip active phone-dept-btn" onclick="setDeptFilter('전체', this)">전체</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('1학년', this)">1학년부</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('2학년', this)">2학년부</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('3학년', this)">3학년부</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('연구', this)">연구/교무</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('행정실', this)">행정실</button>
+                    <button class="phone-filter-chip phone-dept-btn" onclick="setDeptFilter('특별교실', this)">특별실</button>
+                </div>
+            </div>
+
+            <div id="phoneListContainer">
+                <!-- JS 렌더링 (가나다 오름차순) -->
+            </div>
         </div>
     </section>
+
+    <!-- 📞 좌석 전화걸기 / 시간표 모달 -->
+    <div id="seatCallModal" class="modal-backdrop" onclick="closeSeatCallModal(event)">
+        <div style="background:white; border-radius:14px; padding:18px; max-width:92%; width:360px; box-shadow:0 12px 35px rgba(0,0,0,0.25);" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-200); padding-bottom:8px; margin-bottom:12px;">
+                <div id="seatCallModalTitle" style="font-weight:800; font-size:16px; color:var(--gray-800);"></div>
+                <button style="border:none; background:#edf2f7; border-radius:50%; width:28px; height:28px; font-size:16px; cursor:pointer;" onclick="closeSeatCallModal()">✕</button>
+            </div>
+            <div id="seatCallModalBody" style="font-size:13.5px; line-height:1.6;"></div>
+            <div id="seatCallModalActions" style="margin-top:16px; display:flex; gap:8px;"></div>
+        </div>
+    </div>
 
     <!-- ==================== 탭 5: 공강 & 전체 시간표 ==================== -->
     <section id="tab-group" class="tab-content">
@@ -1802,7 +2087,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-22T23:26:06.839Z",
+  "updatedAt": "2026-09-22T23:42:46.938Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5214,7 +5499,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-22T23:26:06.839Z",
+  "updatedAt": "2026-09-22T23:42:46.938Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5312,7 +5597,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-09-22T23:26:06.839Z",
+  "updatedAt": "2026-09-22T23:42:46.938Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -5489,6 +5774,14 @@ window.IMPORTANT_NOTICE_DATA = {
         
         document.getElementById(tabId).classList.add('active');
         if (btnElem) btnElem.classList.add('active');
+        
+        if (tabId === 'tab-phone') {
+            if (currentSeatViewMode === 'map') {
+                renderSeatMap();
+            } else {
+                filterPhone();
+            }
+        }
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -6162,6 +6455,729 @@ window.IMPORTANT_NOTICE_DATA = {
         toast.innerText = msg;
         toast.style.display = 'block';
         setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    }
+
+    // ==========================================
+    // 🪑 교직원 좌석배치표 실시간 자리유무 & 전화걸기 로직
+    // ==========================================
+    let currentSeatViewMode = 'map';
+    let currentSeatDay = '월';
+    let currentSeatPeriod = 'auto';
+
+    // 2026.09.01. 기준 교직원 좌석배치표 원본 데이터 구조
+    const seatLayoutSections = [
+        {
+            id: "seat-sec-main2",
+            title: "🏫 본관교무실 2 (1학년부)",
+            badge: "본관 2교무실",
+            description: "1학년 담임 및 1학년부 교사",
+            columns: [
+                {
+                    header: "좌측 열 (창가)",
+                    rows: [
+                        [
+                            { name: "조혜림", ext: "372", role: "부장", roleColor: "#ca8a04" },
+                            { name: "서진숙", ext: "354", hrClass: "1-인", hrExt: "414" }
+                        ],
+                        [
+                            { name: "우서영", ext: "328", hrClass: "1-형", hrExt: "401" },
+                            { name: "최재민", ext: "314", hrClass: "1-예", hrExt: "423" }
+                        ],
+                        [
+                            { name: "임진삼", ext: "343", hrClass: "1-원", hrExt: "427" },
+                            { name: "김수진", ext: "337" }
+                        ]
+                    ]
+                },
+                {
+                    header: "우측 열 (복도)",
+                    rows: [
+                        [
+                            { name: "강주혁", ext: "364", hrClass: "1-의", hrExt: "415" },
+                            { name: "윤의국", ext: "369", hrClass: "1-지", hrExt: "425" }
+                        ],
+                        [
+                            { name: "서영미", ext: "332" },
+                            { name: "홍선희", ext: "335", role: "ai코디", roleColor: "#0284c7" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { empty: true, label: "빈 책상" }
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            id: "seat-sec-main1",
+            title: "🏢 본관교무실 1 (교무/연구/2학년/진로/창의/안전)",
+            badge: "본관 1교무실",
+            description: "교육연구부, 교무혁신부, 2학년부, 진로상담부, 창의체험부, 안전생활부",
+            columns: [
+                {
+                    header: "교육연구부",
+                    rows: [
+                        [
+                            { name: "백수정", ext: "363", role: "부장", roleColor: "#ca8a04" },
+                            { name: "전성민", ext: "331" }
+                        ],
+                        [
+                            { name: "정주연", ext: "330" },
+                            { name: "노석후", ext: "351" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { name: "조예찬", ext: "348", role: "실무사", roleColor: "#475569" }
+                        ]
+                    ]
+                },
+                {
+                    header: "교무혁신부 & 일반",
+                    rows: [
+                        [
+                            { name: "최연오", ext: "353" },
+                            { empty: true, label: "빈 책상" }
+                        ],
+                        [
+                            { name: "정다영", ext: "336" },
+                            { name: "이수진", ext: "371" }
+                        ],
+                        [
+                            { name: "김윤희", ext: "357" },
+                            { name: "신욱항", ext: "315" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { name: "원종범", ext: "324", hrClass: "2-진", hrExt: "432" }
+                        ],
+                        [
+                            { name: "김선우", ext: "341" },
+                            { name: "양진택", ext: "326", hrClass: "2-미", hrExt: "428" }
+                        ]
+                    ]
+                },
+                {
+                    header: "2학년부",
+                    rows: [
+                        [
+                            { name: "이효정", ext: "365", role: "부장", roleColor: "#ca8a04" },
+                            { name: "윤종희", ext: "313", hrClass: "2-선", hrExt: "430" }
+                        ],
+                        [
+                            { name: "구성덕", ext: "318", hrClass: "2-성", hrExt: "436" },
+                            { name: "선소희", ext: "312", hrClass: "2-덕", hrExt: "439" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { name: "김수경", ext: "339", hrClass: "2-현", hrExt: "434" }
+                        ]
+                    ]
+                },
+                {
+                    header: "진로상담부 & 창의체험부",
+                    rows: [
+                        [
+                            { name: "신미경", ext: "359", role: "진로", roleColor: "#16a34a" },
+                            { name: "구인혜", ext: "316", role: "Wee", roleColor: "#16a34a" }
+                        ],
+                        [
+                            { name: "정태진", ext: "360" },
+                            { name: "조성용", ext: "367", role: "부장", roleColor: "#ca8a04" }
+                        ],
+                        [
+                            { name: "박경화", ext: "373" },
+                            { name: "선민수", ext: "352" }
+                        ]
+                    ]
+                },
+                {
+                    header: "안전생활부 & 관리실",
+                    rows: [
+                        [
+                            { name: "이미나", ext: "345" },
+                            { name: "김재희", ext: "355", role: "부장", roleColor: "#ca8a04" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { name: "황상희", ext: "358" }
+                        ],
+                        [
+                            { name: "교장실", ext: "301", role: "교장", roleColor: "#7c3aed" },
+                            { name: "교감실", ext: "310", role: "교감", roleColor: "#7c3aed" }
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            id: "seat-sec-annex",
+            title: "🌿 별관교무실 (3학년부 2층 / 교목실 3층)",
+            badge: "별관",
+            description: "3학년 담임 및 교목실",
+            columns: [
+                {
+                    header: "3학년부 (별관 2층)",
+                    rows: [
+                        [
+                            { name: "김지혜", ext: "319", hrClass: "3-애", hrExt: "407" },
+                            { name: "김보라", ext: "325", hrClass: "3-망", hrExt: "406" }
+                        ],
+                        [
+                            { name: "신미경", ext: "329", role: "부장", roleColor: "#ca8a04", alias: "신미경(별관)" },
+                            { name: "우승훈", ext: "321", hrClass: "3-영", hrExt: "413" }
+                        ],
+                        [
+                            { name: "정은혜", ext: "366", hrClass: "3-혜", hrExt: "410" },
+                            { name: "임성우", ext: "340", hrClass: "3-화", hrExt: "412" }
+                        ],
+                        [
+                            { name: "김영주", ext: "361", hrClass: "3-신", hrExt: "402" },
+                            { name: "배민욱", ext: "368", hrClass: "3-은", hrExt: "408" }
+                        ]
+                    ]
+                },
+                {
+                    header: "교목실 (별관 3층)",
+                    rows: [
+                        [
+                            { name: "송정하", ext: "320" },
+                            { name: "김민철", ext: "311", role: "교목실장", roleColor: "#ca8a04" }
+                        ],
+                        [
+                            { empty: true, label: "빈 책상" },
+                            { empty: true, label: "빈 책상" }
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            id: "seat-sec-admin",
+            title: "🏛️ 행정실 및 지원시설",
+            badge: "행정/시설",
+            description: "행정실, 시설관리, 보건실, 도서관 및 특별실",
+            columns: [
+                {
+                    header: "행정실 (본관 1층)",
+                    rows: [
+                        [
+                            { name: "행정실장", ext: "303", role: "실장", roleColor: "#0f766e" },
+                            { name: "최민선", ext: "304" }
+                        ],
+                        [
+                            { name: "구도영", ext: "308" },
+                            { name: "김희경", ext: "309" }
+                        ],
+                        [
+                            { name: "최광휘", ext: "307" },
+                            { name: "임주원", ext: "305" }
+                        ],
+                        [
+                            { name: "임하나", ext: "306" },
+                            { name: "행정실FAX", ext: "723-0752" }
+                        ]
+                    ]
+                },
+                {
+                    header: "교내 지원 & 경비/시설",
+                    rows: [
+                        [
+                            { name: "시설관리실", ext: "470" },
+                            { name: "인쇄실", ext: "455" }
+                        ],
+                        [
+                            { name: "정문", ext: "737-6606" },
+                            { name: "당직실", ext: "467" }
+                        ],
+                        [
+                            { name: "매점", ext: "471" },
+                            { name: "배화여중", ext: "725-6451" }
+                        ],
+                        [
+                            { name: "남휴게실", ext: "468" },
+                            { name: "여휴게실", ext: "469" }
+                        ]
+                    ]
+                },
+                {
+                    header: "급식 및 보건/도서관",
+                    rows: [
+                        [
+                            { name: "영양사실", ext: "375" },
+                            { name: "보건실", ext: "356" }
+                        ],
+                        [
+                            { name: "직원식당", ext: "475" },
+                            { name: "도서관", ext: "333" }
+                        ],
+                        [
+                            { name: "3층식당", ext: "477" },
+                            { name: "4층식당", ext: "479" }
+                        ]
+                    ]
+                },
+                {
+                    header: "특별실 & 교과교실",
+                    rows: [
+                        [
+                            { name: "미술실", ext: "459" },
+                            { name: "음악실", ext: "448" }
+                        ],
+                        [
+                            { name: "생물실", ext: "457" },
+                            { name: "체육관", ext: "451" }
+                        ],
+                        [
+                            { name: "컴퓨터실", ext: "453" },
+                            { name: "전산실", ext: "450" }
+                        ],
+                        [
+                            { name: "종합실", ext: "454" },
+                            { name: "방송실", ext: "461" }
+                        ],
+                        [
+                            { name: "사랑방", ext: "460" },
+                            { name: "소망방", ext: "447" }
+                        ],
+                        [
+                            { name: "교과교실1", ext: "416" },
+                            { name: "교과교실2", ext: "438" }
+                        ],
+                        [
+                            { name: "진로교실", ext: "433" },
+                            { empty: true, label: "빈 공간" }
+                        ]
+                    ]
+                }
+            ]
+        }
+    ];
+
+    // 담임 배정 교실표 원본 데이터
+    const homeroomClassList = [
+        { grade: "1학년", list: [
+            { class: "인반", teacher: "서진숙", ext: "414" },
+            { class: "의반", teacher: "강주혁", ext: "415" },
+            { class: "예반", teacher: "최재민", ext: "423" },
+            { class: "지반", teacher: "윤의국", ext: "425" },
+            { class: "신반", teacher: "-", ext: "-" },
+            { class: "원반", teacher: "임진삼", ext: "427" },
+            { class: "형반", teacher: "우서영", ext: "401" }
+        ]},
+        { grade: "2학년", list: [
+            { class: "진반", teacher: "원종범", ext: "432" },
+            { class: "선반", teacher: "윤종희", ext: "430" },
+            { class: "미반", teacher: "양진택", ext: "428" },
+            { class: "성반", teacher: "구성덕", ext: "436" },
+            { class: "덕반", teacher: "선소희", ext: "439" },
+            { class: "현반", teacher: "김수경", ext: "434" }
+        ]},
+        { grade: "3학년", list: [
+            { class: "애반", teacher: "김지혜", ext: "407" },
+            { class: "망반", teacher: "김보라", ext: "406" },
+            { class: "혜반", teacher: "정은혜", ext: "410" },
+            { class: "화반", teacher: "임성우", ext: "412" },
+            { class: "신반", teacher: "김영주", ext: "402" },
+            { class: "은반", teacher: "배민욱", ext: "408" },
+            { class: "영반", teacher: "우승훈", ext: "413" }
+        ]}
+    ];
+
+    // 뷰 전환: 좌석배치도 ↔ 연락처 목록
+    function setSeatViewMode(mode) {
+        currentSeatViewMode = mode;
+        const mapArea = document.getElementById('seatMapViewArea');
+        const listArea = document.getElementById('phoneListViewArea');
+        const mapBtn = document.getElementById('seatToggleMapBtn');
+        const listBtn = document.getElementById('seatToggleListBtn');
+
+        if (mode === 'map') {
+            if (mapArea) mapArea.style.display = 'block';
+            if (listArea) listArea.style.display = 'none';
+            if (mapBtn) mapBtn.classList.add('active');
+            if (listBtn) listBtn.classList.remove('active');
+            renderSeatMap();
+        } else {
+            if (mapArea) mapArea.style.display = 'none';
+            if (listArea) listArea.style.display = 'block';
+            if (mapBtn) mapBtn.classList.remove('active');
+            if (listBtn) listBtn.classList.add('active');
+            filterPhone();
+        }
+    }
+
+    // 요일 선택 변경
+    function setSeatDay(day, btnElem) {
+        currentSeatDay = day;
+        document.querySelectorAll('.seat-day-btn').forEach(b => b.classList.remove('active'));
+        if (btnElem) btnElem.classList.add('active');
+        renderSeatMap();
+    }
+
+    // 교시 선택 드롭다운 변경
+    function onSeatPeriodChange(val) {
+        currentSeatPeriod = val;
+        renderSeatMap();
+    }
+
+    // 현재 시간 기준 교시 자동 계산
+    function getAutoPeriod() {
+        const now = new Date();
+        const mins = now.getHours() * 60 + now.getMinutes();
+        // 1교시: 08:20 ~ 09:10
+        // 2교시: 09:20 ~ 10:10
+        // 3교시: 10:20 ~ 11:10
+        // 4교시: 11:20 ~ 12:10
+        // 점심:  12:10 ~ 13:10
+        // 5교시: 13:10 ~ 14:00
+        // 6교시: 14:10 ~ 15:00
+        // 7교시: 15:10 ~ 16:00
+        if (mins < 555) return '1';      // ~ 09:15
+        if (mins < 615) return '2';      // ~ 10:15
+        if (mins < 675) return '3';      // ~ 11:15
+        if (mins < 730) return '4';      // ~ 12:10
+        if (mins < 790) return 'lunch';  // ~ 13:10
+        if (mins < 845) return '5';      // ~ 14:05
+        if (mins < 905) return '6';      // ~ 15:05
+        return '7';                      // 15:05 이후
+    }
+
+    // 실제 적용되는 교시 반환
+    function getEffectiveSeatPeriod() {
+        if (currentSeatPeriod === 'auto') {
+            return getAutoPeriod();
+        }
+        return currentSeatPeriod;
+    }
+
+    // 교사 자리 유무 상태 계산
+    function getSeatTeacherStatus(name, day, period) {
+        // 비교과, 교장/교감, 행정실 등 시간표에 없는 교직원
+        if (!teachers.includes(name)) {
+            return {
+                isAtDesk: true,
+                statusText: "상주 (자리있음)",
+                isTeacher: false
+            };
+        }
+
+        // 점심시간인 경우
+        if (period === 'lunch') {
+            return {
+                isAtDesk: true,
+                statusText: "점심시간 (식사/자리)",
+                isTeacher: true
+            };
+        }
+
+        const periodNum = parseInt(period);
+
+        // 결·보강 데이터 확인 (오늘 요일과 선택 요일이 일치하는 경우)
+        const todayDay = getTodayDayStr();
+        if (todayDay && todayDay === day && window.SUBSTITUTE_DATA && Array.isArray(window.SUBSTITUTE_DATA.list)) {
+            const todayIso = getTodayIsoDate();
+            // 1) 오늘 이 시간에 보강 들어가는지 확인
+            const subMatch = window.SUBSTITUTE_DATA.list.find(item => {
+                const itemDate = item.date ? item.date.trim() : '';
+                return (itemDate === todayIso || itemDate.endsWith(todayIso.slice(5))) &&
+                       item.subTeacher === name &&
+                       String(item.period) === String(periodNum);
+            });
+            if (subMatch) {
+                return {
+                    isAtDesk: false,
+                    statusText: `보강 수업 (${subMatch.className || ''})`,
+                    isTeacher: true,
+                    isSub: true
+                };
+            }
+
+            // 2) 오늘 이 시간에 결강 처리되었는지 확인
+            const absentMatch = window.SUBSTITUTE_DATA.list.find(item => {
+                const itemDate = item.date ? item.date.trim() : '';
+                return (itemDate === todayIso || itemDate.endsWith(todayIso.slice(5))) &&
+                       item.origTeacher === name &&
+                       String(item.period) === String(periodNum);
+            });
+            if (absentMatch) {
+                return {
+                    isAtDesk: true,
+                    statusText: "결강 (자리에 있음)",
+                    isTeacher: true,
+                    isSub: true
+                };
+            }
+        }
+
+        // 정규 시간표 확인
+        const cellText = schedule[name]?.[periodNum]?.[day] || '';
+        const free = isFree(cellText);
+
+        if (free) {
+            return {
+                isAtDesk: true,
+                statusText: "공강 (자리에 있음)",
+                isTeacher: true
+            };
+        } else {
+            const cleanText = cellText.replace(/\n/g, ' ').trim();
+            return {
+                isAtDesk: false,
+                statusText: cleanText || "수업 중",
+                isTeacher: true
+            };
+        }
+    }
+
+    // 좌석배치도 렌더링
+    function renderSeatMap() {
+        const container = document.getElementById('seatMapGridContainer');
+        if (!container) return;
+
+        const day = currentSeatDay || '월';
+        const effectivePeriod = getEffectiveSeatPeriod();
+        const periodNameMap = {
+            '1': '1교시 (08:20~09:10)',
+            '2': '2교시 (09:20~10:10)',
+            '3': '3교시 (10:20~11:10)',
+            '4': '4교시 (11:20~12:10)',
+            'lunch': '점심시간 (12:10~13:10)',
+            '5': '5교시 (13:10~14:00)',
+            '6': '6교시 (14:10~15:00)',
+            '7': '7교시 (15:10~16:00)'
+        };
+        const periodDisplay = periodNameMap[effectivePeriod] || `${effectivePeriod}교시`;
+
+        // 퀵 네비게이션 칩 바
+        let html = `
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; padding:6px 8px; background:#edf2f7; border-radius:8px;">
+                <span style="font-size:11.5px; font-weight:bold; color:var(--gray-700); align-self:center; margin-right:4px;">📍 교무실 바로가기:</span>
+                <a href="#seat-sec-main2" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">본관2 (1학년)</a>
+                <a href="#seat-sec-main1" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">본관1 (교무/연구)</a>
+                <a href="#seat-sec-annex" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">별관 (3학년/교목)</a>
+                <a href="#seat-sec-admin" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">행정실 & 시설</a>
+                <a href="#seat-sec-homeroom" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">담임교실표</a>
+            </div>
+            <div style="font-size:12px; color:var(--primary-dark); font-weight:bold; margin-bottom:10px;">
+                📅 <strong>${day}요일 ${periodDisplay}</strong> 기준 좌석 상태입니다.
+            </div>
+        `;
+
+        // 교무실 섹션별 렌더링
+        seatLayoutSections.forEach(sec => {
+            html += `
+            <div id="${sec.id}" class="seat-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-weight:800; font-size:14px; color:var(--primary-dark);">
+                        ${sec.title}
+                    </div>
+                    <span style="font-size:11px; background:#e2e8f0; color:var(--gray-700); padding:2px 8px; border-radius:10px; font-weight:bold;">
+                        ${sec.badge}
+                    </span>
+                </div>
+                ${sec.description ? `<div style="font-size:11.5px; color:var(--gray-600); margin-bottom:10px;">${sec.description}</div>` : ''}
+
+                <!-- 부서별 컬럼/열 그리드 -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+            `;
+
+            sec.columns.forEach(col => {
+                html += `
+                    <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:10px;">
+                        <div class="seat-section-header">${col.header}</div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                `;
+
+                col.rows.forEach(row => {
+                    html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">`;
+                    row.forEach(cell => {
+                        if (cell.empty) {
+                            html += `
+                                <div class="seat-desk-cell empty-desk">
+                                    <span style="font-size:11px; color:#a0aec0;">${cell.label || '빈 책상'}</span>
+                                </div>
+                            `;
+                        } else {
+                            const status = getSeatTeacherStatus(cell.name, day, effectivePeriod);
+                            const isAtDesk = status.isAtDesk;
+                            const hasHr = cell.hrClass && cell.hrExt;
+
+                            html += `
+                                <div class="seat-desk-cell ${isAtDesk ? 'at-desk' : 'busy'}" 
+                                     onclick="openSeatCallModal('${cell.name}', '${cell.ext}', '${cell.hrClass || ''}', '${cell.hrExt || ''}', '${status.statusText}', ${isAtDesk})">
+                                    <div style="display:flex; align-items:center; gap:4px; margin-bottom:2px;">
+                                        ${cell.role ? `<span style="font-size:10px; font-weight:800; background:${cell.roleColor || '#ca8a04'}; color:white; padding:1px 4px; border-radius:4px;">${cell.role}</span>` : ''}
+                                        <span class="seat-teacher-name">${cell.name}</span>
+                                    </div>
+                                    <div class="seat-teacher-ext">📞 ${cell.ext}</div>
+                                    ${hasHr ? `<div style="font-size:10.5px; color:#475569; margin-top:1px;">🏫 ${cell.hrClass} (${cell.hrExt})</div>` : ''}
+                                    <div style="margin-top:3px; font-size:10.5px; font-weight:bold;">
+                                        ${isAtDesk 
+                                            ? `<span style="color:#854d0e;">🟨 자리에 있음</span>` 
+                                            : `<span style="color:#64748b; font-size:10px;">수업: ${status.statusText}</span>`
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    html += `</div>`;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+            </div>
+            `;
+        });
+
+        // 담임 배정 교실표 렌더링
+        html += `
+            <div id="seat-sec-homeroom" class="seat-section">
+                <div style="font-weight:800; font-size:14px; color:var(--primary-dark); margin-bottom:8px;">
+                    🏫 담임 배정 교실표 (학급별 교실 내선번호)
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:10px;">
+        `;
+
+        homeroomClassList.forEach(item => {
+            html += `
+                <div style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:10px;">
+                    <div class="seat-section-header">${item.grade} 담임교실</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                        <thead>
+                            <tr style="background:#f1f5f9; color:var(--gray-700); text-align:center;">
+                                <th style="padding:4px; border:1px solid #cbd5e0;">반</th>
+                                <th style="padding:4px; border:1px solid #cbd5e0;">담임</th>
+                                <th style="padding:4px; border:1px solid #cbd5e0;">교실내선</th>
+                                <th style="padding:4px; border:1px solid #cbd5e0;">전화</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            item.list.forEach(c => {
+                const dial = getFullDialNumber(c.ext);
+                html += `
+                    <tr style="text-align:center;">
+                        <td style="padding:5px 4px; border:1px solid #cbd5e0; font-weight:bold;">${c.class}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e0;">${c.teacher}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e0; font-weight:bold; color:var(--primary);">${c.ext}</td>
+                        <td style="padding:5px 4px; border:1px solid #cbd5e0;">
+                            ${dial ? `<a href="tel:${dial}" style="display:inline-block; background:var(--primary-light); color:var(--primary); padding:2px 6px; border-radius:4px; text-decoration:none; font-size:11px; font-weight:bold;">📞 통화</a>` : '-'}
+                        </td>
+                    </tr>
+                `;
+            });
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        });
+
+        html += `
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    // 좌석 클릭 시 전화걸기 및 시간표 팝업
+    function openSeatCallModal(name, ext, hrClass, hrExt, statusText, isAtDesk) {
+        const modal = document.getElementById('seatCallModal');
+        const titleElem = document.getElementById('seatCallModalTitle');
+        const bodyElem = document.getElementById('seatCallModalBody');
+        const actElem = document.getElementById('seatCallModalActions');
+        if (!modal || !titleElem || !bodyElem || !actElem) return;
+
+        const mainDial = getFullDialNumber(ext);
+        const hrDial = hrExt ? getFullDialNumber(hrExt) : null;
+        const isTeacher = teachers.includes(name);
+
+        titleElem.innerHTML = `<span>📞</span> ${name} ${isTeacher ? '선생님' : ''}`;
+
+        bodyElem.innerHTML = `
+            <div style="margin-bottom:12px; padding:10px; border-radius:8px; background:${isAtDesk ? '#fef9c3' : '#f1f5f9'}; border:1px solid ${isAtDesk ? '#facc15' : '#cbd5e0'};">
+                <div style="font-weight:bold; color:${isAtDesk ? '#854d0e' : '#475569'}; font-size:13px; margin-bottom:2px;">
+                    ${isAtDesk ? '🟨 현재 자리에 계십니다 (공강/자리있음)' : '⬜ 현재 수업 중입니다'}
+                </div>
+                <div style="font-size:12px; color:var(--gray-700);">
+                    ${statusText ? `상태: <strong>${statusText}</strong>` : ''}
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:13px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 10px; border-radius:6px; border:1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-weight:bold; color:var(--gray-800);">교무실 내선:</span>
+                        <span style="font-weight:800; color:var(--primary); font-size:14px; margin-left:4px;">${ext}</span>
+                        <span style="font-size:11px; color:var(--gray-500); margin-left:2px;">(${mainDial})</span>
+                    </div>
+                    <button class="m-btn m-btn-sm" style="padding:3px 8px; font-size:11.5px;" onclick="copyExt('${ext}', '${name}')">복사</button>
+                </div>
+
+                ${hrClass && hrExt ? `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 10px; border-radius:6px; border:1px solid #e2e8f0;">
+                    <div>
+                        <span style="font-weight:bold; color:var(--gray-800);">담임교실 (${hrClass}):</span>
+                        <span style="font-weight:800; color:var(--primary); font-size:14px; margin-left:4px;">${hrExt}</span>
+                        <span style="font-size:11px; color:var(--gray-500); margin-left:2px;">(${hrDial})</span>
+                    </div>
+                    <button class="m-btn m-btn-sm" style="padding:3px 8px; font-size:11.5px;" onclick="copyExt('${hrExt}', '${name} 담임교실')">복사</button>
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+        let actHtml = ``;
+        if (mainDial) {
+            actHtml += `
+                <a href="tel:${mainDial}" class="m-btn" style="flex:1; text-align:center; text-decoration:none; background:#2b6cb0; color:white; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:4px;">
+                    <span>📞</span> 교무실 통화
+                </a>
+            `;
+        }
+        if (hrDial) {
+            actHtml += `
+                <a href="tel:${hrDial}" class="m-btn" style="flex:1; text-align:center; text-decoration:none; background:#319795; color:white; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:4px;">
+                    <span>🏫</span> 교실 통화
+                </a>
+            `;
+        }
+        if (isTeacher) {
+            actHtml += `
+                <button class="m-btn" style="background:var(--gray-700); color:white; font-size:12px; padding:6px 10px;" onclick="goToTeacherTimetable('${name}')">
+                    시간표
+                </button>
+            `;
+        }
+
+        actElem.innerHTML = actHtml;
+        modal.classList.add('show');
+    }
+
+    function closeSeatCallModal(e) {
+        const modal = document.getElementById('seatCallModal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    // 선생님 시간표로 바로 이동
+    function goToTeacherTimetable(name) {
+        closeSeatCallModal();
+        const sel = document.getElementById('myTeacherSelect');
+        if (sel) {
+            sel.value = name;
+            renderMyTimetable();
+        }
+        // 탭을 '내시간표'로 전환
+        const myNavBtn = document.querySelector(".bottom-nav .nav-item[onclick*='tab-my']");
+        switchTab('tab-my', myNavBtn);
     }
 
     function renderGroupChips() {
@@ -8156,6 +9172,26 @@ ${n.content}
             }
         } catch (e) {
             console.error('lunchDay init error:', e);
+        }
+
+        try {
+            const todayDay = getTodayDayStr();
+            if (todayDay) {
+                currentSeatDay = todayDay;
+                document.querySelectorAll('.seat-day-btn').forEach(b => {
+                    if (b.innerText.trim() === todayDay) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            } else {
+                currentSeatDay = '월';
+                document.querySelectorAll('.seat-day-btn').forEach(b => {
+                    if (b.innerText.trim() === '월') b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            }
+            renderSeatMap();
+        } catch (e) {
+            console.error('seatMap init error:', e);
         }
     };
 </script>
