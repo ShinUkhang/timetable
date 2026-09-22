@@ -2172,7 +2172,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-22T23:49:26.906Z",
+  "updatedAt": "2026-09-22T23:54:38.413Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5584,7 +5584,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-22T23:49:26.906Z",
+  "updatedAt": "2026-09-22T23:54:38.413Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5682,7 +5682,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-09-22T23:49:26.906Z",
+  "updatedAt": "2026-09-22T23:54:38.413Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -6687,7 +6687,7 @@ window.IMPORTANT_NOTICE_DATA = {
                     rows: [
                         [
                             { name: "최연오", ext: "353" },
-                            { empty: true, label: "빈 책상" }
+                            { name: "김선우", ext: "341" }
                         ],
                         [
                             { name: "정다영", ext: "336" },
@@ -6696,14 +6696,6 @@ window.IMPORTANT_NOTICE_DATA = {
                         [
                             { name: "김윤희", ext: "357" },
                             { name: "신욱항", ext: "315" }
-                        ],
-                        [
-                            { empty: true, label: "빈 책상" },
-                            { name: "원종범", ext: "324", hrClass: "2-진", hrExt: "432" }
-                        ],
-                        [
-                            { name: "김선우", ext: "341" },
-                            { name: "양진택", ext: "326", hrClass: "2-미", hrExt: "428" }
                         ]
                     ]
                 },
@@ -6719,8 +6711,12 @@ window.IMPORTANT_NOTICE_DATA = {
                             { name: "선소희", ext: "312", hrClass: "2-덕", hrExt: "439" }
                         ],
                         [
-                            { empty: true, label: "빈 책상" },
-                            { name: "김수경", ext: "339", hrClass: "2-현", hrExt: "434" }
+                            { name: "원종범", ext: "324", hrClass: "2-진", hrExt: "432" },
+                            { name: "양진택", ext: "326", hrClass: "2-미", hrExt: "428" }
+                        ],
+                        [
+                            { name: "김수경", ext: "339", hrClass: "2-현", hrExt: "434" },
+                            { empty: true, label: "빈 책상" }
                         ]
                     ]
                 },
@@ -6728,7 +6724,7 @@ window.IMPORTANT_NOTICE_DATA = {
                     header: "진로상담부 & 창의체험부",
                     rows: [
                         [
-                            { name: "신미경", ext: "359", role: "진로", roleColor: "#16a34a" },
+                            { name: "신미경", ext: "359", role: "진로부장", roleColor: "#16a34a" },
                             { name: "구인혜", ext: "316", role: "Wee", roleColor: "#16a34a" }
                         ],
                         [
@@ -6742,16 +6738,29 @@ window.IMPORTANT_NOTICE_DATA = {
                     ]
                 },
                 {
-                    header: "안전생활부 & 관리실",
+                    header: "안전생활부",
                     rows: [
                         [
                             { name: "이미나", ext: "345" },
                             { name: "김재희", ext: "355", role: "부장", roleColor: "#ca8a04" }
                         ],
                         [
-                            { empty: true, label: "빈 책상" },
-                            { name: "황상희", ext: "358" }
-                        ],
+                            { name: "황상희", ext: "358" },
+                            { empty: true, label: "빈 책상" }
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            id: "seat-sec-leadership",
+            title: "👑 교장실 & 교감실 (본관 1층)",
+            badge: "본관 1층 앞",
+            description: "학교장실 및 교감실",
+            columns: [
+                {
+                    header: "교장실 & 교감실",
+                    rows: [
                         [
                             { name: "교장실", ext: "301", role: "교장", roleColor: "#7c3aed" },
                             { name: "교감실", ext: "310", role: "교감", roleColor: "#7c3aed" }
@@ -6774,7 +6783,7 @@ window.IMPORTANT_NOTICE_DATA = {
                             { name: "김보라", ext: "325", hrClass: "3-망", hrExt: "406" }
                         ],
                         [
-                            { name: "신미경", ext: "329", role: "부장", roleColor: "#ca8a04", alias: "신미경(별관)" },
+                            { name: "신미경", ext: "329", role: "3학년부장", roleColor: "#ca8a04" },
                             { name: "우승훈", ext: "321", hrClass: "3-영", hrExt: "413" }
                         ],
                         [
@@ -7103,8 +7112,9 @@ window.IMPORTANT_NOTICE_DATA = {
         let html = `
             <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; padding:6px 8px; background:#edf2f7; border-radius:8px;">
                 <span style="font-size:11.5px; font-weight:bold; color:var(--gray-700); align-self:center; margin-right:4px;">📍 교무실 바로가기:</span>
+                <a href="#seat-sec-leadership" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px; background:#faf5ff; border-color:#d6bcfa; color:#6b46c1;">👑 교장/교감실</a>
                 <a href="#seat-sec-main2" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">본관2 (1학년)</a>
-                <a href="#seat-sec-main1" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">본관1 (교무/연구)</a>
+                <a href="#seat-sec-main1" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">본관1 (교무/연구/2학년)</a>
                 <a href="#seat-sec-annex" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">별관 (3학년/교목)</a>
                 <a href="#seat-sec-admin" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">행정실 & 시설</a>
                 <a href="#seat-sec-homeroom" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">담임교실표</a>
