@@ -1248,7 +1248,7 @@
         <img src="./cat.png" class="app-title-cat" alt="노란 고양이">
         <span class="app-title-text">배화여고 시간표</span>
     </div>
-    <div id="headerDateBadge" class="today-badge">로딩중..</div>
+    <div id="headerDateBadge" class="today-badge">9월 23일(수)</div>
 </header>
 
 <main class="container">
@@ -1799,7 +1799,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-22T23:16:23.792Z",
+  "updatedAt": "2026-09-22T23:24:02.363Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5211,7 +5211,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-22T23:16:23.792Z",
+  "updatedAt": "2026-09-22T23:24:02.363Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5309,7 +5309,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-09-22T23:16:23.791Z",
+  "updatedAt": "2026-09-22T23:24:02.363Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -6072,7 +6072,8 @@ window.IMPORTANT_NOTICE_DATA = {
 
     // 전화번호 필터 및 카드 렌더링 (가나다 오름차순 정렬)
     function filterPhone() {
-        const query = document.getElementById('phoneSearchInput').value.trim().toLowerCase();
+        const input = document.getElementById('phoneSearchInput');
+        const query = input && input.value ? input.value.trim().toLowerCase() : '';
         const container = document.getElementById('phoneListContainer');
 
         let filtered = phoneData.filter(p => {
@@ -7495,7 +7496,7 @@ window.IMPORTANT_NOTICE_DATA = {
             }
         }
         const clsSel = document.getElementById('eventClassSelect');
-        if (clsSel && clsSel.options.length > 1) {
+        if (clsSel && clsSel.options && clsSel.options.length > 1) {
             clsSel.selectedIndex = 1;
         }
     }
@@ -7960,8 +7961,11 @@ window.IMPORTANT_NOTICE_DATA = {
         }
 
         // 사용자가 이번 세션에 닫았는지 확인
-        const isClosed = sessionStorage.getItem('closed_top_notice_' + activeNotice.rawDate);
-        if (isClosed === '1') {
+        let isClosed = false;
+        try {
+            isClosed = sessionStorage.getItem('closed_top_notice_' + activeNotice.rawDate) === '1';
+        } catch (e) {}
+        if (isClosed) {
             banner.style.display = 'none';
             currentActiveNotice = activeNotice;
             return;
@@ -8010,7 +8014,9 @@ ${n.content}
         const banner = document.getElementById('topImportantNoticeBanner');
         if (banner) banner.style.display = 'none';
         if (currentActiveNotice && currentActiveNotice.rawDate) {
-            sessionStorage.setItem('closed_top_notice_' + currentActiveNotice.rawDate, '1');
+            try {
+                sessionStorage.setItem('closed_top_notice_' + currentActiveNotice.rawDate, '1');
+            } catch (e) {}
         }
     }
 
@@ -8110,32 +8116,36 @@ ${n.content}
 
 
     window.onload = function() {
-        renderTopImportantNotice();
-        checkEventTabExpiry();
-        renderDutyUI();
-        initDateBadge();
-        initData();
-        buildClassSchedule();
-        initEventTab();
-        renderMyTimetable();
-        renderClassTimetable();
-        renderLunchPair();
-        fetchNeisLunch();
-        fetchLiveGoogleSheetsNightDuty();
-        fetchLiveGoogleSheetsMorningLunchDuty();
-        fetchLiveGoogleSheetsSubstitute();
-        fetchLiveGoogleDocNotice();
-        renderTodayAutoSubBanner();
-        filterPhone();
-        renderGroupChips();
+        try { initDateBadge(); } catch (e) { console.error('initDateBadge error:', e); }
+        try { renderTopImportantNotice(); } catch (e) { console.error('renderTopImportantNotice error:', e); }
+        try { checkEventTabExpiry(); } catch (e) { console.error('checkEventTabExpiry error:', e); }
+        try { renderDutyUI(); } catch (e) { console.error('renderDutyUI error:', e); }
+        try { initData(); } catch (e) { console.error('initData error:', e); }
+        try { buildClassSchedule(); } catch (e) { console.error('buildClassSchedule error:', e); }
+        try { initEventTab(); } catch (e) { console.error('initEventTab error:', e); }
+        try { renderMyTimetable(); } catch (e) { console.error('renderMyTimetable error:', e); }
+        try { renderClassTimetable(); } catch (e) { console.error('renderClassTimetable error:', e); }
+        try { renderLunchPair(); } catch (e) { console.error('renderLunchPair error:', e); }
+        try { fetchNeisLunch(); } catch (e) { console.error('fetchNeisLunch error:', e); }
+        try { fetchLiveGoogleSheetsNightDuty(); } catch (e) { console.error('fetchLiveGoogleSheetsNightDuty error:', e); }
+        try { fetchLiveGoogleSheetsMorningLunchDuty(); } catch (e) { console.error('fetchLiveGoogleSheetsMorningLunchDuty error:', e); }
+        try { fetchLiveGoogleSheetsSubstitute(); } catch (e) { console.error('fetchLiveGoogleSheetsSubstitute error:', e); }
+        try { fetchLiveGoogleDocNotice(); } catch (e) { console.error('fetchLiveGoogleDocNotice error:', e); }
+        try { renderTodayAutoSubBanner(); } catch (e) { console.error('renderTodayAutoSubBanner error:', e); }
+        try { filterPhone(); } catch (e) { console.error('filterPhone error:', e); }
+        try { renderGroupChips(); } catch (e) { console.error('renderGroupChips error:', e); }
 
-        const todayDay = getTodayDayStr();
-        if (todayDay) {
-            document.querySelectorAll('.lunch-day-btn').forEach(b => {
-                if (b.innerText.includes(todayDay)) b.classList.add('active');
-                else b.classList.remove('active');
-            });
-            renderLunchPair();
+        try {
+            const todayDay = getTodayDayStr();
+            if (todayDay) {
+                document.querySelectorAll('.lunch-day-btn').forEach(b => {
+                    if (b.innerText.includes(todayDay)) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+                renderLunchPair();
+            }
+        } catch (e) {
+            console.error('lunchDay init error:', e);
         }
     };
 </script>
