@@ -25,6 +25,16 @@ const GSHEET_WEB_DUTY_OCT = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-Kx
 const GSHEET_URL_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/export?format=csv&gid=0';
 const GSHEET_WEB_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing';
 
+// 중요 공지사항 및 단축수업 구글 문서 링크
+const GDOC_URL_NOTICE_HTML = 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/export?format=html';
+const GDOC_WEB_NOTICE = 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing';
+
+const importantNoticeData = {
+    updatedAt: new Date().toISOString(),
+    docUrl: GDOC_WEB_NOTICE,
+    notices: []
+};
+
 const substituteData = {
     updatedAt: new Date().toISOString(),
     sheetUrl: GSHEET_WEB_SUBSTITUTE,
@@ -568,11 +578,71 @@ async function parseGoogleSheetsSubstitute() {
     }
 }
 
+// 4. 중요 공지사항 및 단축수업 구글 문서 수집
+async function parseGoogleDocNotice() {
+    console.log('[4] 중요 공지 및 단축수업 구글 문서 수집 중...');
+    try {
+        const res = await fetch(GDOC_URL_NOTICE_HTML);
+        if (res.ok) {
+            const html = await res.text();
+            
+            // HTML 내 table 파싱
+            const rowMatches = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
+            for (let rHtml of rowMatches) {
+                const tdMatches = rHtml.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [];
+                if (tdMatches.length < 3) continue;
+
+                const cleanCell = (tdStr) => {
+                    return tdStr
+                        .replace(/<[^>]+>/g, ' ')
+                        .replace(/&nbsp;/g, ' ')
+                        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(code))
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                };
+
+                const colDate = cleanCell(tdMatches[0]);
+                const colTime = cleanCell(tdMatches[1]);
+                const colContent = cleanCell(tdMatches[2]);
+                const colNote = tdMatches[3] ? cleanCell(tdMatches[3]) : '';
+
+                if (colDate.includes('일자') || colContent.includes('내용')) continue;
+                if (!colDate && !colContent) continue;
+
+                // 10자 내외 요약 문구 생성
+                let summary = '';
+                if (colNote && colNote.length <= 20 && !colNote.includes('요약')) {
+                    summary = colNote;
+                } else {
+                    if (colContent.includes('기념 촬영') || colContent.includes('기념촬영')) {
+                        summary = '📸 예배 후 교직원 기념촬영 (강당)';
+                    } else {
+                        summary = colContent.slice(0, 16).trim() + (colContent.length > 16 ? '..' : '');
+                    }
+                }
+
+                importantNoticeData.notices.push({
+                    rawDate: colDate,
+                    timeStr: colTime,
+                    content: colContent,
+                    note: colNote,
+                    summary: summary
+                });
+            }
+
+            console.log(`   ✔ 중요 공지 ${importantNoticeData.notices.length}건 수집 완료`);
+        }
+    } catch (e) {
+        console.warn('   ⚠ 중요 공지 구글 문서 가져오기 실패:', e.message);
+    }
+}
+
 async function main() {
     parseLocalExcel();
     await parseGoogleSheetsNightDuty();
     await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
+    await parseGoogleDocNotice();
     syncEventFiles();
 
     const sortedDates = Object.keys(dutyData.dates).sort();
@@ -627,6 +697,27 @@ window.SUBSTITUTE_DATA = ${JSON.stringify(substituteData, null, 2)};
             html = html.replace('</body>', subInjection + '\n</body>');
         }
         console.log('[삽입 완료] index.html에 결보강 데이터 블록을 추가했습니다.');
+    }
+
+    // 3. 중요 공지 데이터 주입
+    const noticeInjection = `<!-- NOTICE_DATA_START -->
+<script>
+window.IMPORTANT_NOTICE_DATA = ${JSON.stringify(importantNoticeData, null, 2)};
+</script>
+<!-- NOTICE_DATA_END -->`;
+
+    if (html.includes('<!-- NOTICE_DATA_START -->')) {
+        html = html.replace(/<!-- NOTICE_DATA_START -->[\s\S]*?<!-- NOTICE_DATA_END -->/, noticeInjection);
+        console.log('[업데이트] index.html의 중요 공지 데이터 블록을 갱신했습니다.');
+    } else {
+        const subEndIdx = html.indexOf('<!-- SUBSTITUTE_DATA_END -->');
+        if (subEndIdx !== -1) {
+            const insertPos = subEndIdx + '<!-- SUBSTITUTE_DATA_END -->'.length;
+            html = html.slice(0, insertPos) + '\n' + noticeInjection + html.slice(insertPos);
+        } else {
+            html = html.replace('</body>', noticeInjection + '\n</body>');
+        }
+        console.log('[삽입 완료] index.html에 중요 공지 데이터 블록을 추가했습니다.');
     }
 
     fs.writeFileSync(htmlPath, html, 'utf8');

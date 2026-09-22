@@ -1184,6 +1184,60 @@
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
+    /* 🚨 상단 중요 공지 배너 스타일 */
+    .top-important-notice-banner {
+        background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 3px 12px rgba(229, 62, 62, 0.28);
+        cursor: pointer;
+        transition: transform 0.15s;
+        animation: pulseNotice 2.5s infinite;
+    }
+    .top-important-notice-banner:active { transform: scale(0.98); }
+    @keyframes pulseNotice {
+        0% { box-shadow: 0 3px 12px rgba(229, 62, 62, 0.28); }
+        50% { box-shadow: 0 4px 18px rgba(229, 62, 62, 0.45); }
+        100% { box-shadow: 0 3px 12px rgba(229, 62, 62, 0.28); }
+    }
+    .top-notice-badge {
+        background: rgba(255, 255, 255, 0.28);
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 800;
+        margin-right: 8px;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+    .top-notice-text {
+        font-size: 13.5px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .top-notice-close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 16px;
+        opacity: 0.85;
+        cursor: pointer;
+        padding: 2px 6px;
+        line-height: 1;
+    }
+    .top-notice-close-btn:hover { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -1198,6 +1252,18 @@
 </header>
 
 <main class="container">
+    <!-- 🚨 최상단 중요 공지 배너 (당일/지정 시간 내 자동 노출, 탭 시 상세 팝업) -->
+    <div id="topImportantNoticeBanner" class="top-important-notice-banner" style="display:none;" onclick="openImportantNoticeModal()">
+        <div style="display:flex; align-items:center; flex:1; min-width:0; overflow:hidden;">
+            <span class="top-notice-badge">🚨 중요공지</span>
+            <span id="topNoticeSummaryText" class="top-notice-text"></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+            <span style="font-size:11px; opacity:0.95; text-decoration:underline; white-space:nowrap;">상세보기</span>
+            <button class="top-notice-close-btn" onclick="closeTopNoticeBanner(event)" title="닫기">✕</button>
+        </div>
+    </div>
+
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
 
@@ -1394,6 +1460,24 @@
             </div>
         </div>
 
+        <!-- 🚨 중요 공지: 교직원 기념촬영 안내 카드 -->
+        <div id="eventNoticeCard" class="m-card" style="border-left:4px solid #e53e3e; background:#fffaf0; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div style="font-weight:bold; font-size:14px; color:#c53030; display:flex; align-items:center; gap:6px;">
+                    <span>🚨</span> <b>[중요 공지] 전체 교직원 기념촬영</b>
+                </div>
+                <span style="font-size:11px; background:#feebc8; color:#c05621; padding:2px 6px; border-radius:4px; font-weight:bold;">오전 10~12시</span>
+            </div>
+            <div style="font-size:13px; color:#2d3748; line-height:1.6; margin-top:8px;">
+                예배 끝나고 전체 교직원 기념 촬영을 함께 하도록 하겠습니다.<br>
+                <b>예배 후 강당에 잠시 대기하셨다가 무대로 올라와주시기 바랍니다.</b>
+            </div>
+            <div style="margin-top:8px; font-size:11px; color:var(--gray-500); display:flex; justify-content:space-between; align-items:center;">
+                <span>💡 구글 문서 공지사항 연동</span>
+                <a href="https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing" target="_blank" style="color:var(--primary); text-decoration:underline;">공지 문서 열기 ↗</a>
+            </div>
+        </div>
+
         <!-- 1. 선생님 / 학급별 맞춤 단축 시간표 조회기 -->
         <div class="m-card">
             <div class="m-card-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -1583,7 +1667,7 @@
         <span class="nav-icon">🍱</span>
         <span class="nav-label">급식·점심</span>
     </button>
-    <button class="nav-item" onclick="switchTab('tab-event', this)">
+    <button id="navItemEvent" class="nav-item" onclick="switchTab('tab-event', this)">
         <span class="nav-icon">⏱️</span>
         <span class="nav-label">행사·단축</span>
     </button>
@@ -1605,6 +1689,25 @@
             <button style="border:none; background:#edf2f7; border-radius:50%; width:28px; height:28px; font-size:16px; cursor:pointer;" onclick="closeEventImgModal()">✕</button>
         </div>
         <img id="eventImgModalSrc" src="./event_sep23.png" style="width:100%; border-radius:6px; display:block;" alt="공문 크게보기">
+    </div>
+</div>
+
+<!-- 🚨 중요 공지사항 상세 모달 -->
+<div id="importantNoticeModal" class="modal-backdrop" onclick="closeImportantNoticeModal(event)">
+    <div style="background:white; border-radius:14px; padding:18px; max-width:92%; width:440px; max-height:85vh; overflow-y:auto; position:relative; box-shadow:0 12px 35px rgba(0,0,0,0.25);" onclick="event.stopPropagation()">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-200); padding-bottom:10px; margin-bottom:12px;">
+            <div style="font-weight:800; font-size:16px; color:#c53030; display:flex; align-items:center; gap:6px;">
+                <span>🚨</span> 중요 공지사항
+            </div>
+            <button style="border:none; background:#edf2f7; border-radius:50%; width:28px; height:28px; font-size:16px; cursor:pointer;" onclick="closeImportantNoticeModal()">✕</button>
+        </div>
+        <div id="importantNoticeModalBody">
+            <!-- JS로 동적 렌더링 -->
+        </div>
+        <div style="margin-top:16px; padding-top:12px; border-top:1px solid var(--gray-200); display:flex; justify-content:space-between; align-items:center;">
+            <a href="https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing" target="_blank" style="font-size:12px; color:var(--primary); text-decoration:underline;">📝 공지·단축 구글문서 열기 ↗</a>
+            <button class="m-btn m-btn-sm" style="background:var(--gray-800); color:white;" onclick="closeImportantNoticeModal()">확인</button>
+        </div>
     </div>
 </div>
 
@@ -1696,7 +1799,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-21T23:15:00.220Z",
+  "updatedAt": "2026-09-22T23:13:34.248Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5108,7 +5211,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-21T23:15:00.217Z",
+  "updatedAt": "2026-09-22T23:13:34.248Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5168,6 +5271,17 @@ window.SUBSTITUTE_DATA = {
     },
     {
       "type": "substitute",
+      "origTeacher": "김민철",
+      "origDate": "9/23(수)",
+      "origTime": "수5",
+      "origDay": "수",
+      "origPeriod": 5,
+      "subjectClass": "1-3 (종2)",
+      "subTeacher": "김윤희",
+      "reason": "학교행사"
+    },
+    {
+      "type": "substitute",
       "origTeacher": "최재민",
       "origDate": "9/23(수)",
       "origTime": "수6",
@@ -5192,6 +5306,23 @@ window.SUBSTITUTE_DATA = {
 };
 </script>
 <!-- SUBSTITUTE_DATA_END -->
+<!-- NOTICE_DATA_START -->
+<script>
+window.IMPORTANT_NOTICE_DATA = {
+  "updatedAt": "2026-09-22T23:13:34.246Z",
+  "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
+  "notices": [
+    {
+      "rawDate": "9월 23일",
+      "timeStr": "오전 10시 12시",
+      "content": "예배 끝나고 전체 교직원 기념 촬영을 함께 하도록 하겠습니다. 예배 후 강당에 잠시 대기하셨다가 무대로 올라와주시기 바랍니다.",
+      "note": "10자 내외로 요약하여서 앱 화면 상단에 당일/시간내 공지 후 삭제",
+      "summary": "📸 예배 후 교직원 기념촬영 (강당)"
+    }
+  ]
+};
+</script>
+<!-- NOTICE_DATA_END -->
 <script>
     const schedule = {};
     const days = ['월', '화', '수', '목', '금'];
@@ -7780,11 +7911,204 @@ window.SUBSTITUTE_DATA = {
             if (showToastMsg) {
                 showToast('구글 시트 연동 중 일시적 오류가 발생했습니다.');
             }
+    // ==================== 🚨 중요 공지사항 & 행사 자동 만료(삭제) 로직 ====================
+    let currentActiveNotice = null;
+
+    function renderTopImportantNotice() {
+        const banner = document.getElementById('topImportantNoticeBanner');
+        const textEl = document.getElementById('topNoticeSummaryText');
+        if (!banner || !textEl) return;
+
+        const noticeData = window.IMPORTANT_NOTICE_DATA;
+        if (!noticeData || !noticeData.notices || noticeData.notices.length === 0) {
+            banner.style.display = 'none';
+            return;
+        }
+
+        const now = new Date();
+        const curM = now.getMonth() + 1;
+        const curD = now.getDate();
+        const curTimeVal = now.getHours() * 60 + now.getMinutes();
+
+        let activeNotice = null;
+
+        for (let n of noticeData.notices) {
+            // 일자 매칭 (예: 9월 23일)
+            const dMatch = n.rawDate.match(/(\d+)월\s*(\d+)일/);
+            if (!dMatch) continue;
+            const nM = parseInt(dMatch[1]);
+            const nD = parseInt(dMatch[2]);
+
+            // 오늘 날짜인지 확인
+            if (curM === nM && curD === nD) {
+                // 시간 체크: 기본적으로 당일 오전 07:30 ~ 12:30 (또는 행사 종료 시점) 내 공지 후 자동 삭제
+                // 구글 문서의 "오전 10시 12시" -> 12시 30분(750분) 이후에는 자동 숨김
+                if (curTimeVal <= 750) { // 12:30까지 노출
+                    activeNotice = n;
+                    break;
+                }
+            }
+        }
+
+        if (!activeNotice) {
+            banner.style.display = 'none';
+            currentActiveNotice = null;
+            return;
+        }
+
+        // 사용자가 이번 세션에 닫았는지 확인
+        const isClosed = sessionStorage.getItem('closed_top_notice_' + activeNotice.rawDate);
+        if (isClosed === '1') {
+            banner.style.display = 'none';
+            currentActiveNotice = activeNotice;
+            return;
+        }
+
+        currentActiveNotice = activeNotice;
+        textEl.innerText = activeNotice.summary || '📸 예배 후 교직원 기념촬영 (강당)';
+        banner.style.display = 'flex';
+    }
+
+    function openImportantNoticeModal() {
+        const modal = document.getElementById('importantNoticeModal');
+        const bodyEl = document.getElementById('importantNoticeModalBody');
+        if (!modal || !bodyEl) return;
+
+        const n = currentActiveNotice || (window.IMPORTANT_NOTICE_DATA && window.IMPORTANT_NOTICE_DATA.notices && window.IMPORTANT_NOTICE_DATA.notices[0]);
+        if (!n) return;
+
+        bodyEl.innerHTML = `
+            <div style="background:#fffaf0; border:1px solid #fbd38d; border-radius:10px; padding:12px 14px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                    <span style="background:#dd6b20; color:white; font-size:11px; font-weight:800; padding:2px 8px; border-radius:6px;">일시</span>
+                    <span style="font-size:14px; font-weight:bold; color:var(--gray-800);">${n.rawDate} ${n.timeStr}</span>
+                </div>
+                <div style="font-size:13.5px; color:#2d3748; line-height:1.6; white-space:pre-wrap; font-weight:600; margin-top:8px;">
+${n.content}
+                </div>
+            </div>
+            ${n.note ? `
+            <div style="font-size:11.5px; color:var(--gray-500); background:#f7fafc; padding:8px 10px; border-radius:6px; border:1px dashed var(--gray-300);">
+                💡 <b>안내</b>: ${n.note}
+            </div>` : ''}
+        `;
+
+        modal.classList.add('active');
+    }
+
+    function closeImportantNoticeModal(e) {
+        if (e) e.stopPropagation();
+        const modal = document.getElementById('importantNoticeModal');
+        if (modal) modal.classList.remove('active');
+    }
+
+    function closeTopNoticeBanner(e) {
+        if (e) e.stopPropagation();
+        const banner = document.getElementById('topImportantNoticeBanner');
+        if (banner) banner.style.display = 'none';
+        if (currentActiveNotice && currentActiveNotice.rawDate) {
+            sessionStorage.setItem('closed_top_notice_' + currentActiveNotice.rawDate, '1');
+        }
+    }
+
+    // 오늘 단축 시간표 및 행사도 오늘이 지나면 삭제/숨김 처리
+    function checkEventTabExpiry() {
+        const todayIso = getTodayIsoDate();
+        const navItemEvent = document.getElementById('navItemEvent');
+        const tabEvent = document.getElementById('tab-event');
+
+        // 9월 23일 행사: 오늘이 2026-09-23을 지난 경우
+        if (todayIso > '2026-09-23') {
+            // 미래에 다른 예정된 행사가 없으면 행사 탭 네비게이션 버튼을 완전히 숨김
+            if (navItemEvent) navItemEvent.style.display = 'none';
+            if (tabEvent) {
+                tabEvent.innerHTML = `
+                    <div style="text-align:center; padding:50px 20px; color:var(--gray-500);">
+                        <div style="font-size:40px; margin-bottom:12px;">🏖️</div>
+                        <div style="font-size:16px; font-weight:bold; color:var(--gray-700); margin-bottom:6px;">현재 예정된 행사 및 단축수업이 없습니다.</div>
+                        <div style="font-size:13px;">새로운 행사 및 단축수업 일정이 등록되면 자동으로 안내됩니다.</div>
+                        <div style="margin-top:16px;">
+                            <a href="https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing" target="_blank" style="font-size:12px; color:var(--primary); text-decoration:underline;">📝 공지·단축 구글문서 확인 ↗</a>
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            // 오늘(9/23)인 경우 행사 탭 정상 노출
+            if (navItemEvent) navItemEvent.style.display = 'flex';
+        }
+    }
+
+    // 구글 문서 실시간 Fetch (공지사항 및 단축수업)
+    async function fetchLiveGoogleDocNotice() {
+        const url = 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/export?format=html';
+        try {
+            const res = await fetch(url);
+            if (res.ok) {
+                const html = await res.text();
+                const rowMatches = html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi) || [];
+                const newNotices = [];
+
+                for (let rHtml of rowMatches) {
+                    const tdMatches = rHtml.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [];
+                    if (tdMatches.length < 3) continue;
+
+                    const cleanCell = (tdStr) => {
+                        return tdStr
+                            .replace(/<[^>]+>/g, ' ')
+                            .replace(/&nbsp;/g, ' ')
+                            .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(code))
+                            .replace(/\s+/g, ' ')
+                            .trim();
+                    };
+
+                    const colDate = cleanCell(tdMatches[0]);
+                    const colTime = cleanCell(tdMatches[1]);
+                    const colContent = cleanCell(tdMatches[2]);
+                    const colNote = tdMatches[3] ? cleanCell(tdMatches[3]) : '';
+
+                    if (colDate.includes('일자') || colContent.includes('내용')) continue;
+                    if (!colDate && !colContent) continue;
+
+                    let summary = '';
+                    if (colNote && colNote.length <= 20 && !colNote.includes('요약')) {
+                        summary = colNote;
+                    } else {
+                        if (colContent.includes('기념 촬영') || colContent.includes('기념촬영')) {
+                            summary = '📸 예배 후 교직원 기념촬영 (강당)';
+                        } else {
+                            summary = colContent.slice(0, 16).trim() + (colContent.length > 16 ? '..' : '');
+                        }
+                    }
+
+                    newNotices.push({
+                        rawDate: colDate,
+                        timeStr: colTime,
+                        content: colContent,
+                        note: colNote,
+                        summary: summary
+                    });
+                }
+
+                if (!window.IMPORTANT_NOTICE_DATA) {
+                    window.IMPORTANT_NOTICE_DATA = { docUrl: 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing', notices: [] };
+                }
+                window.IMPORTANT_NOTICE_DATA.notices = newNotices;
+                window.IMPORTANT_NOTICE_DATA.updatedAt = new Date().toISOString();
+
+                renderTopImportantNotice();
+                checkEventTabExpiry();
+                console.log('✔ 실시간 구글 문서 공지사항 최신화 완료');
+            }
+        } catch (e) {
+            console.warn('Live gdoc notice fetch failed:', e.message);
         }
     }
 
 
     window.onload = function() {
+        renderTopImportantNotice();
+        checkEventTabExpiry();
         renderDutyUI();
         initDateBadge();
         initData();
@@ -7797,6 +8121,7 @@ window.SUBSTITUTE_DATA = {
         fetchLiveGoogleSheetsNightDuty();
         fetchLiveGoogleSheetsMorningLunchDuty();
         fetchLiveGoogleSheetsSubstitute();
+        fetchLiveGoogleDocNotice();
         renderTodayAutoSubBanner();
         filterPhone();
         renderGroupChips();
