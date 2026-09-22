@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="배화 시간표">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>🐱 배화여자고등학교 스마트 시간표</title>
 <!-- 귀여운 노란 고양이 앱 아이콘 및 파비콘 -->
 <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png">
@@ -1248,7 +1251,7 @@
         <img src="./cat.png" class="app-title-cat" alt="노란 고양이">
         <span class="app-title-text">배화여고 시간표</span>
     </div>
-    <div id="headerDateBadge" class="today-badge">9월 23일(수)</div>
+    <div id="headerDateBadge" class="today-badge" onclick="forceAppReload()" style="cursor:pointer;" title="터치하여 최신 데이터 새로고침">9월 23일(수) <span style="font-size:10px; opacity:0.8;">🔄</span></div>
 </header>
 
 <main class="container">
@@ -1799,7 +1802,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-22T23:24:02.363Z",
+  "updatedAt": "2026-09-22T23:26:06.839Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5211,7 +5214,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-22T23:24:02.363Z",
+  "updatedAt": "2026-09-22T23:26:06.839Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5309,12 +5312,12 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-09-22T23:24:02.363Z",
+  "updatedAt": "2026-09-22T23:26:06.839Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
       "rawDate": "9월 23일",
-      "timeStr": "오전 10시 12시",
+      "timeStr": "오전 10시-12시",
       "content": "예배 끝나고 전체 교직원 기념 촬영을 함께 하도록 하겠습니다. 예배 후 강당에 잠시 대기하셨다가 무대로 올라와주시기 바랍니다.",
       "note": "10자 내외로 요약하여서 앱 화면 상단에 당일/시간내 공지 후 삭제",
       "summary": "📸 예배 후 교직원 기념촬영 (강당)"
@@ -5466,10 +5469,17 @@ window.IMPORTANT_NOTICE_DATA = {
         const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
         const dayStr = dayNames[now.getDay()];
         
-        document.getElementById('headerDateBadge').innerText = `${mm}월 ${dd}일(${dayStr})`;
+        const el = document.getElementById('headerDateBadge');
+        if (el) el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="font-size:10px; opacity:0.8;">🔄</span>`;
         
         const todayKor = getTodayDayStr();
         if (todayKor) currentLunchDay = todayKor;
+    }
+
+    function forceAppReload() {
+        if (confirm('최신 데이터를 서버에서 다시 불러오시겠습니까? (캐시 초기화)')) {
+            window.location.href = window.location.pathname + '?t=' + Date.now();
+        }
     }
 
     // 탭 전환
