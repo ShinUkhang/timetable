@@ -2172,7 +2172,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-09-22T23:54:38.413Z",
+  "updatedAt": "2026-09-23T00:02:36.314Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5584,7 +5584,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-09-22T23:54:38.413Z",
+  "updatedAt": "2026-09-23T00:02:36.314Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5682,7 +5682,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-09-22T23:54:38.413Z",
+  "updatedAt": "2026-09-23T00:02:36.314Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -6649,7 +6649,7 @@ window.IMPORTANT_NOTICE_DATA = {
                         ],
                         [
                             { name: "서영미", ext: "332" },
-                            { name: "홍선희", ext: "335", role: "ai코디", roleColor: "#0284c7" }
+                            { name: "홍선희", ext: "335", role: "ai코디(월·수)", roleColor: "#0284c7" }
                         ],
                         [
                             { empty: true, label: "빈 책상" },
@@ -7014,6 +7014,16 @@ window.IMPORTANT_NOTICE_DATA = {
     function getSeatTeacherStatus(name, day, period) {
         // 비교과, 교장/교감, 행정실 등 시간표에 없는 교직원
         if (!teachers.includes(name)) {
+            // 홍선희 선생님은 월, 수만 출근
+            if (name === '홍선희') {
+                const isWorkDay = (day === '월' || day === '수');
+                return {
+                    isAtDesk: isWorkDay,
+                    statusText: isWorkDay ? "출근 (월·수 근무)" : "미출근 (월·수만 출근)",
+                    isTeacher: false
+                };
+            }
+
             return {
                 isAtDesk: true,
                 statusText: "상주 (자리있음)",
