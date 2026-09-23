@@ -29,6 +29,18 @@ const GSHEET_WEB_SUBSTITUTE = 'https://docs.google.com/spreadsheets/d/1JwPDIac4Z
 const GDOC_URL_NOTICE_HTML = 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/export?format=html';
 const GDOC_WEB_NOTICE = 'https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing';
 
+// 도서관 활용수업 구글 스프레드시트 링크 (김동하 교사)
+const GSHEET_URL_LIBRARY = 'https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/export?format=csv&gid=0';
+const GSHEET_WEB_LIBRARY = 'https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing';
+
+const libraryScheduleData = {
+    updatedAt: new Date().toISOString(),
+    sheetUrl: GSHEET_WEB_LIBRARY,
+    teacherName: '김동하',
+    scheduleByDate: {},
+    classList: []
+};
+
 const importantNoticeData = {
     updatedAt: new Date().toISOString(),
     docUrl: GDOC_WEB_NOTICE,
@@ -162,25 +174,38 @@ function isSpecialEvent(text) {
 }
 
 function parseCSV(text) {
-    const lines = text.split(/\r?\n/);
-    return lines.map(line => {
-        const result = [];
-        let cur = '';
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                result.push(cur.trim());
-                cur = '';
+    const rows = [];
+    let currentRow = [];
+    let currentCell = '';
+    let inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        const next = text[i + 1];
+        if (c === '"') {
+            if (inQuotes && next === '"') {
+                currentCell += '"';
+                i++;
             } else {
-                cur += char;
+                inQuotes = !inQuotes;
             }
+        } else if (c === ',' && !inQuotes) {
+            currentRow.push(currentCell.trim());
+            currentCell = '';
+        } else if ((c === '\r' || c === '\n') && !inQuotes) {
+            if (c === '\r' && next === '\n') i++;
+            currentRow.push(currentCell.trim());
+            rows.push(currentRow);
+            currentRow = [];
+            currentCell = '';
+        } else {
+            currentCell += c;
         }
-        result.push(cur.trim());
-        return result;
-    });
+    }
+    if (currentRow.length > 0 || currentCell) {
+        currentRow.push(currentCell.trim());
+        rows.push(currentRow);
+    }
+    return rows;
 }
 
 // 1. 로컬 엑셀 파일 파싱 (등교, 중식)
@@ -637,12 +662,71 @@ async function parseGoogleDocNotice() {
     }
 }
 
+// 5. 도서관 활용수업 구글 스프레드시트 수집 (김동하 교사)
+async function parseGoogleSheetsLibrary() {
+    console.log('[5] 도서관 활용수업 구글 스프레드시트 수집 중 (김동하 교사)...');
+    try {
+        const res = await fetch(GSHEET_URL_LIBRARY);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const csv = await res.text();
+        const rows = parseCSV(csv);
+
+        function normDate(dStr) {
+            if (!dStr) return null;
+            const parts = dStr.split('.').map(s => s.trim()).filter(Boolean);
+            if (parts.length >= 3) {
+                const y = parts[0];
+                const m = String(parts[1]).padStart(2, '0');
+                const d = String(parts[2]).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+            return null;
+        }
+
+        if (rows.length >= 9) {
+            const dateRow = rows[0];
+            const dayRow = rows[1];
+
+            for (let col = 1; col < dateRow.length; col++) {
+                const rawDate = dateRow[col];
+                const isoDate = normDate(rawDate);
+                if (!isoDate) continue;
+
+                const dayOfWeek = dayRow[col] || '';
+                const daySchedule = {};
+
+                for (let p = 1; p <= 7; p++) {
+                    const rowIdx = p + 1;
+                    const cellVal = rows[rowIdx] ? rows[rowIdx][col] || '' : '';
+                    const cleanVal = cellVal.replace(/\r\n|\r|\n/g, ' ').trim();
+                    daySchedule[p] = cleanVal;
+
+                    if (cleanVal) {
+                        libraryScheduleData.classList.push({
+                            date: isoDate,
+                            day: dayOfWeek,
+                            period: p,
+                            subject: cleanVal
+                        });
+                    }
+                }
+
+                libraryScheduleData.scheduleByDate[isoDate] = daySchedule;
+            }
+            console.log(`   ✔ 도서관 활용수업 총 ${libraryScheduleData.classList.length}건 수업 일정 수집 완료 (${Object.keys(libraryScheduleData.scheduleByDate).length}일치)`);
+        }
+    } catch (e) {
+        console.warn('   ⚠ 도서관 활용수업 구글 스프레드시트 가져오기 실패:', e.message);
+    }
+}
+
 async function main() {
     parseLocalExcel();
     await parseGoogleSheetsNightDuty();
     await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
     await parseGoogleDocNotice();
+    await parseGoogleSheetsLibrary();
     syncEventFiles();
 
     const sortedDates = Object.keys(dutyData.dates).sort();
@@ -718,6 +802,27 @@ window.IMPORTANT_NOTICE_DATA = ${JSON.stringify(importantNoticeData, null, 2)};
             html = html.replace('</body>', noticeInjection + '\n</body>');
         }
         console.log('[삽입 완료] index.html에 중요 공지 데이터 블록을 추가했습니다.');
+    }
+
+    // 4. 도서관 활용수업 데이터 주입 (김동하 교사)
+    const libraryInjection = `<!-- LIBRARY_SCHEDULE_DATA_START -->
+<script>
+window.LIBRARY_SCHEDULE_DATA = ${JSON.stringify(libraryScheduleData, null, 2)};
+</script>
+<!-- LIBRARY_SCHEDULE_DATA_END -->`;
+
+    if (html.includes('<!-- LIBRARY_SCHEDULE_DATA_START -->')) {
+        html = html.replace(/<!-- LIBRARY_SCHEDULE_DATA_START -->[\s\S]*?<!-- LIBRARY_SCHEDULE_DATA_END -->/, libraryInjection);
+        console.log('[업데이트] index.html의 도서관 활용수업 데이터 블록을 갱신했습니다.');
+    } else {
+        const noticeEndIdx = html.indexOf('<!-- NOTICE_DATA_END -->');
+        if (noticeEndIdx !== -1) {
+            const insertPos = noticeEndIdx + '<!-- NOTICE_DATA_END -->'.length;
+            html = html.slice(0, insertPos) + '\n' + libraryInjection + html.slice(insertPos);
+        } else {
+            html = html.replace('</body>', libraryInjection + '\n</body>');
+        }
+        console.log('[삽입 완료] index.html에 도서관 활용수업 데이터 블록을 추가했습니다.');
     }
 
     fs.writeFileSync(htmlPath, html, 'utf8');
