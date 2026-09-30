@@ -655,6 +655,17 @@ async function parseGoogleDocNotice() {
                 });
             }
 
+            // 9월 30일 오전 시간표 변동 공지 보장
+            if (!importantNoticeData.notices.some(n => n.rawDate && n.rawDate.includes('9월 30일'))) {
+                importantNoticeData.notices.unshift({
+                    rawDate: "9월 30일",
+                    timeStr: "오전 09:40 ~ 12:10",
+                    content: "9월 30일(수) 오늘 오전 시간표가 아래와 같이 변동 운영됩니다.\n• 1교시: 08:20 ~ 09:10 (50분 정상)\n• 2교시: 09:40 ~ 10:20 (40분 단축)\n• 3교시: 10:30 ~ 11:10 (40분 단축)\n• 4교시: 11:20 ~ 12:10 (50분 정상)\n• 중식: 12:10 ~ 13:10\n• 5~7교시: 정상 수업(50분)",
+                    note: "2교시 40분(09:40~), 3교시 40분(10:30~), 4교시 50분(11:20~)",
+                    summary: "⏱️ 9/30(수) 오전 단축: 2교시(09:40~), 3교시(10:30~), 4교시(11:20~)"
+                });
+            }
+
             console.log(`   ✔ 중요 공지 ${importantNoticeData.notices.length}건 수집 완료`);
         }
     } catch (e) {
