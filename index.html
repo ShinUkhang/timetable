@@ -2289,7 +2289,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-10-05T23:35:09.922Z",
+  "updatedAt": "2026-10-05T23:47:07.384Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -5701,7 +5701,7 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-10-05T23:35:09.922Z",
+  "updatedAt": "2026-10-05T23:47:07.384Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
@@ -5766,7 +5766,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-10-05T23:35:09.922Z",
+  "updatedAt": "2026-10-05T23:47:07.384Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -5775,6 +5775,13 @@ window.IMPORTANT_NOTICE_DATA = {
       "content": "9월 30일(수) 오늘 오전 시간표가 아래와 같이 변동 운영됩니다.\n• 1교시: 08:20 ~ 09:10 (50분 정상)\n• 2교시: 09:40 ~ 10:20 (40분 단축)\n• 3교시: 10:30 ~ 11:10 (40분 단축)\n• 4교시: 11:20 ~ 12:10 (50분 정상)\n• 중식: 12:10 ~ 13:10\n• 5~7교시: 정상 수업(50분)",
       "note": "2교시 40분(09:40~), 3교시 40분(10:30~), 4교시 50분(11:20~)",
       "summary": "⏱️ 9/30(수) 오전 단축: 2교시(09:40~), 3교시(10:30~), 4교시(11:20~)"
+    },
+    {
+      "rawDate": "10월 6일",
+      "timeStr": "종일",
+      "content": "10월 6일(화) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
+      "note": "금 시간표 운영",
+      "summary": "⚠️ 10/6(화) 오늘 금요일 시간표 운영"
     },
     {
       "rawDate": "9월 23일",
@@ -5790,7 +5797,7 @@ window.IMPORTANT_NOTICE_DATA = {
 <!-- LIBRARY_SCHEDULE_DATA_START -->
 <script>
 window.LIBRARY_SCHEDULE_DATA = {
-  "updatedAt": "2026-10-05T23:35:09.922Z",
+  "updatedAt": "2026-10-05T23:47:07.384Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing",
   "teacherName": "김동하",
   "scheduleByDate": {
@@ -10506,7 +10513,14 @@ window.LIBRARY_SCHEDULE_DATA = {
 
     // 오늘 요일 계산 (0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6: 토)
     function getTodayDayStr() {
-        const d = new Date().getDay();
+        const now = new Date();
+        const mm = now.getMonth() + 1;
+        const dd = now.getDate();
+        // 10월 6일(화)은 금요일 시간표로 대체 운영
+        if (mm === 10 && dd === 6) {
+            return '금';
+        }
+        const d = now.getDay();
         const map = { 1: '월', 2: '화', 3: '수', 4: '목', 5: '금' };
         return map[d] || null;
     }
@@ -10520,7 +10534,13 @@ window.LIBRARY_SCHEDULE_DATA = {
         const dayStr = dayNames[now.getDay()];
         
         const el = document.getElementById('headerDateBadge');
-        if (el) el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="font-size:10px; opacity:0.8;">🔄</span>`;
+        if (el) {
+            if (mm === 10 && dd === 6) {
+                el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="background:#fef08a; color:#854d0e; font-size:10.5px; padding:1px 6px; border-radius:4px; font-weight:800; vertical-align:middle;">금 시간표</span> <span style="font-size:10px; opacity:0.8;">🔄</span>`;
+            } else {
+                el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="font-size:10px; opacity:0.8;">🔄</span>`;
+            }
+        }
         
         const todayKor = getTodayDayStr();
         if (todayKor) currentLunchDay = todayKor;
@@ -11224,7 +11244,15 @@ window.LIBRARY_SCHEDULE_DATA = {
         if (kimToolbar) kimToolbar.style.display = 'none';
         if (kimAnnual) kimAnnual.style.display = 'none';
 
-        if (titleEl) titleEl.innerText = `📅 ${t} 선생님 주간 시간표`;
+        if (titleEl) {
+            const now = new Date();
+            const isOct6 = (now.getMonth() + 1 === 10 && now.getDate() === 6);
+            if (isOct6) {
+                titleEl.innerHTML = `📅 ${t} 선생님 주간 시간표 <span style="background:#fef08a; color:#854d0e; font-size:12px; padding:2px 8px; border-radius:4px; font-weight:bold; margin-left:6px; vertical-align:middle;">⚠️ 오늘(화) 금 시간표 운영</span>`;
+            } else {
+                titleEl.innerText = `📅 ${t} 선생님 주간 시간표`;
+            }
+        }
         const todayStr = getTodayDayStr();
         
         let html = '<tr><th class="period-col">교시</th>';
@@ -11308,7 +11336,16 @@ window.LIBRARY_SCHEDULE_DATA = {
         const cls = document.getElementById('classSelect').value;
         if(!cls) return;
 
-        document.getElementById('classTimetableTitle').innerText = `🏫 [${cls}반] 일과 시간표`;
+        const classTitleEl = document.getElementById('classTimetableTitle');
+        if (classTitleEl) {
+            const now = new Date();
+            const isOct6 = (now.getMonth() + 1 === 10 && now.getDate() === 6);
+            if (isOct6) {
+                classTitleEl.innerHTML = `🏫 [${cls}반] 일과 시간표 <span style="background:#fef08a; color:#854d0e; font-size:12px; padding:2px 8px; border-radius:4px; font-weight:bold; margin-left:6px; vertical-align:middle;">⚠️ 오늘(화) 금 시간표 운영</span>`;
+            } else {
+                classTitleEl.innerText = `🏫 [${cls}반] 일과 시간표`;
+            }
+        }
         const todayStr = getTodayDayStr();
         const table = document.getElementById('classTimetableTable');
 
@@ -12267,8 +12304,15 @@ window.LIBRARY_SCHEDULE_DATA = {
                 <a href="#seat-sec-admin" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">행정실 & 시설</a>
                 <a href="#seat-sec-homeroom" class="seat-day-chip" style="text-decoration:none; padding:3px 8px; font-size:11.5px;">담임교실표</a>
             </div>
-            <div style="font-size:12px; color:var(--primary-dark); font-weight:bold; margin-bottom:10px;">
-                📅 <strong>${day}요일 ${periodDisplay}</strong> 기준 좌석 상태입니다.
+            <div style="font-size:12px; color:var(--primary-dark); font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <span>📅 <strong>${day}요일 ${periodDisplay}</strong> 기준 좌석 상태입니다.</span>
+                ${(function(){
+                    const now = new Date();
+                    if (now.getMonth() + 1 === 10 && now.getDate() === 6) {
+                        return `<span style="background:#fef08a; color:#854d0e; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:bold;">⚠️ 오늘(10/6 화) 금요일 시간표 운영 중</span>`;
+                    }
+                    return '';
+                })()}
             </div>
         `;
 
@@ -14329,7 +14373,9 @@ window.LIBRARY_SCHEDULE_DATA = {
             if (curM === nM && curD === nD) {
                 // 시간 체크: 기본적으로 당일 오전 07:30 ~ 12:30 (또는 행사 종료 시점) 내 공지 후 자동 삭제
                 // 구글 문서의 "오전 10시 12시" -> 12시 30분(750분) 이후에는 자동 숨김
-                if (curTimeVal <= 750) { // 12:30까지 노출
+                // 종일 공지이거나 시간표 관련 공지인 경우 하루 종일 노출
+                const isAllDay = (n.timeStr && n.timeStr.includes('종일')) || (n.content && n.content.includes('시간표')) || (n.summary && n.summary.includes('시간표'));
+                if (isAllDay || curTimeVal <= 750) { // 12:30까지 노출 또는 종일 공지
                     activeNotice = n;
                     break;
                 }
@@ -14478,6 +14524,28 @@ ${n.content}
                         content: colContent,
                         note: colNote,
                         summary: summary
+                    });
+                }
+
+                // 10월 6일 금요일 시간표 대체 운영 공지 보장
+                if (!newNotices.some(n => n.rawDate && n.rawDate.includes('10월 6일'))) {
+                    newNotices.unshift({
+                        rawDate: "10월 6일",
+                        timeStr: "종일",
+                        content: "10월 6일(화) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
+                        note: "금 시간표 운영",
+                        summary: "⚠️ 10/6(화) 오늘 금요일 시간표 운영"
+                    });
+                }
+
+                // 9월 30일 오전 시간표 변동 공지 보장
+                if (!newNotices.some(n => n.rawDate && n.rawDate.includes('9월 30일'))) {
+                    newNotices.unshift({
+                        rawDate: "9월 30일",
+                        timeStr: "오전 09:40 ~ 12:10",
+                        content: "9월 30일(수) 오늘 오전 시간표가 아래와 같이 변동 운영됩니다.\n• 1교시: 08:20 ~ 09:10 (50분 정상)\n• 2교시: 09:40 ~ 10:20 (40분 단축)\n• 3교시: 10:30 ~ 11:10 (40분 단축)\n• 4교시: 11:20 ~ 12:10 (50분 정상)\n• 중식: 12:10 ~ 13:10\n• 5~7교시: 정상 수업(50분)",
+                        note: "2교시 40분(09:40~), 3교시 40분(10:30~), 4교시 50분(11:20~)",
+                        summary: "⏱️ 9/30(수) 오전 단축: 2교시(09:40~), 3교시(10:30~), 4교시(11:20~)"
                     });
                 }
 
