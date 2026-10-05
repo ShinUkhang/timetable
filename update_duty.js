@@ -159,11 +159,43 @@ function parseDateCell(val, defaultYear = 2026) {
     return null;
 }
 
-function cleanTeacherName(raw) {
+function isDateOnOrAfterOct6(dateKey) {
+    if (!dateKey) return true;
+    const str = String(dateKey).trim();
+    const isoMatch = str.match(/^(\d{4})[-./](\d{1,2})[-./](\d{1,2})/);
+    if (isoMatch) {
+        const y = parseInt(isoMatch[1]);
+        const m = parseInt(isoMatch[2]);
+        const d = parseInt(isoMatch[3]);
+        if (y > 2026) return true;
+        if (y === 2026) {
+            if (m > 10) return true;
+            if (m === 10 && d >= 6) return true;
+            return false;
+        }
+        return false;
+    }
+    const mMatch = str.match(/(\d+)[\/월\.\-](\d+)/);
+    if (mMatch) {
+        const m = parseInt(mMatch[1]);
+        const d = parseInt(mMatch[2]);
+        if (m > 10) return true;
+        if (m === 10 && d >= 6) return true;
+        return false;
+    }
+    return true;
+}
+
+function cleanTeacherName(raw, dateKey = '') {
     if (!raw) return '';
     let name = String(raw).replace(/선생님/g, '').replace(/\s+/g, '').trim();
     const pMatch = name.match(/^([가-힣]{2,4})\(/);
     if (pMatch) name = pMatch[1];
+
+    // 10월 6일부터 노석후 -> 황주윤 교사 변경
+    if (name === '노석후' && isDateOnOrAfterOct6(dateKey)) {
+        name = '황주윤';
+    }
     return name;
 }
 
@@ -236,8 +268,8 @@ function parseLocalExcel() {
                             const dayStr = String(r[1] || '').replace('요일', '').trim();
                             if (dayStr) entry.dayOfWeek = dayStr;
                             
-                            const mainT = cleanTeacherName(r[2]);
-                            const annexT = cleanTeacherName(r[3]);
+                            const mainT = cleanTeacherName(r[2], dObj.key);
+                            const annexT = cleanTeacherName(r[3], dObj.key);
                             if (mainT && mainT !== 'null' && mainT !== 'undefined') entry.morning.main = mainT;
                             if (annexT && annexT !== 'null' && annexT !== 'undefined') entry.morning.annex = annexT;
                         }
@@ -255,8 +287,8 @@ function parseLocalExcel() {
                             const dayStr = String(r[1] || '').replace('요일', '').trim();
                             if (dayStr) entry.dayOfWeek = dayStr;
                             
-                            const f3 = cleanTeacherName(r[2]);
-                            const f4 = cleanTeacherName(r[3]);
+                            const f3 = cleanTeacherName(r[2], dObj.key);
+                            const f4 = cleanTeacherName(r[3], dObj.key);
                             if (f3 && f3 !== 'null' && f3 !== 'undefined') entry.lunch.floor3 = f3;
                             if (f4 && f4 !== 'null' && f4 !== 'undefined') entry.lunch.floor4 = f4;
                         }
@@ -300,8 +332,8 @@ async function parseGoogleSheetsNightDuty() {
                     entry.night.grade1.note = rawOrig;
                     entry.night.grade1.teacher = rawOrig;
                 } else {
-                    const origT = cleanTeacherName(rawOrig);
-                    const changeT = cleanTeacherName(rawChange);
+                    const origT = cleanTeacherName(rawOrig, dObj.key);
+                    const changeT = cleanTeacherName(rawChange, dObj.key);
 
                     if (changeT) {
                         entry.night.grade1.teacher = changeT;
@@ -354,7 +386,7 @@ async function parseGoogleSheetsNightDuty() {
                         entry.night.grade23.note = rawT;
                         entry.night.grade23.teacher = rawT;
                     } else {
-                        const t = cleanTeacherName(rawT);
+                        const t = cleanTeacherName(rawT, dObj.key);
                         entry.night.grade23.teacher = t;
                         entry.night.grade23.original = t;
                     }
@@ -400,8 +432,8 @@ async function parseGoogleSheetsNightDuty() {
                     entry.night.grade23.teacher = rawOrig;
                     entry.night.grade23.place = '별관 4층';
                 } else {
-                    const origT = cleanTeacherName(rawOrig);
-                    const changeT = cleanTeacherName(rawChange);
+                    const origT = cleanTeacherName(rawOrig, dObj.key);
+                    const changeT = cleanTeacherName(rawChange, dObj.key);
                     const finalT = changeT || origT;
 
                     entry.night.grade1.teacher = finalT;
@@ -479,8 +511,8 @@ async function parseGoogleSheetsMorningLunchDuty() {
                 const dayStr = String(r[1] || '').replace('요일', '').trim();
                 if (dayStr) entry.dayOfWeek = dayStr;
 
-                const mainT = cleanTeacherName(r[2]);
-                const annexT = cleanTeacherName(r[3]);
+                const mainT = cleanTeacherName(r[2], dObj.key);
+                const annexT = cleanTeacherName(r[3], dObj.key);
                 if (mainT && mainT !== 'null' && mainT !== 'undefined') entry.morning.main = mainT;
                 if (annexT && annexT !== 'null' && annexT !== 'undefined') entry.morning.annex = annexT;
                 countM++;
@@ -512,8 +544,8 @@ async function parseGoogleSheetsMorningLunchDuty() {
                 const dayStr = String(r[1] || '').replace('요일', '').trim();
                 if (dayStr) entry.dayOfWeek = dayStr;
 
-                const f3 = cleanTeacherName(r[2]);
-                const f4 = cleanTeacherName(r[3]);
+                const f3 = cleanTeacherName(r[2], dObj.key);
+                const f4 = cleanTeacherName(r[3], dObj.key);
                 if (f3 && f3 !== 'null' && f3 !== 'undefined') entry.lunch.floor3 = f3;
                 if (f4 && f4 !== 'null' && f4 !== 'undefined') entry.lunch.floor4 = f4;
                 countL++;
@@ -534,10 +566,10 @@ async function parseGoogleSheetsSubstitute() {
             for (let i = 2; i < rows.length; i++) {
                 const r = rows[i];
                 if (!r || r.length < 5) continue;
-                const origTeacher = cleanTeacherName(r[1]);
+                const origDate = r[2] ? r[2].trim() : '';
+                const origTeacher = cleanTeacherName(r[1], origDate);
                 if (!origTeacher) continue;
 
-                const origDate = r[2] ? r[2].trim() : '';
                 const origTime = r[3] ? r[3].trim() : '';
                 const subjectClass = r[4] ? r[4].trim() : '';
                 const changeTarget = r[5] ? r[5].trim() : '';
@@ -554,7 +586,7 @@ async function parseGoogleSheetsSubstitute() {
                 }
 
                 if (changeTarget.includes('보강')) {
-                    const subTeacher = cleanTeacherName(changeTarget.replace(/보강/g, ''));
+                    const subTeacher = cleanTeacherName(changeTarget.replace(/보강/g, ''), origDate);
                     substituteData.list.push({
                         type: 'substitute',
                         origTeacher,
@@ -575,7 +607,7 @@ async function parseGoogleSheetsSubstitute() {
                         origDay,
                         origPeriod,
                         subjectClass,
-                        targetTeacher: cleanTeacherName(changeTarget.replace(/교체/g, '')),
+                        targetTeacher: cleanTeacherName(changeTarget.replace(/교체/g, ''), origDate),
                         newTime,
                         newClass,
                         reason
