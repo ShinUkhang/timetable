@@ -6,7 +6,7 @@ const dutyDir = path.join(__dirname, '등교급식지도');
 const htmlPath = path.join(__dirname, 'index.html');
 
 console.log('====================================================');
-console.log('🏫 배화여고 등교·급식·야자 지도 데이터 자동 동기화');
+console.log('🏫 배화여고 야자감독 데이터 자동 동기화');
 console.log('====================================================');
 
 // 구글 스프레드시트 야자감독 링크
@@ -775,16 +775,17 @@ async function parseGoogleSheetsLibrary() {
 }
 
 async function main() {
-    parseLocalExcel();
+    // 등교·중식지도 삭제 요청에 따라 야자감독만 동기화
+    // parseLocalExcel();
     await parseGoogleSheetsNightDuty();
-    await parseGoogleSheetsMorningLunchDuty();
+    // await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
     await parseGoogleDocNotice();
     await parseGoogleSheetsLibrary();
     syncEventFiles();
 
     const sortedDates = Object.keys(dutyData.dates).sort();
-    console.log(`[통합 완료] 총 ${sortedDates.length}일간의 등교·급식·야자 데이터 구축 완료!`);
+    console.log(`[통합 완료] 총 ${sortedDates.length}일간의 야자감독 데이터 구축 완료!`);
     if (sortedDates.length > 0) {
         console.log(` - 기간: ${sortedDates[0]} ~ ${sortedDates[sortedDates.length - 1]}`);
     }
@@ -796,7 +797,7 @@ async function main() {
 
     let html = fs.readFileSync(htmlPath, 'utf8');
 
-    // 1. 등교·급식·야자 데이터 주입
+    // 1. 야자감독 데이터 주입
     const dutyInjection = `<!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = ${JSON.stringify(dutyData, null, 2)};
@@ -805,7 +806,7 @@ window.DUTY_SCHEDULE_DATA = ${JSON.stringify(dutyData, null, 2)};
 
     if (html.includes('<!-- DUTY_DATA_START -->')) {
         html = html.replace(/<!-- DUTY_DATA_START -->[\s\S]*?<!-- DUTY_DATA_END -->/, dutyInjection);
-        console.log('[업데이트] index.html의 등교·급식·야자 데이터 블록을 갱신했습니다.');
+        console.log('[업데이트] index.html의 야자감독 데이터 블록을 갱신했습니다.');
     } else {
         const scriptIdx = html.indexOf('<script>');
         if (scriptIdx !== -1) {
@@ -813,7 +814,7 @@ window.DUTY_SCHEDULE_DATA = ${JSON.stringify(dutyData, null, 2)};
         } else {
             html = html.replace('</body>', dutyInjection + '\n</body>');
         }
-        console.log('[삽입 완료] index.html에 등교·급식·야자 데이터 블록을 추가했습니다.');
+        console.log('[삽입 완료] index.html에 야자감독 데이터 블록을 추가했습니다.');
     }
 
     // 2. 결보강 데이터 주입

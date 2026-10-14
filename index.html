@@ -839,17 +839,11 @@
         color: var(--primary);
     }
 
-    /* 3단 카드 그리드 (등교 / 급식 / 야자) */
+    /* 야자감독 단독 카드 그리드 */
     .duty-grid-3 {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
         gap: 8px;
-    }
-    @media (max-width: 600px) {
-        .duty-grid-3 {
-            grid-template-columns: 1fr;
-            gap: 8px;
-        }
     }
     .duty-box {
         border-radius: 10px;
@@ -977,14 +971,8 @@
     }
     .today-auto-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
         gap: 6px;
-    }
-    @media (max-width: 500px) {
-        .today-auto-grid {
-            grid-template-columns: 1fr;
-            gap: 6px;
-        }
     }
     .today-auto-col {
         background: white;
@@ -1558,12 +1546,12 @@
         <!-- 교사 본인 지도 당번 알림 배너 (등교/급식/야자) -->
         <div id="myDutyAlertBanner" class="duty-my-alert" style="display:none;"></div>
 
-        <!-- 🏫 요일별 등교·급식·야자 지도 위젯 -->
+        <!-- 🌙 요일별 야간 자기주도학습(야자) 감독 위젯 -->
         <div class="duty-summary-card">
             <div class="duty-week-header">
                 <div class="duty-date-title">
-                    <span>🏫</span>
-                    <span id="dutySelectedDateText">지도교사 (등교 · 급식 · 야자)</span>
+                    <span>🌙</span>
+                    <span id="dutySelectedDateText">야자감독 (야간 자기주도학습)</span>
                 </div>
                 <div class="duty-nav-btn-group">
                     <button class="duty-nav-btn" onclick="shiftDutyWeek(-1)" title="이전 주">◀ 이전주</button>
@@ -1773,17 +1761,6 @@
         </div>
 
         
-        <!-- 오늘 중식지도 담당 안내 -->
-        <div class="m-card" style="margin-top:12px;">
-            <div class="m-card-title">
-                <span>🍱 오늘 중식지도 담당 (12:10~13:10)</span>
-                <button class="m-btn m-btn-outline m-btn-sm" onclick="openDutyAllModal()">전체일정</button>
-            </div>
-            <div id="lunchDutySummaryInMealTab">
-                <!-- JS 렌더링 -->
-            </div>
-        </div>
-
         <!-- 점심 짝꿍 카드 -->
         <div class="m-card">
             <div class="m-card-title">🍱 점심 짝꿍 찾기 (4, 5교시)</div>
@@ -2203,14 +2180,14 @@
 
 <!-- 수업 교환/보강 모달 바텀시트 -->
 
-<!-- 등교·중식 지도 전체 일정 모달 바텀시트 -->
+<!-- 야자감독 전체 일정 모달 바텀시트 -->
 <div id="dutyAllModal" class="modal-backdrop" onclick="closeDutyAllModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
         <div class="sheet-header">
             <div>
-                <h3 class="sheet-title">📋 등교·중식 지도 일정 및 수칙</h3>
-                <div class="sheet-subtitle">배화여자고등학교 학생 생활지도 배정표</div>
+                <h3 class="sheet-title">📋 야간 자기주도학습(야자) 감독 일정 및 수칙</h3>
+                <div class="sheet-subtitle">배화여자고등학교 야자감독 배정표</div>
             </div>
             <button class="sheet-close" onclick="closeDutyAllModal()">✕</button>
         </div>
@@ -2289,7 +2266,7 @@
 <!-- DUTY_DATA_START -->
 <script>
 window.DUTY_SCHEDULE_DATA = {
-  "updatedAt": "2026-10-07T07:39:39.651Z",
+  "updatedAt": "2026-10-14T01:27:55.537Z",
   "links": {
     "nightGrade1": "https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445",
     "nightGrade23": "https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0",
@@ -2300,706 +2277,6 @@ window.DUTY_SCHEDULE_DATA = {
   "noticeLunch": "★ 학생 중식지도 안내사항★\n- 지도 시간 : 12:10~13:10\n- 학생 착석 지도 : 3학년 - 3,4층 / 2학년 - 3층 / 1학년 - 4층 (우측 열 뒤부터 앞좌석 순)\n- 중식 중 정숙 지도 및 개인 위생 지도",
   "noticeNight": "★ 자기주도학습(야간자율학습) 지도 안내사항★\n- 10/14 이전: 1학년(믿음방) / 2,3학년(별관 4층)\n- 10/15 이후: 별관 4층 통합 감독\n- 감독 변경 시 구글 스프레드시트 <감독변경> 란에 기재",
   "dates": {
-    "2026-09-01": {
-      "dateStr": "2026-09-01",
-      "displayDate": "9월 1일",
-      "year": 2026,
-      "month": 9,
-      "day": 1,
-      "dayOfWeek": "화",
-      "morning": {
-        "main": "이수진",
-        "annex": "우서영",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "선소희",
-        "floor4": "이수진",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "서진숙",
-          "original": "서진숙",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "윤종희",
-          "original": "윤종희",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-02": {
-      "dateStr": "2026-09-02",
-      "displayDate": "9월 2일",
-      "year": 2026,
-      "month": 9,
-      "day": 2,
-      "dayOfWeek": "수",
-      "morning": {
-        "main": "구인혜",
-        "annex": "원종범",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "이미나",
-        "floor4": "박경화",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "학력평가 (석식X)",
-          "original": "-",
-          "changed": false,
-          "note": "학력평가 (석식X)",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "학평 및 모평",
-          "original": "-",
-          "changed": false,
-          "note": "학평 및 모평",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-03": {
-      "dateStr": "2026-09-03",
-      "displayDate": "9월 3일",
-      "year": 2026,
-      "month": 9,
-      "day": 3,
-      "dayOfWeek": "목",
-      "morning": {
-        "main": "-",
-        "annex": "김영주",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "선민수",
-        "floor4": "-",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "주탐방 (중석식X)",
-          "original": "-",
-          "changed": false,
-          "note": "주탐방 (중석식X)",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "양진택",
-          "original": "양진택",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-04": {
-      "dateStr": "2026-09-04",
-      "displayDate": "9월 4일",
-      "year": 2026,
-      "month": 9,
-      "day": 4,
-      "dayOfWeek": "금",
-      "morning": {
-        "main": "송정하",
-        "annex": "윤종희",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "우승훈",
-        "floor4": "윤의국",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "박경화",
-          "original": "강주혁",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "선소희",
-          "original": "선소희",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-07": {
-      "dateStr": "2026-09-07",
-      "displayDate": "9월 7일",
-      "year": 2026,
-      "month": 9,
-      "day": 7,
-      "dayOfWeek": "월",
-      "morning": {
-        "main": "김선우",
-        "annex": "양진택",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "김지혜",
-        "floor4": "김영주",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "최재민",
-          "original": "윤의국",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "구성덕",
-          "original": "구성덕",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-08": {
-      "dateStr": "2026-09-08",
-      "displayDate": "9월 8일",
-      "year": 2026,
-      "month": 9,
-      "day": 8,
-      "dayOfWeek": "화",
-      "morning": {
-        "main": "정주연",
-        "annex": "선소희",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "임성우",
-        "floor4": "윤종희",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "윤의국",
-          "original": "최재민",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김수경",
-          "original": "김수경",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-09": {
-      "dateStr": "2026-09-09",
-      "displayDate": "9월 9일",
-      "year": 2026,
-      "month": 9,
-      "day": 9,
-      "dayOfWeek": "수",
-      "morning": {
-        "main": "김동하",
-        "annex": "구성덕",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "황상희",
-        "floor4": "원종범",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "우서영",
-          "original": "우서영",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김민철",
-          "original": "김민철",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-10": {
-      "dateStr": "2026-09-10",
-      "displayDate": "9월 10일",
-      "year": 2026,
-      "month": 9,
-      "day": 10,
-      "dayOfWeek": "목",
-      "morning": {
-        "main": "윤소연",
-        "annex": "김수경",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "전성민",
-        "floor4": "강주혁",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "임진삼",
-          "original": "임진삼",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "정은혜",
-          "original": "정은혜",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-11": {
-      "dateStr": "2026-09-11",
-      "displayDate": "9월 11일",
-      "year": 2026,
-      "month": 9,
-      "day": 11,
-      "dayOfWeek": "금",
-      "morning": {
-        "main": "전성민",
-        "annex": "김보라",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "정은혜",
-        "floor4": "양진택",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "정태진",
-          "original": "선민수",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "이미나",
-          "original": "이미나",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-14": {
-      "dateStr": "2026-09-14",
-      "displayDate": "9월 14일",
-      "year": 2026,
-      "month": 9,
-      "day": 14,
-      "dayOfWeek": "월",
-      "morning": {
-        "main": "박경화",
-        "annex": "김지혜",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "윤소연",
-        "floor4": "김보라",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "강주혁",
-          "original": "박경화",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "노석후",
-          "original": "노석후",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-15": {
-      "dateStr": "2026-09-15",
-      "displayDate": "9월 15일",
-      "year": 2026,
-      "month": 9,
-      "day": 15,
-      "dayOfWeek": "화",
-      "morning": {
-        "main": "선민수",
-        "annex": "배민욱",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "최재민",
-        "floor4": "정태진",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "신미경",
-          "original": "전성민",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김영주",
-          "original": "김영주",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-16": {
-      "dateStr": "2026-09-16",
-      "displayDate": "9월 16일",
-      "year": 2026,
-      "month": 9,
-      "day": 16,
-      "dayOfWeek": "수",
-      "morning": {
-        "main": "이미나",
-        "annex": "정은혜",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "우서영",
-        "floor4": "백수정",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "전성민",
-          "original": "황상희",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김윤희",
-          "original": "김윤희",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-17": {
-      "dateStr": "2026-09-17",
-      "displayDate": "9월 17일",
-      "year": 2026,
-      "month": 9,
-      "day": 17,
-      "dayOfWeek": "목",
-      "morning": {
-        "main": "노석후",
-        "annex": "임성우",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "김동하",
-        "floor4": "최연오",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "윤소연",
-          "original": "윤소연",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "신욱항",
-          "original": "신욱항",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-18": {
-      "dateStr": "2026-09-18",
-      "displayDate": "9월 18일",
-      "year": 2026,
-      "month": 9,
-      "day": 18,
-      "dayOfWeek": "금",
-      "morning": {
-        "main": "정다영",
-        "annex": "우승훈",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "정주연",
-        "floor4": "김윤희",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "김동하",
-          "original": "김동하",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "신미경",
-          "original": "신미경",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-21": {
-      "dateStr": "2026-09-21",
-      "displayDate": "9월 21일",
-      "year": 2026,
-      "month": 9,
-      "day": 21,
-      "dayOfWeek": "월",
-      "morning": {
-        "main": "김윤희",
-        "annex": "서진숙",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "김수경",
-        "floor4": "서진숙",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "정주연",
-          "original": "정주연",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "정다영",
-          "original": "정다영",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-22": {
-      "dateStr": "2026-09-22",
-      "displayDate": "9월 22일",
-      "year": 2026,
-      "month": 9,
-      "day": 22,
-      "dayOfWeek": "화",
-      "morning": {
-        "main": "신욱항",
-        "annex": "강주혁",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "김선우",
-        "floor4": "조성용",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "김선우",
-          "original": "김선우",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김보라",
-          "original": "김보라",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-23": {
-      "dateStr": "2026-09-23",
-      "displayDate": "9월 23일",
-      "year": 2026,
-      "month": 9,
-      "day": 23,
-      "dayOfWeek": "수",
-      "morning": {
-        "main": "신미경",
-        "annex": "최재민",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "구인혜",
-        "floor4": "조혜림",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "선민수",
-          "original": "구인혜",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "김지혜",
-          "original": "김지혜",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-28": {
-      "dateStr": "2026-09-28",
-      "displayDate": "9월 28일",
-      "year": 2026,
-      "month": 9,
-      "day": 28,
-      "dayOfWeek": "월",
-      "morning": {
-        "main": "이효정",
-        "annex": "윤의국",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "구성덕",
-        "floor4": "이효정",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "이수진",
-          "original": "이수진",
-          "changed": false,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "송정하",
-          "original": "송정하",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-29": {
-      "dateStr": "2026-09-29",
-      "displayDate": "9월 29일",
-      "year": 2026,
-      "month": 9,
-      "day": 29,
-      "dayOfWeek": "화",
-      "morning": {
-        "main": "조혜림",
-        "annex": "임진삼",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "배민욱",
-        "floor4": "신미경",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "최연오",
-          "original": "정태진",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "우승훈",
-          "original": "우승훈",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
-    "2026-09-30": {
-      "dateStr": "2026-09-30",
-      "displayDate": "9월 30일",
-      "year": 2026,
-      "month": 9,
-      "day": 30,
-      "dayOfWeek": "수",
-      "morning": {
-        "main": "조성용",
-        "annex": "우서영",
-        "timeMain": "07:30~08:00",
-        "timeAnnex": "07:30~07:50"
-      },
-      "lunch": {
-        "floor3": "송정하",
-        "floor4": "신욱항",
-        "time": "12:10~13:10"
-      },
-      "night": {
-        "grade1": {
-          "teacher": "정태진",
-          "original": "최연오",
-          "changed": true,
-          "note": "",
-          "place": "믿음방"
-        },
-        "grade23": {
-          "teacher": "임성우",
-          "original": "임성우",
-          "changed": false,
-          "note": "",
-          "place": "별관 4층"
-        }
-      }
-    },
     "2026-08-24": {
       "dateStr": "2026-08-24",
       "displayDate": "8월 24일",
@@ -3210,6 +2487,601 @@ window.DUTY_SCHEDULE_DATA = {
         }
       }
     },
+    "2026-09-01": {
+      "dateStr": "2026-09-01",
+      "displayDate": "9월 1일",
+      "year": 2026,
+      "month": 9,
+      "day": 1,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "서진숙",
+          "original": "서진숙",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "윤종희",
+          "original": "윤종희",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-02": {
+      "dateStr": "2026-09-02",
+      "displayDate": "9월 2일",
+      "year": 2026,
+      "month": 9,
+      "day": 2,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "학력평가 (석식X)",
+          "original": "-",
+          "changed": false,
+          "note": "학력평가 (석식X)",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "학평 및 모평",
+          "original": "-",
+          "changed": false,
+          "note": "학평 및 모평",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-03": {
+      "dateStr": "2026-09-03",
+      "displayDate": "9월 3일",
+      "year": 2026,
+      "month": 9,
+      "day": 3,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "주탐방 (중석식X)",
+          "original": "-",
+          "changed": false,
+          "note": "주탐방 (중석식X)",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "양진택",
+          "original": "양진택",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-04": {
+      "dateStr": "2026-09-04",
+      "displayDate": "9월 4일",
+      "year": 2026,
+      "month": 9,
+      "day": 4,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "박경화",
+          "original": "강주혁",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "선소희",
+          "original": "선소희",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-07": {
+      "dateStr": "2026-09-07",
+      "displayDate": "9월 7일",
+      "year": 2026,
+      "month": 9,
+      "day": 7,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최재민",
+          "original": "윤의국",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "구성덕",
+          "original": "구성덕",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-08": {
+      "dateStr": "2026-09-08",
+      "displayDate": "9월 8일",
+      "year": 2026,
+      "month": 9,
+      "day": 8,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤의국",
+          "original": "최재민",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김수경",
+          "original": "김수경",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-09": {
+      "dateStr": "2026-09-09",
+      "displayDate": "9월 9일",
+      "year": 2026,
+      "month": 9,
+      "day": 9,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "우서영",
+          "original": "우서영",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김민철",
+          "original": "김민철",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-10": {
+      "dateStr": "2026-09-10",
+      "displayDate": "9월 10일",
+      "year": 2026,
+      "month": 9,
+      "day": 10,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "임진삼",
+          "original": "임진삼",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정은혜",
+          "original": "정은혜",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-11": {
+      "dateStr": "2026-09-11",
+      "displayDate": "9월 11일",
+      "year": 2026,
+      "month": 9,
+      "day": 11,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정태진",
+          "original": "선민수",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "이미나",
+          "original": "이미나",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-14": {
+      "dateStr": "2026-09-14",
+      "displayDate": "9월 14일",
+      "year": 2026,
+      "month": 9,
+      "day": 14,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "강주혁",
+          "original": "박경화",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "노석후",
+          "original": "노석후",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-15": {
+      "dateStr": "2026-09-15",
+      "displayDate": "9월 15일",
+      "year": 2026,
+      "month": 9,
+      "day": 15,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "신미경",
+          "original": "전성민",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김영주",
+          "original": "김영주",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-16": {
+      "dateStr": "2026-09-16",
+      "displayDate": "9월 16일",
+      "year": 2026,
+      "month": 9,
+      "day": 16,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "전성민",
+          "original": "황상희",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김윤희",
+          "original": "김윤희",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-17": {
+      "dateStr": "2026-09-17",
+      "displayDate": "9월 17일",
+      "year": 2026,
+      "month": 9,
+      "day": 17,
+      "dayOfWeek": "목",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "윤소연",
+          "original": "윤소연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신욱항",
+          "original": "신욱항",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-18": {
+      "dateStr": "2026-09-18",
+      "displayDate": "9월 18일",
+      "year": 2026,
+      "month": 9,
+      "day": 18,
+      "dayOfWeek": "금",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김동하",
+          "original": "김동하",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "신미경",
+          "original": "신미경",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-21": {
+      "dateStr": "2026-09-21",
+      "displayDate": "9월 21일",
+      "year": 2026,
+      "month": 9,
+      "day": 21,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정주연",
+          "original": "정주연",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "정다영",
+          "original": "정다영",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-22": {
+      "dateStr": "2026-09-22",
+      "displayDate": "9월 22일",
+      "year": 2026,
+      "month": 9,
+      "day": 22,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "김선우",
+          "original": "김선우",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김보라",
+          "original": "김보라",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-23": {
+      "dateStr": "2026-09-23",
+      "displayDate": "9월 23일",
+      "year": 2026,
+      "month": 9,
+      "day": 23,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "선민수",
+          "original": "구인혜",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "김지혜",
+          "original": "김지혜",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
     "2026-09-24": {
       "dateStr": "2026-09-24",
       "displayDate": "9월 24일",
@@ -3280,6 +3152,111 @@ window.DUTY_SCHEDULE_DATA = {
         }
       }
     },
+    "2026-09-28": {
+      "dateStr": "2026-09-28",
+      "displayDate": "9월 28일",
+      "year": 2026,
+      "month": 9,
+      "day": 28,
+      "dayOfWeek": "월",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "이수진",
+          "original": "이수진",
+          "changed": false,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "송정하",
+          "original": "송정하",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-29": {
+      "dateStr": "2026-09-29",
+      "displayDate": "9월 29일",
+      "year": 2026,
+      "month": 9,
+      "day": 29,
+      "dayOfWeek": "화",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "최연오",
+          "original": "정태진",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "우승훈",
+          "original": "우승훈",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
+    "2026-09-30": {
+      "dateStr": "2026-09-30",
+      "displayDate": "9월 30일",
+      "year": 2026,
+      "month": 9,
+      "day": 30,
+      "dayOfWeek": "수",
+      "morning": {
+        "main": "-",
+        "annex": "-",
+        "timeMain": "07:30~08:00",
+        "timeAnnex": "07:30~07:50"
+      },
+      "lunch": {
+        "floor3": "-",
+        "floor4": "-",
+        "time": "12:10~13:10"
+      },
+      "night": {
+        "grade1": {
+          "teacher": "정태진",
+          "original": "최연오",
+          "changed": true,
+          "note": "",
+          "place": "믿음방"
+        },
+        "grade23": {
+          "teacher": "임성우",
+          "original": "임성우",
+          "changed": false,
+          "note": "",
+          "place": "별관 4층"
+        }
+      }
+    },
     "2026-10-01": {
       "dateStr": "2026-10-01",
       "displayDate": "10월 1일",
@@ -3288,14 +3265,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 1,
       "dayOfWeek": "목",
       "morning": {
-        "main": "이수진",
-        "annex": "원종범",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "정다영",
-        "floor4": "김동하",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3393,14 +3370,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 6,
       "dayOfWeek": "화",
       "morning": {
-        "main": "백수정",
-        "annex": "윤종희",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "최재민",
-        "floor4": "정주연",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3428,8 +3405,8 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 7,
       "dayOfWeek": "수",
       "morning": {
-        "main": "최연오",
-        "annex": "양진택",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
@@ -3463,8 +3440,8 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 8,
       "dayOfWeek": "목",
       "morning": {
-        "main": "정태진",
-        "annex": "선소희",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
@@ -3533,8 +3510,8 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 12,
       "dayOfWeek": "월",
       "morning": {
-        "main": "송정하",
-        "annex": "구성덕",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
@@ -3568,8 +3545,8 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 13,
       "dayOfWeek": "화",
       "morning": {
-        "main": "구인혜",
-        "annex": "김수경",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
@@ -3603,8 +3580,8 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 14,
       "dayOfWeek": "수",
       "morning": {
-        "main": "정주연",
-        "annex": "김영주",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
@@ -3778,14 +3755,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 15,
       "dayOfWeek": "목",
       "morning": {
-        "main": "김동하",
-        "annex": "김보라",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "선소희",
-        "floor4": "김수경",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3815,14 +3792,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 16,
       "dayOfWeek": "금",
       "morning": {
-        "main": "김선우",
-        "annex": "김지혜",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "이미나",
-        "floor4": "구인혜",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3852,14 +3829,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 19,
       "dayOfWeek": "월",
       "morning": {
-        "main": "윤소연",
-        "annex": "배민욱",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "우승훈",
-        "floor4": "송정하",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3889,14 +3866,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 20,
       "dayOfWeek": "화",
       "morning": {
-        "main": "전성민",
-        "annex": "정은혜",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "임진삼",
-        "floor4": "구성덕",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3926,14 +3903,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 21,
       "dayOfWeek": "수",
       "morning": {
-        "main": "박경화",
-        "annex": "임성우",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "황상희",
-        "floor4": "박경화",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -3963,14 +3940,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 22,
       "dayOfWeek": "목",
       "morning": {
-        "main": "선민수",
-        "annex": "우승훈",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "전성민",
-        "floor4": "이수진",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4000,14 +3977,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 23,
       "dayOfWeek": "금",
       "morning": {
-        "main": "이미나",
-        "annex": "서진숙",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "선민수",
-        "floor4": "김선우",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4037,14 +4014,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 26,
       "dayOfWeek": "월",
       "morning": {
-        "main": "지리교사",
-        "annex": "강주혁",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "임성우",
-        "floor4": "윤의국",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4074,14 +4051,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 27,
       "dayOfWeek": "화",
       "morning": {
-        "main": "정다영",
-        "annex": "최재민",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "정은혜",
-        "floor4": "윤종희",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4111,14 +4088,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 28,
       "dayOfWeek": "수",
       "morning": {
-        "main": "김윤희",
-        "annex": "윤의국",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "우서영",
-        "floor4": "김영주",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4148,14 +4125,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 29,
       "dayOfWeek": "목",
       "morning": {
-        "main": "신욱항",
-        "annex": "임진삼",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "윤소연",
-        "floor4": "지리교사",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4185,14 +4162,14 @@ window.DUTY_SCHEDULE_DATA = {
       "day": 30,
       "dayOfWeek": "금",
       "morning": {
-        "main": "신미경",
-        "annex": "우서영",
+        "main": "-",
+        "annex": "-",
         "timeMain": "07:30~08:00",
         "timeAnnex": "07:30~07:50"
       },
       "lunch": {
-        "floor3": "배민욱",
-        "floor4": "양진택",
+        "floor3": "-",
+        "floor4": "-",
         "time": "12:10~13:10"
       },
       "night": {
@@ -4641,16 +4618,16 @@ window.DUTY_SCHEDULE_DATA = {
       },
       "night": {
         "grade1": {
-          "teacher": "전성민",
+          "teacher": "황상희",
           "original": "전성민",
-          "changed": false,
+          "changed": true,
           "note": "",
           "place": "별관 4층"
         },
         "grade23": {
-          "teacher": "전성민",
+          "teacher": "황상희",
           "original": "전성민",
-          "changed": false,
+          "changed": true,
           "note": "",
           "place": "별관 4층"
         },
@@ -5701,63 +5678,173 @@ window.DUTY_SCHEDULE_DATA = {
 <!-- SUBSTITUTE_DATA_START -->
 <script>
 window.SUBSTITUTE_DATA = {
-  "updatedAt": "2026-10-07T07:39:39.651Z",
+  "updatedAt": "2026-10-14T01:27:55.537Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/1JwPDIac4ZIaPJC48Osx-TOfXqeix0h_LbNLp38-UNYI/edit?usp=sharing",
   "list": [
     {
       "type": "substitute",
-      "origTeacher": "조성용",
-      "origDate": "10/1(목)",
-      "origTime": "목6",
+      "origTeacher": "최연오",
+      "origDate": "10/15(목)",
+      "origTime": "목1",
       "origDay": "목",
-      "origPeriod": 6,
-      "subjectClass": "3-5 (심국)",
-      "subTeacher": "김수경",
+      "origPeriod": 1,
+      "subjectClass": "3-2 (D영미)",
+      "subTeacher": "정은혜",
       "reason": "개인사유"
     },
     {
       "type": "substitute",
-      "origTeacher": "선민수",
-      "origDate": "10/1(목)",
-      "origTime": "목7",
+      "origTeacher": "최연오",
+      "origDate": "10/15(목)",
+      "origTime": "목2",
       "origDay": "목",
-      "origPeriod": 7,
-      "subjectClass": "2-6 (미적)",
-      "subTeacher": "김재희",
-      "reason": "개인사유"
+      "origPeriod": 2,
+      "subjectClass": "3-2 (D영미)",
+      "subTeacher": "임성우",
+      "reason": ""
     },
     {
       "type": "substitute",
-      "origTeacher": "이효정",
-      "origDate": "10/1(목)",
-      "origTime": "목7",
+      "origTeacher": "최연오",
+      "origDate": "10/15(목)",
+      "origTime": "목5",
       "origDay": "목",
-      "origPeriod": 7,
-      "subjectClass": "2-1 (화언A)",
+      "origPeriod": 5,
+      "subjectClass": "3-2 (심영)",
       "subTeacher": "옥수경",
       "reason": "개인사유"
     },
     {
       "type": "substitute",
-      "origTeacher": "송정하",
-      "origDate": "10/6(화)",
-      "origTime": "화1",
-      "origDay": "화",
-      "origPeriod": 1,
-      "subjectClass": "교과1 (음연)",
-      "subTeacher": "정주연",
-      "reason": "개인사유"
+      "origTeacher": "최연오",
+      "origDate": "10/15(목)",
+      "origTime": "목6",
+      "origDay": "목",
+      "origPeriod": 6,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "옥수경",
+      "reason": ""
     },
     {
       "type": "substitute",
-      "origTeacher": "송정하",
-      "origDate": "10/6(화)",
-      "origTime": "화2",
-      "origDay": "화",
+      "origTeacher": "최연오",
+      "origDate": "10/16(금)",
+      "origTime": "금2",
+      "origDay": "금",
       "origPeriod": 2,
-      "subjectClass": "교과1 (음연)",
-      "subTeacher": "배민욱",
-      "reason": "개인사유"
+      "subjectClass": "3-3 (진로)",
+      "subTeacher": "정다영",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/16(금)",
+      "origTime": "금3",
+      "origDay": "금",
+      "origPeriod": 3,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "정다영",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/19(월)",
+      "origTime": "월2",
+      "origDay": "월",
+      "origPeriod": 2,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "선소희",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/19(월)",
+      "origTime": "월3",
+      "origDay": "월",
+      "origPeriod": 3,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "선민수",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/19(월)",
+      "origTime": "월5",
+      "origDay": "월",
+      "origPeriod": 5,
+      "subjectClass": "3-2 (D영미)",
+      "subTeacher": "김보라",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/21(수)",
+      "origTime": "수2",
+      "origDay": "수",
+      "origPeriod": 2,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "신미경",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/21(수)",
+      "origTime": "수3",
+      "origDay": "수",
+      "origPeriod": 3,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "신미경",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/22(목)",
+      "origTime": "목1",
+      "origDay": "목",
+      "origPeriod": 1,
+      "subjectClass": "3-2 (D영미)",
+      "subTeacher": "전성민",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/22(목)",
+      "origTime": "목5",
+      "origDay": "목",
+      "origPeriod": 5,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "김수경",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/22(목)",
+      "origTime": "목6",
+      "origDay": "목",
+      "origPeriod": 6,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "옥수경",
+      "reason": ""
+    },
+    {
+      "type": "substitute",
+      "origTeacher": "최연오",
+      "origDate": "10/22(목)",
+      "origTime": "목6",
+      "origDay": "목",
+      "origPeriod": 6,
+      "subjectClass": "3-2 (심영)",
+      "subTeacher": "이미나",
+      "reason": ""
     }
   ]
 };
@@ -5766,7 +5853,7 @@ window.SUBSTITUTE_DATA = {
 <!-- NOTICE_DATA_START -->
 <script>
 window.IMPORTANT_NOTICE_DATA = {
-  "updatedAt": "2026-10-07T07:39:39.651Z",
+  "updatedAt": "2026-10-14T01:27:55.537Z",
   "docUrl": "https://docs.google.com/document/d/1gBhXrn8bg5Zj1wZGSHBEpyTdZm6hhtNcuhTB4FWj22U/edit?usp=sharing",
   "notices": [
     {
@@ -5797,7 +5884,7 @@ window.IMPORTANT_NOTICE_DATA = {
 <!-- LIBRARY_SCHEDULE_DATA_START -->
 <script>
 window.LIBRARY_SCHEDULE_DATA = {
-  "updatedAt": "2026-10-07T07:39:39.651Z",
+  "updatedAt": "2026-10-14T01:27:55.534Z",
   "sheetUrl": "https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing",
   "teacherName": "김동하",
   "scheduleByDate": {
@@ -7977,7 +8064,7 @@ window.LIBRARY_SCHEDULE_DATA = {
       "4": "1학년 국어 형",
       "5": "",
       "6": "1학년 국어 지",
-      "7": ""
+      "7": "2학년 농학교 또래활동"
     },
     "2026-10-29": {
       "1": "금요일 시간표",
@@ -8399,13 +8486,13 @@ window.LIBRARY_SCHEDULE_DATA = {
       "3": "",
       "4": "",
       "5": "",
-      "6": "",
-      "7": ""
+      "6": "사회문제탐구",
+      "7": "사회문제탐구"
     },
     "2026-12-15": {
       "1": "",
-      "2": "",
-      "3": "",
+      "2": "사회문제탐구",
+      "3": "사회문제탐구",
       "4": "",
       "5": "",
       "6": "",
@@ -8415,7 +8502,7 @@ window.LIBRARY_SCHEDULE_DATA = {
       "1": "",
       "2": "",
       "3": "",
-      "4": "",
+      "4": "사회문제탐구",
       "5": "",
       "6": "",
       "7": ""
@@ -8433,7 +8520,7 @@ window.LIBRARY_SCHEDULE_DATA = {
       "1": "",
       "2": "",
       "3": "",
-      "4": "",
+      "4": "사회문제탐구",
       "5": "",
       "6": "",
       "7": ""
@@ -10229,6 +10316,12 @@ window.LIBRARY_SCHEDULE_DATA = {
       "subject": "1학년 국어 지"
     },
     {
+      "date": "2026-10-28",
+      "day": "수",
+      "period": 7,
+      "subject": "2학년 농학교 또래활동"
+    },
+    {
       "date": "2026-10-29",
       "day": "목",
       "period": 1,
@@ -10383,6 +10476,42 @@ window.LIBRARY_SCHEDULE_DATA = {
       "day": "목",
       "period": 2,
       "subject": "음악"
+    },
+    {
+      "date": "2026-12-14",
+      "day": "월",
+      "period": 6,
+      "subject": "사회문제탐구"
+    },
+    {
+      "date": "2026-12-14",
+      "day": "월",
+      "period": 7,
+      "subject": "사회문제탐구"
+    },
+    {
+      "date": "2026-12-15",
+      "day": "화",
+      "period": 2,
+      "subject": "사회문제탐구"
+    },
+    {
+      "date": "2026-12-15",
+      "day": "화",
+      "period": 3,
+      "subject": "사회문제탐구"
+    },
+    {
+      "date": "2026-12-16",
+      "day": "수",
+      "period": 4,
+      "subject": "사회문제탐구"
+    },
+    {
+      "date": "2026-12-18",
+      "day": "금",
+      "period": 4,
+      "subject": "사회문제탐구"
     }
   ]
 };
@@ -12680,7 +12809,6 @@ window.LIBRARY_SCHEDULE_DATA = {
         currentWeekMondayIso = getMondayIsoOf(val);
         renderDutyUI();
         setTimeout(fetchLiveGoogleSheetsNightDuty, 1500);
-        setTimeout(fetchLiveGoogleSheetsMorningLunchDuty, 1500);
     }
 
     function resetDutyToToday() {
@@ -12970,150 +13098,9 @@ window.LIBRARY_SCHEDULE_DATA = {
         }
     }
 
-    // 10월 1일부터 등교·중식지도 구글 스프레드시트 실시간 동기화
+    // 등교·중식지도 삭제로 인한 비활성화
     async function fetchLiveGoogleSheetsMorningLunchDuty() {
-        const urlMorning = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/export?format=csv&gid=1493387912';
-        const urlLunch = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/export?format=csv&gid=1305561620';
-
-        if (!window.DUTY_SCHEDULE_DATA) window.DUTY_SCHEDULE_DATA = { dates: {} };
-        if (!window.DUTY_SCHEDULE_DATA.dates) window.DUTY_SCHEDULE_DATA.dates = {};
-        const data = window.DUTY_SCHEDULE_DATA.dates;
-
-        function getOrCreateEntry(key, m, d) {
-            if (!data[key]) {
-                data[key] = {
-                    dateStr: key,
-                    displayDate: `${parseInt(m)}월 ${parseInt(d)}일`,
-                    year: 2026,
-                    month: parseInt(m),
-                    day: parseInt(d),
-                    dayOfWeek: '',
-                    morning: { main: '-', annex: '-', timeMain: '07:30~08:00', timeAnnex: '07:30~07:50' },
-                    lunch: { floor3: '-', floor4: '-', time: '12:10~13:10' },
-                    night: {
-                        grade1: { teacher: '-', original: '-', changed: false, note: '', place: '믿음방' },
-                        grade23: { teacher: '-', original: '-', changed: false, note: '', place: '별관 4층' }
-                    }
-                };
-            }
-            return data[key];
-        }
-
-        function parseCSVLine(text) {
-            const rows = [];
-            const lines = text.split(/\r?\n/);
-            for (let line of lines) {
-                if (!line.trim()) continue;
-                const row = [];
-                let inQuote = false;
-                let cur = '';
-                for (let i = 0; i < line.length; i++) {
-                    const c = line[i];
-                    if (c === '"') {
-                        inQuote = !inQuote;
-                    } else if (c === ',' && !inQuote) {
-                        row.push(cur.replace(/^"|"$/g, '').trim());
-                        cur = '';
-                    } else {
-                        cur += c;
-                    }
-                }
-                row.push(cur.replace(/^"|"$/g, '').trim());
-                rows.push(row);
-            }
-            return rows;
-        }
-
-        function cleanT(name, dateKey = '') {
-            if (!name) return '';
-            let t = name.replace(/선생님/g, '').replace(/T/g, '').replace(/\s+/g, '').trim();
-            if (t === '노석후' && isDateOnOrAfterOct6(dateKey)) {
-                t = '황주윤';
-            }
-            return t;
-        }
-
-        let updated = false;
-
-        // (1) 등교지도 (gid=1493387912)
-        try {
-            const resM = await fetch(urlMorning);
-            if (resM.ok) {
-                const rowsM = parseCSVLine(await resM.text());
-                for (let i = 1; i < rowsM.length; i++) {
-                    const r = rowsM[i];
-                    if (!r || r.length < 3) continue;
-                    const dMatch = r[0].match(/(\d+)월\s*(\d+)일/);
-                    if (!dMatch) continue;
-                    const m = String(parseInt(dMatch[1])).padStart(2, '0');
-                    const d = String(parseInt(dMatch[2])).padStart(2, '0');
-                    const key = `2026-${m}-${d}`;
-
-                    // 10월 1일부터 반영
-                    if (key < '2026-10-01') continue;
-
-                    const entry = getOrCreateEntry(key, m, d);
-                    const day = r[1] ? r[1].replace('요일', '').trim() : '';
-                    if (day && !entry.dayOfWeek) entry.dayOfWeek = day;
-
-                    const mainT = cleanT(r[2], key);
-                    const annexT = cleanT(r[3], key);
-                    if (mainT && entry.morning.main !== mainT) {
-                        entry.morning.main = mainT;
-                        updated = true;
-                    }
-                    if (annexT && entry.morning.annex !== annexT) {
-                        entry.morning.annex = annexT;
-                        updated = true;
-                    }
-                }
-            }
-        } catch (e) {
-            console.warn('Live gsheet fetch morning duty failed:', e.message);
-        }
-
-        // (2) 중식지도 (gid=1305561620)
-        try {
-            const resL = await fetch(urlLunch);
-            if (resL.ok) {
-                const rowsL = parseCSVLine(await resL.text());
-                for (let i = 1; i < rowsL.length; i++) {
-                    const r = rowsL[i];
-                    if (!r || r.length < 3) continue;
-                    const dMatch = r[0].match(/(\d+)월\s*(\d+)일/);
-                    if (!dMatch) continue;
-                    const m = String(parseInt(dMatch[1])).padStart(2, '0');
-                    const d = String(parseInt(dMatch[2])).padStart(2, '0');
-                    const key = `2026-${m}-${d}`;
-
-                    // 10월 1일부터 반영
-                    if (key < '2026-10-01') continue;
-
-                    const entry = getOrCreateEntry(key, m, d);
-                    const day = r[1] ? r[1].replace('요일', '').trim() : '';
-                    if (day && !entry.dayOfWeek) entry.dayOfWeek = day;
-
-                    const f3 = cleanT(r[2], key);
-                    const f4 = cleanT(r[3], key);
-                    if (f3 && entry.lunch.floor3 !== f3) {
-                        entry.lunch.floor3 = f3;
-                        updated = true;
-                    }
-                    if (f4 && entry.lunch.floor4 !== f4) {
-                        entry.lunch.floor4 = f4;
-                        updated = true;
-                    }
-                }
-            }
-        } catch (e) {
-            console.warn('Live gsheet fetch lunch duty failed:', e.message);
-        }
-
-        if (updated) {
-            console.log('✔ 실시간 구글 시트 등교·중식지도 최신 데이터가 반영되었습니다.');
-            renderDutyUI();
-            renderTodayAutoBanner();
-        }
+        return;
     }
 
     // 앱 접속 시 안 눌러도 자동으로 보이는 오늘 당번 배너 렌더링
@@ -13141,34 +13128,20 @@ window.LIBRARY_SCHEDULE_DATA = {
                 banner.innerHTML = `
                     <div class="today-auto-header">
                         <div class="today-auto-title">
-                            <span>📢</span>
-                            <span><b>${m}월 ${d}일(${dayStr})</b> 오늘은 수업·지도가 없는 날입니다 🏖️</span>
+                            <span>🌙</span>
+                            <span><b>${m}월 ${d}일(${dayStr})</b> 오늘은 수업·야자가 없는 날입니다 🏖️</span>
                         </div>
-                        <span class="today-badge-sm">가까운 평일</span>
+                        <span class="today-badge-sm" style="background:#6b46c1;">가까운 평일</span>
                     </div>
                     <div style="font-size:12px; color:var(--gray-600); margin-bottom:8px;">
-                        다음 지도일인 <b>${fb.displayDate}(${fb.dayOfWeek})</b> 당번을 미리 보여드립니다:
+                        다음 야자일인 <b>${fb.displayDate}(${fb.dayOfWeek})</b> 감독 당번을 미리 보여드립니다:
                     </div>
                     <div class="today-auto-grid">
-                        <div class="today-auto-col">
-                            <div class="today-auto-col-title"><span>🌅 등교지도</span><span>07:30~</span></div>
+                        <div class="today-auto-col" style="border-left: 3px solid #6b46c1;">
+                            <div class="today-auto-col-title" style="color:#6b46c1;"><span>🌙 야자감독</span><span>석식 후 자율학습</span></div>
                             <div class="today-auto-col-content">
-                                <span>본관: <b>${fb.morning ? fb.morning.main : '-'}T</b></span>
-                                <span>별관: <b>${fb.morning ? fb.morning.annex : '-'}T</b></span>
-                            </div>
-                        </div>
-                        <div class="today-auto-col">
-                            <div class="today-auto-col-title"><span>🍱 급식지도</span><span>12:10~</span></div>
-                            <div class="today-auto-col-content">
-                                <span>3층: <b>${fb.lunch ? fb.lunch.floor3 : '-'}T</b></span>
-                                <span>4층: <b>${fb.lunch ? fb.lunch.floor4 : '-'}T</b></span>
-                            </div>
-                        </div>
-                        <div class="today-auto-col">
-                            <div class="today-auto-col-title"><span>🌙 야자감독</span><span>석식 후</span></div>
-                            <div class="today-auto-col-content">
-                                <span>1학년: <b>${fb.night && fb.night.grade1 ? fb.night.grade1.teacher : '-'}T</b></span>
-                                <span>2·3학년: <b>${fb.night && fb.night.grade23 ? fb.night.grade23.teacher : '-'}T</b></span>
+                                <span>1학년(믿음방): <b>${fb.night && fb.night.grade1 ? fb.night.grade1.teacher : '-'}T</b></span>
+                                <span>2·3학년(별관 4층): <b>${fb.night && fb.night.grade23 ? fb.night.grade23.teacher : '-'}T</b></span>
                             </div>
                         </div>
                     </div>
@@ -13180,55 +13153,27 @@ window.LIBRARY_SCHEDULE_DATA = {
             }
         }
 
-        const mMain = (entry.morning && entry.morning.main) ? entry.morning.main : '-';
-        const mAnnex = (entry.morning && entry.morning.annex) ? entry.morning.annex : '-';
-        const lF3 = (entry.lunch && entry.lunch.floor3) ? entry.lunch.floor3 : '-';
-        const lF4 = (entry.lunch && entry.lunch.floor4) ? entry.lunch.floor4 : '-';
         const nG1 = (entry.night && entry.night.grade1) ? entry.night.grade1.teacher : '-';
         const nG23 = (entry.night && entry.night.grade23) ? entry.night.grade23.teacher : '-';
 
         banner.innerHTML = `
             <div class="today-auto-header">
                 <div class="today-auto-title">
-                    <span>📢</span>
-                    <span><b>오늘(${m}월 ${d}일 ${dayStr}요일)</b>의 지도 당번 선생님</span>
+                    <span>🌙</span>
+                    <span><b>오늘(${m}월 ${d}일 ${dayStr}요일)</b>의 야자감독 선생님</span>
                 </div>
-                <span class="today-badge-sm">오늘 실시간</span>
+                <span class="today-badge-sm" style="background:#6b46c1;">오늘 실시간</span>
             </div>
             <div class="today-auto-grid">
-                <!-- 등교 -->
-                <div class="today-auto-col" style="border-left: 3px solid #dd6b20;">
-                    <div class="today-auto-col-title" style="color:#c05621;">
-                        <span>🌅 등교지도</span>
-                        <span style="font-size:10px;">07:30~08:00</span>
-                    </div>
-                    <div class="today-auto-col-content">
-                        <span onclick="selectTeacherAndGo('${mMain}')" style="cursor:pointer;">본관: <b style="text-decoration:underline;">${mMain}T</b></span>
-                        <span onclick="selectTeacherAndGo('${mAnnex}')" style="cursor:pointer;">별관: <b style="text-decoration:underline;">${mAnnex}T</b></span>
-                    </div>
-                </div>
-
-                <!-- 급식 -->
-                <div class="today-auto-col" style="border-left: 3px solid #2b6cb0;">
-                    <div class="today-auto-col-title" style="color:#2b6cb0;">
-                        <span>🍱 급식지도</span>
-                        <span style="font-size:10px;">12:10~13:10</span>
-                    </div>
-                    <div class="today-auto-col-content">
-                        <span onclick="selectTeacherAndGo('${lF3}')" style="cursor:pointer;">3층: <b style="text-decoration:underline;">${lF3}T</b></span>
-                        <span onclick="selectTeacherAndGo('${lF4}')" style="cursor:pointer;">4층: <b style="text-decoration:underline;">${lF4}T</b></span>
-                    </div>
-                </div>
-
                 <!-- 야자 -->
                 <div class="today-auto-col" style="border-left: 3px solid #6b46c1;">
                     <div class="today-auto-col-title" style="color:#6b46c1;">
-                        <span>🌙 야자감독</span>
-                        <span style="font-size:10px;">자율학습</span>
+                        <span>🌙 야간 자기주도학습(야자) 감독</span>
+                        <span style="font-size:10px;">석식 후~21:00</span>
                     </div>
                     <div class="today-auto-col-content">
-                        <span onclick="selectTeacherAndGo('${nG1}')" style="cursor:pointer;">1학년: <b style="text-decoration:underline;">${nG1}T</b></span>
-                        <span onclick="selectTeacherAndGo('${nG23}')" style="cursor:pointer;">2·3학년: <b style="text-decoration:underline;">${nG23}T</b></span>
+                        <span onclick="selectTeacherAndGo('${nG1}')" style="cursor:pointer;">1학년(믿음방): <b style="text-decoration:underline;">${nG1}T</b></span>
+                        <span onclick="selectTeacherAndGo('${nG23}')" style="cursor:pointer;">2·3학년(별관 4층): <b style="text-decoration:underline;">${nG23}T</b></span>
                     </div>
                 </div>
             </div>
@@ -13266,23 +13211,18 @@ window.LIBRARY_SCHEDULE_DATA = {
             dayStr = entry.dayOfWeek || dayStr;
         }
 
-        titleEl.innerHTML = `${isToday ? '<b>[오늘]</b> ' : ''}${m}월 ${d}일(${dayStr}) 지도교사`;
+        titleEl.innerHTML = `${isToday ? '<b>[오늘]</b> ' : ''}${m}월 ${d}일(${dayStr}) 야자감독`;
 
         if (!entry) {
             container.innerHTML = `
                 <div class="duty-empty-msg">
-                    <div>🏖️ <b>${m}월 ${d}일(${dayStr})</b>에는 배정된 등교·급식·야자 지도가 없습니다.</div>
+                    <div>🏖️ <b>${m}월 ${d}일(${dayStr})</b>에는 배정된 야자감독이 없습니다.</div>
                     <div style="font-size:11px; color:var(--gray-500); margin-top:4px;">(주말, 공휴일, 재량휴업일 등)</div>
-                    <button class="m-btn m-btn-outline m-btn-sm" style="margin-top:10px;" onclick="resetDutyToToday()">오늘 지도 보기</button>
+                    <button class="m-btn m-btn-outline m-btn-sm" style="margin-top:10px;" onclick="resetDutyToToday()">오늘 야자 보기</button>
                 </div>
             `;
             return;
         }
-
-        const mMain = (entry.morning && entry.morning.main) ? entry.morning.main : '-';
-        const mAnnex = (entry.morning && entry.morning.annex) ? entry.morning.annex : '-';
-        const lF3 = (entry.lunch && entry.lunch.floor3) ? entry.lunch.floor3 : '-';
-        const lF4 = (entry.lunch && entry.lunch.floor4) ? entry.lunch.floor4 : '-';
 
         const nG1 = (entry.night && entry.night.grade1) ? entry.night.grade1 : { teacher: '-', changed: false, note: '' };
         const nG23 = (entry.night && entry.night.grade23) ? entry.night.grade23 : { teacher: '-', changed: false, note: '' };
@@ -13315,15 +13255,12 @@ window.LIBRARY_SCHEDULE_DATA = {
         const sheet1Url = isOct15OrLater ? oct15SheetUrl : 'https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445';
         const sheet23Url = isOct15OrLater ? oct15SheetUrl : 'https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0';
 
-        const isOctDutyOrLater = currentDutyDateStr >= '2026-10-01';
-        const octDutySheetUrl = 'https://docs.google.com/spreadsheets/d/1qrpM8rL6-KxMyFwmvvehRbBp_0G505PDt-5s_0Z2oRw/edit?usp=sharing';
-
         let nightBoxItemsHtml = '';
         if (isOct15OrLater) {
             nightBoxItemsHtml = `
                 <div class="duty-item">
                     <span class="duty-label">
-                        🏫 별관 4층
+                        🏫 별관 4층 (전 학년)
                         <a href="${oct15SheetUrl}" target="_blank" title="10/15~ 통합 야자 구글시트 열기" style="font-size:10px; color:#805ad5; text-decoration:underline; margin-left:3px;">[통합시트↗]</a>
                     </span>
                     <div>${g1Html}</div>
@@ -13336,14 +13273,14 @@ window.LIBRARY_SCHEDULE_DATA = {
             nightBoxItemsHtml = `
                 <div class="duty-item">
                     <span class="duty-label">
-                        1️⃣ 믿음방
+                        1️⃣ 믿음방 (1학년)
                         <a href="${sheet1Url}" target="_blank" title="1학년 야자 구글시트 열기" style="font-size:10px; color:#805ad5; text-decoration:underline; margin-left:3px;">[시트↗]</a>
                     </span>
                     <div>${g1Html}</div>
                 </div>
                 <div class="duty-item">
                     <span class="duty-label">
-                        별관 4층
+                        별관 4층 (2·3학년)
                         <a href="${sheet23Url}" target="_blank" title="2·3학년 야자 구글시트 열기" style="font-size:10px; color:#805ad5; text-decoration:underline; margin-left:3px;">[시트↗]</a>
                     </span>
                     <div>${g23Html}</div>
@@ -13353,48 +13290,10 @@ window.LIBRARY_SCHEDULE_DATA = {
 
         container.innerHTML = `
             <div class="duty-grid-3">
-                <!-- 1. 등교지도 박스 -->
-                <div class="duty-box morning">
-                    <div class="duty-box-title">
-                        <span>🌅 등교지도</span>
-                        <span class="duty-box-time">
-                            07:30~08:00
-                            ${isOctDutyOrLater ? `<a href="${octDutySheetUrl}" target="_blank" title="10월 등교지도 구글시트 열기" style="font-size:10px; color:#2b6cb0; text-decoration:underline; margin-left:3px;">[시트↗]</a>` : ''}
-                        </span>
-                    </div>
-                    <div class="duty-item">
-                        <span class="duty-label">🏛️ 본관</span>
-                        <span class="duty-teacher" onclick="selectTeacherAndGo('${mMain}')">${mMain}T</span>
-                    </div>
-                    <div class="duty-item">
-                        <span class="duty-label">🏫 별관</span>
-                        <span class="duty-teacher" onclick="selectTeacherAndGo('${mAnnex}')">${mAnnex}T</span>
-                    </div>
-                </div>
-
-                <!-- 2. 중식지도 박스 -->
-                <div class="duty-box lunch">
-                    <div class="duty-box-title">
-                        <span>🍱 급식지도</span>
-                        <span class="duty-box-time">
-                            12:10~13:10
-                            ${isOctDutyOrLater ? `<a href="${octDutySheetUrl}" target="_blank" title="10월 급식지도 구글시트 열기" style="font-size:10px; color:#dd6b20; text-decoration:underline; margin-left:3px;">[시트↗]</a>` : ''}
-                        </span>
-                    </div>
-                    <div class="duty-item">
-                        <span class="duty-label">3️⃣ 3층</span>
-                        <span class="duty-teacher" onclick="selectTeacherAndGo('${lF3}')">${lF3}T</span>
-                    </div>
-                    <div class="duty-item">
-                        <span class="duty-label">4️⃣ 4층</span>
-                        <span class="duty-teacher" onclick="selectTeacherAndGo('${lF4}')">${lF4}T</span>
-                    </div>
-                </div>
-
-                <!-- 3. 야자감독 박스 -->
+                <!-- 야자감독 박스 -->
                 <div class="duty-box night">
                     <div class="duty-box-title">
-                        <span>🌙 야자감독</span>
+                        <span>🌙 야간 자기주도학습(야자) 감독</span>
                         <span class="duty-box-time" style="color:#6b46c1; font-weight:bold;">${isOct15OrLater ? '10/15~ 통합' : '구글시트 연동'}</span>
                     </div>
                     ${nightBoxItemsHtml}
@@ -13402,7 +13301,7 @@ window.LIBRARY_SCHEDULE_DATA = {
             </div>
             <div style="font-size:11px; color:var(--gray-500); margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
                 <span>💡 선생님 이름을 누르면 해당 시간표로 즉시 이동합니다.</span>
-                <span style="text-decoration:underline; cursor:pointer;" onclick="openDutyAllModal()">전체 일정 및 수칙</span>
+                <span style="text-decoration:underline; cursor:pointer;" onclick="openDutyAllModal()">전체 야자 일정</span>
             </div>
         `;
     }
@@ -13441,27 +13340,7 @@ window.LIBRARY_SCHEDULE_DATA = {
         const isToday = currentDutyDateStr === getTodayIsoDate();
         const timePrefix = isToday ? '오늘' : entry.displayDate;
 
-        // 1. 등교지도
-        if (entry.morning) {
-            if (entry.morning.main === currentTeacher) {
-                alerts.push(`🌅 ${timePrefix} <b>【본관 등교지도】</b> 당번입니다! (07:30~08:00, 본관 입구)`);
-            }
-            if (entry.morning.annex === currentTeacher) {
-                alerts.push(`🌅 ${timePrefix} <b>【별관 등교지도】</b> 당번입니다! (07:30~07:50, 별관 입구)`);
-            }
-        }
-
-        // 2. 급식지도
-        if (entry.lunch) {
-            if (entry.lunch.floor3 === currentTeacher) {
-                alerts.push(`🍱 ${timePrefix} <b>【급식지도 (3층)】</b> 당번입니다! (12:10~13:10)`);
-            }
-            if (entry.lunch.floor4 === currentTeacher) {
-                alerts.push(`🍱 ${timePrefix} <b>【급식지도 (4층)】</b> 당번입니다! (12:10~13:10)`);
-            }
-        }
-
-        // 3. 야자감독
+        // 야자감독 당번 확인
         if (entry.night) {
             if (entry.night.grade1 && entry.night.grade1.teacher === currentTeacher) {
                 alerts.push(`🌙 ${timePrefix} <b>【1학년 야자감독 (믿음방)】</b> 당번입니다!`);
@@ -13475,8 +13354,8 @@ window.LIBRARY_SCHEDULE_DATA = {
             banner.innerHTML = `
                 <div style="font-size:18px;">📢</div>
                 <div style="flex:1;">
-                    <div style="font-size:14px; font-weight:800; color:#9c4221; margin-bottom:2px;">
-                        ${currentTeacher} 선생님 지도 당번 알림
+                    <div style="font-size:14px; font-weight:800; color:#6b46c1; margin-bottom:2px;">
+                        ${currentTeacher} 선생님 야자감독 당번 알림
                     </div>
                     ${alerts.map(a => `<div>${a}</div>`).join('')}
                 </div>
@@ -13487,47 +13366,9 @@ window.LIBRARY_SCHEDULE_DATA = {
         }
     }
 
-    // 급식 탭 내의 중식지도 & 야자 요약 렌더링
+    // 급식 탭 내의 지도 요약 렌더링 (등교/중식지도 삭제로 미사용)
     function renderLunchDutyInMealTab() {
-        const container = document.getElementById('lunchDutySummaryInMealTab');
-        if (!container) return;
-        const data = window.DUTY_SCHEDULE_DATA ? window.DUTY_SCHEDULE_DATA.dates : {};
-        const todayIso = getTodayIsoDate();
-        const entry = data[todayIso] || data[currentDutyDateStr];
-
-        if (!entry) {
-            container.innerHTML = '<div style="font-size:12px; color:var(--gray-600);">오늘 배정된 지도 정보가 없습니다.</div>';
-            return;
-        }
-
-        const f3 = (entry.lunch && entry.lunch.floor3) ? entry.lunch.floor3 : '-';
-        const f4 = (entry.lunch && entry.lunch.floor4) ? entry.lunch.floor4 : '-';
-        const n1 = (entry.night && entry.night.grade1) ? entry.night.grade1.teacher : '-';
-        const n23 = (entry.night && entry.night.grade23) ? entry.night.grade23.teacher : '-';
-
-        container.innerHTML = `
-            <div style="display:flex; gap:8px;">
-                <div style="flex:1; background:#ebf8ff; border:1px solid #bee3f8; border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:#2c5282; font-weight:bold;">급식 3층</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${f3}')">${f3}T</div>
-                </div>
-                <div style="flex:1; background:#ebf8ff; border:1px solid #bee3f8; border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:#2c5282; font-weight:bold;">급식 4층</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--primary); margin-top:2px;" onclick="selectTeacherAndGo('${f4}')">${f4}T</div>
-                </div>
-                <div style="flex:1; background:#faf5ff; border:1px solid #d6bcfa; border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:#553c9a; font-weight:bold;">야자 1학년</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--purple); margin-top:2px;" onclick="selectTeacherAndGo('${n1}')">${n1}T</div>
-                </div>
-                <div style="flex:1; background:#faf5ff; border:1px solid #d6bcfa; border-radius:8px; padding:8px 10px; text-align:center;">
-                    <div style="font-size:11px; color:#553c9a; font-weight:bold;">야자 별관 4층</div>
-                    <div style="font-size:14px; font-weight:800; color:var(--purple); margin-top:2px;" onclick="selectTeacherAndGo('${n23}')">${n23}T</div>
-                </div>
-            </div>
-            <div style="font-size:11px; color:var(--gray-600); margin-top:6px; text-align:right;">
-                등교지도: 본관 [${entry.morning ? entry.morning.main : '-'}T], 별관 [${entry.morning ? entry.morning.annex : '-'}T]
-            </div>
-        `;
+        // 중식지도 삭제됨
     }
 
     // 전체 명단 및 수칙 모달 열기/닫기
@@ -13549,10 +13390,6 @@ window.LIBRARY_SCHEDULE_DATA = {
             const rowClass = isToday ? 'today-row' : '';
             const rowStyle = isSelected ? 'border:2px solid var(--primary);' : '';
 
-            const mMain = (row.morning && row.morning.main) ? row.morning.main : '-';
-            const mAnnex = (row.morning && row.morning.annex) ? row.morning.annex : '-';
-            const l3 = (row.lunch && row.lunch.floor3) ? row.lunch.floor3 : '-';
-            const l4 = (row.lunch && row.lunch.floor4) ? row.lunch.floor4 : '-';
             const n1 = (row.night && row.night.grade1) ? (row.night.grade1.teacher || '-') : '-';
             const n23 = (row.night && row.night.grade23) ? (row.night.grade23.teacher || '-') : '-';
 
@@ -13562,10 +13399,6 @@ window.LIBRARY_SCHEDULE_DATA = {
                         ${row.displayDate} (${row.dayOfWeek || '-'})
                         ${isToday ? '<br><span style="font-size:10px; color:var(--primary);">[오늘]</span>' : ''}
                     </td>
-                    <td>${mMain}</td>
-                    <td>${mAnnex}</td>
-                    <td>${l3}</td>
-                    <td>${l4}</td>
                     <td>${n1}</td>
                     <td>${n23}</td>
                 </tr>
@@ -13575,6 +13408,9 @@ window.LIBRARY_SCHEDULE_DATA = {
         body.innerHTML = `
             <!-- 구글 스프레드시트 바로가기 버튼들 -->
             <div style="display:flex; gap:6px; margin-bottom:12px;">
+                <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=669404717#gid=669404717" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
+                    🔗 10/15~ 통합 야자시트
+                </a>
                 <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
                     🔗 1학년 야자시트
                 </a>
@@ -13584,51 +13420,36 @@ window.LIBRARY_SCHEDULE_DATA = {
             </div>
 
             <!-- 유의사항 안내 박스 -->
-            <div style="background:#fffaf0; border:1px solid #fbd38d; border-radius:10px; padding:12px; margin-bottom:14px; font-size:12px; color:#744210; line-height:1.6;">
-                <div style="font-weight:800; font-size:13px; margin-bottom:4px; color:#c05621;">★ 학생 지도 안내사항 ★</div>
-                <div><b>🌅 등교지도 (본관 07:30~08:00, 별관 07:30~07:50)</b></div>
-                <div style="margin-left:6px; color:#975a16; margin-bottom:6px;">
-                    - 교복 단정 착용 지도 (상하의 및 운동화)<br>
-                    - 지도 위치: 본관 입구, 별관 입구(50분 출입문 통제)<br>
-                    - 벌점계 명렬표 인계 (주1회 금요일 황상희T)
+            <div style="background:#faf5ff; border:1px solid #d6bcfa; border-radius:10px; padding:12px; margin-bottom:14px; font-size:12px; color:#553c9a; line-height:1.6;">
+                <div style="font-weight:800; font-size:13px; margin-bottom:4px; color:#6b46c1;">★ 야간 자기주도학습(야자) 감독 안내사항 ★</div>
+                <div><b>🌙 야자감독 장소</b></div>
+                <div style="margin-left:6px; color:#44337a; margin-bottom:6px;">
+                    - 10/14까지: 1학년(믿음방), 2·3학년(별관 4층)<br>
+                    - 10/15부터: 1·2·3학년 별관 4층 통합 감독
                 </div>
-                <div><b>🍱 급식지도 (12:10~13:10)</b></div>
-                <div style="margin-left:6px; color:#975a16; margin-bottom:6px;">
-                    - 착석 지도: 3학년(3,4층) / 2학년(3층) / 1학년(4층)<br>
-                    - 식사 중 정숙 및 개인 위생 지도
-                </div>
-                <div><b>🌙 야자감독 (자기주도학습)</b></div>
-                <div style="margin-left:6px; color:#975a16;">
-                    - 1학년: 믿음방 / 2,3학년: 별관 4층<br>
-                    - 감독 변경 시 구글 시트 기재
+                <div><b>📋 유의사항</b></div>
+                <div style="margin-left:6px; color:#44337a;">
+                    - 정숙 지도 및 입퇴실 관리 철저<br>
+                    - 감독 변경 시 구글 스프레드시트에 기재
                 </div>
             </div>
 
             <!-- 일정표 테이블 -->
             <div style="font-weight:800; font-size:14px; color:var(--primary-dark); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                <span>📅 등교·급식·야자 전체 배정표 (총 ${allKeys.length}일)</span>
+                <span>📅 야자감독 전체 배정표 (총 ${allKeys.length}일)</span>
                 <span style="font-size:11px; font-weight:normal; color:var(--gray-600);">오늘 행 하늘색</span>
             </div>
             <div class="duty-table-scroll">
                 <table class="duty-table">
                     <thead>
                         <tr>
-                            <th rowspan="2">날짜</th>
-                            <th colspan="2" style="background:#feebc8; color:#9c4221;">등교지도</th>
-                            <th colspan="2" style="background:#bee3f8; color:#2b6cb0;">급식지도</th>
-                            <th colspan="2" style="background:#e9d8fd; color:#553c9a;">야자감독</th>
-                        </tr>
-                        <tr>
-                            <th style="background:#fffaf0; color:#c05621;">본관</th>
-                            <th style="background:#fffaf0; color:#c05621;">별관</th>
-                            <th style="background:#ebf8ff; color:#2c5282;">3층</th>
-                            <th style="background:#ebf8ff; color:#2c5282;">4층</th>
-                            <th style="background:#faf5ff; color:#6b46c1;">1학년</th>
-                            <th style="background:#faf5ff; color:#6b46c1;">2·3학년</th>
+                            <th style="background:#f1f5f9; color:var(--gray-700); width:110px;">날짜</th>
+                            <th style="background:#faf5ff; color:#6b46c1;">1학년 (믿음방)</th>
+                            <th style="background:#faf5ff; color:#6b46c1;">2·3학년 (별관 4층)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${tableRows || '<tr><td colspan="7">등록된 지도 일정이 없습니다.</td></tr>'}
+                        ${tableRows || '<tr><td colspan="3">등록된 야자 일정이 없습니다.</td></tr>'}
                     </tbody>
                 </table>
             </div>
@@ -14585,7 +14406,6 @@ ${n.content}
         try { renderLunchPair(); } catch (e) { console.error('renderLunchPair error:', e); }
         try { fetchNeisLunch(); } catch (e) { console.error('fetchNeisLunch error:', e); }
         try { fetchLiveGoogleSheetsNightDuty(); } catch (e) { console.error('fetchLiveGoogleSheetsNightDuty error:', e); }
-        try { fetchLiveGoogleSheetsMorningLunchDuty(); } catch (e) { console.error('fetchLiveGoogleSheetsMorningLunchDuty error:', e); }
         try { fetchLiveGoogleSheetsSubstitute(); } catch (e) { console.error('fetchLiveGoogleSheetsSubstitute error:', e); }
         try { fetchLiveGoogleDocNotice(); } catch (e) { console.error('fetchLiveGoogleDocNotice error:', e); }
         try { fetchLiveGoogleSheetsLibrary(); } catch (e) { console.error('fetchLiveGoogleSheetsLibrary error:', e); }
