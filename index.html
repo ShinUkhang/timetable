@@ -586,6 +586,57 @@
     .badge-same-class { background: #fefcbf; color: #744210; }
     .badge-same-day { background: #c6f6d5; color: #22543d; }
     .badge-same-grade { background: #e2e8f0; color: #4a5568; }
+    .form-btn {
+        margin-top: 8px;
+        width: 100%;
+        border: 1px solid var(--accent);
+        background: white;
+        color: var(--accent);
+        border-radius: 8px;
+        padding: 6px 8px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .form-btn:active { background: #ebf8ff; }
+
+    /* 수업변경 요청서 작성 */
+    .ccf-label { font-size: 12px; font-weight: bold; color: var(--gray-700); margin: 12px 0 4px; }
+    .ccf-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .ccf-table { width: 100%; min-width: 560px; border-collapse: collapse; table-layout: fixed; font-size: 11px; }
+    .ccf-table th { background: #f7fafc; border: 1px solid var(--gray-300); padding: 4px 2px; font-weight: bold; color: var(--gray-700); }
+    .ccf-table td { border: 1px solid var(--gray-300); padding: 0; }
+    .ccf-table input {
+        width: 100%;
+        box-sizing: border-box;
+        border: none;
+        padding: 6px 2px;
+        font-size: 12px;
+        text-align: center;
+        background: transparent;
+    }
+    .ccf-field {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid var(--gray-300);
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 13px;
+        background: white;
+    }
+    .ccf-download {
+        margin-top: 16px;
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        font-size: 15px;
+        font-weight: 800;
+        padding: 12px;
+        cursor: pointer;
+    }
+    .ccf-download:disabled { opacity: 0.6; }
 
     /* 연락처 검색 및 카드 */
     .phone-filter-bar {
@@ -2461,6 +2512,20 @@
         <div id="sheetModalBody">
             <!-- JS 결과 렌더링 -->
         </div>
+    </div>
+</div>
+
+<div id="changeFormModal" class="modal-backdrop" onclick="closeChangeFormModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div>
+                <h3 class="sheet-title">📝 수업변경 요청서 작성</h3>
+                <div class="sheet-subtitle" id="ccfSubtitle">내용을 확인·수정한 뒤 한글(HWP) 파일로 받으세요</div>
+            </div>
+            <button class="sheet-close" onclick="closeChangeFormModal()">✕</button>
+        </div>
+        <div id="changeFormBody"></div>
     </div>
 </div>
 
@@ -11891,6 +11956,8 @@ window.LIBRARY_SCHEDULE_DATA = {
             return a.partnerPeriod - b.partnerPeriod;
         });
 
+        ccfBase = { me: myTeacher, day, period, subjectText, classes: targetClasses };
+        ccfContexts = [];
         let html = '';
 
         // [1순위] 공강 교사 먼저 표시!
@@ -11910,6 +11977,7 @@ window.LIBRARY_SCHEDULE_DATA = {
                     <div style="font-weight:bold; font-size:13px; color:var(--gray-800);">${c.name} 선생님</div>
                     <div style="font-size:11px; color:var(--gray-600); margin-top:2px;">당일 ${c.dayPure}T / 주 ${c.totalPure}T</div>
                     ${isRec ? '<span style="display:inline-block; font-size:10px; background:#fbd38d; color:#744210; padding:1px 5px; border-radius:4px; margin-top:4px; font-weight:bold;">여유 추천</span>' : ''}
+                    <button class="form-btn" onclick="openChangeForm(${ccfContexts.push({ kind: 'cover', partner: c.name }) - 1})">📝 요청서</button>
                 </div>`;
             }
             html += `</div>`;
@@ -11941,6 +12009,7 @@ window.LIBRARY_SCHEDULE_DATA = {
                         <div>✔ <b>${m.partner}T</b> ➡️ ${day}요일 ${period}교시 수업 진행</div>
                         <div style="font-size:11px; color:var(--gray-600); margin-top:3px;">당일 ${m.dayPure}시간 / 주 ${m.totalPure}시간</div>
                     </div>
+                    <button class="form-btn" onclick="openChangeForm(${ccfContexts.push(Object.assign({ kind: 'swap' }, m)) - 1})">📝 수업변경 요청서 작성</button>
                 </div>`;
             }
         } else {
@@ -11956,6 +12025,182 @@ window.LIBRARY_SCHEDULE_DATA = {
 
     function closeSwapModal(e) {
         document.getElementById('swapModal').classList.remove('show');
+    }
+
+    // ===== 수업변경 요청서(HWP) 자동 작성 =====
+    let ccfBase = null;      // 추천 모달을 연 수업 정보
+    let ccfContexts = [];    // 카드별 보강/교환 정보
+    let ccfCurrent = null;
+
+    function ccfLoadScript(src) {
+        return new Promise((resolve, reject) => {
+            const el = document.createElement('script');
+            el.src = src;
+            el.onload = resolve;
+            el.onerror = () => reject(new Error(src + ' 로드 실패'));
+            document.head.appendChild(el);
+        });
+    }
+
+    function ccfIsoDate(dt) {
+        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+    }
+    function ccfParseDate(iso) {
+        const [y, m, d] = iso.split('-').map(Number);
+        return new Date(y, m - 1, d);
+    }
+    function ccfShortDate(iso) {
+        if (!iso) return '';
+        const dt = ccfParseDate(iso);
+        return `${dt.getMonth() + 1}/${dt.getDate()}`;
+    }
+    // 오늘 포함 가장 가까운 해당 요일
+    function ccfNextDate(dayName) {
+        const dt = new Date();
+        dt.setHours(0, 0, 0, 0);
+        const target = days.indexOf(dayName) + 1; // 월=1
+        dt.setDate(dt.getDate() + ((target - dt.getDay() + 7) % 7));
+        return dt;
+    }
+    // 기준 날짜와 같은 주의 해당 요일 (이미 지났으면 다음 주)
+    function ccfSameWeekDate(baseIso, dayName) {
+        const base = ccfParseDate(baseIso);
+        const dt = new Date(base);
+        dt.setDate(base.getDate() - (base.getDay() + 6) % 7 + days.indexOf(dayName));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (dt < today) dt.setDate(dt.getDate() + 7);
+        return dt;
+    }
+
+    function ccfSubjectOf(teacher, cls, day, period) {
+        const item = (classSchedule[cls]?.[period]?.[day] || []).find(it => it.teacher === teacher);
+        return item ? item.subject : '';
+    }
+
+    function ccfBuildRows(ctx, date1, date2) {
+        const b = ccfBase;
+        const cls = b.classes.join(',');
+        const mySubj = (b.classes.length && ccfSubjectOf(b.me, b.classes[0], b.day, b.period)) || b.subjectText;
+        const slot1 = `${b.day}/${b.period}`;
+        const d1 = ccfShortDate(date1);
+        if (ctx.kind === 'cover') {
+            return [{ before: [d1, cls, slot1, `${mySubj}/${b.me}`], after: [d1, cls, slot1, `${mySubj}/${ctx.partner}`] }];
+        }
+        const slot2 = `${ctx.partnerDay}/${ctx.partnerPeriod}`;
+        const d2 = ccfShortDate(date2);
+        const pSubj = ctx.partnerSubject;
+        if (ctx.isSameClass) {
+            // 같은 반: 두 수업의 시간을 서로 맞바꿈
+            return [
+                { before: [d1, cls, slot1, `${mySubj}/${b.me}`], after: [d2, cls, slot2, `${mySubj}/${b.me}`] },
+                { before: [d2, ctx.className, slot2, `${pSubj}/${ctx.partner}`], after: [d1, ctx.className, slot1, `${pSubj}/${ctx.partner}`] }
+            ];
+        }
+        // 다른 반: 서로의 수업에 대신 들어감
+        return [
+            { before: [d1, cls, slot1, `${mySubj}/${b.me}`], after: [d1, cls, slot1, `${mySubj}/${ctx.partner}`] },
+            { before: [d2, ctx.className, slot2, `${pSubj}/${ctx.partner}`], after: [d2, ctx.className, slot2, `${pSubj}/${b.me}`] }
+        ];
+    }
+
+    function openChangeForm(idx) {
+        const ctx = ccfContexts[idx];
+        if (!ctx || !ccfBase) return;
+        ccfCurrent = ctx;
+        const date1 = ccfIsoDate(ccfNextDate(ccfBase.day));
+        const isSwap = ctx.kind === 'swap';
+        document.getElementById('ccfSubtitle').innerText = isSwap
+            ? `${ccfBase.me} ↔ ${ctx.partner} (${ccfBase.day}${ccfBase.period} ↔ ${ctx.partnerDay}${ctx.partnerPeriod})`
+            : `${ccfBase.me} → ${ctx.partner} (${ccfBase.day}요일 ${ccfBase.period}교시 보강)`;
+
+        let html = `<div style="display:grid; grid-template-columns:${isSwap ? '1fr 1fr' : '1fr'}; gap:8px;">
+            <div><div class="ccf-label">${ccfBase.day}요일 ${ccfBase.period}교시 날짜</div>
+                <input type="date" id="ccfDate1" class="ccf-field" value="${date1}" onchange="ccfRefreshRows()"></div>
+            ${isSwap ? `<div><div class="ccf-label">${ctx.partnerDay}요일 ${ctx.partnerPeriod}교시 날짜</div>
+                <input type="date" id="ccfDate2" class="ccf-field" onchange="ccfRefreshRows(true)"></div>` : ''}
+        </div>
+        <div class="ccf-label">변경 내용 (칸을 눌러 직접 수정 가능)</div>
+        <div class="ccf-table-wrap"><table class="ccf-table">
+            <tr><th colspan="4">변경 전</th><th colspan="4">변경 후</th></tr>
+            <tr><th>날짜</th><th>학급</th><th>요일/교시</th><th>과목/교사</th><th>날짜</th><th>학급</th><th>요일/교시</th><th>과목/교사</th></tr>`;
+        for (let r = 0; r < 4; r++) {
+            html += '<tr>';
+            for (let c = 0; c < 8; c++) html += `<td><input id="ccfCell${r}_${c}"></td>`;
+            html += '</tr>';
+        }
+        html += `</table></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div><div class="ccf-label">근무상황</div><input id="ccfWork" class="ccf-field" placeholder="예: 조퇴, 연가, 외출"></div>
+            <div><div class="ccf-label">요청자</div><input id="ccfRequester" class="ccf-field" value="${ccfBase.me}"></div>
+        </div>
+        <div class="ccf-label">변경사유</div>
+        <input id="ccfReason" class="ccf-field" value="개인사유">
+        <button class="ccf-download" id="ccfDownloadBtn" onclick="downloadChangeForm()">⬇️ 한글(HWP) 요청서 다운로드</button>
+        <div style="font-size:11px; color:var(--gray-600); margin-top:8px; text-align:center;">출력 후 서명(인)하여 제출하세요.</div>`;
+
+        document.getElementById('changeFormBody').innerHTML = html;
+        ccfRefreshRows();
+        document.getElementById('changeFormModal').classList.add('show');
+    }
+
+    // 날짜를 바꾸면 표 내용을 다시 채운다 (keepDate2: 두 번째 날짜를 직접 고른 경우 유지)
+    function ccfRefreshRows(keepDate2) {
+        const date1 = document.getElementById('ccfDate1').value;
+        const d2El = document.getElementById('ccfDate2');
+        if (d2El && !keepDate2 && date1) d2El.value = ccfIsoDate(ccfSameWeekDate(date1, ccfCurrent.partnerDay));
+        const rows = ccfBuildRows(ccfCurrent, date1, d2El ? d2El.value : '');
+        for (let r = 0; r < 4; r++) {
+            const row = rows[r] ? rows[r].before.concat(rows[r].after) : [];
+            for (let c = 0; c < 8; c++) document.getElementById(`ccfCell${r}_${c}`).value = row[c] || '';
+        }
+    }
+
+    function closeChangeFormModal(e) {
+        document.getElementById('changeFormModal').classList.remove('show');
+    }
+
+    async function downloadChangeForm() {
+        const btn = document.getElementById('ccfDownloadBtn');
+        btn.disabled = true;
+        btn.innerText = '⏳ 작성 중...';
+        try {
+            if (typeof CFB === 'undefined') await ccfLoadScript('lib/cfb.min.js');
+            if (typeof ClassChangeForm === 'undefined') await ccfLoadScript('lib/class_change_form.js');
+            const res = await fetch('forms/class_change_request.hwp');
+            if (!res.ok) throw new Error('양식 파일을 불러오지 못했습니다');
+            const template = new Uint8Array(await res.arrayBuffer());
+
+            const rows = [];
+            for (let r = 0; r < 4; r++) {
+                const vals = [];
+                for (let c = 0; c < 8; c++) vals.push(document.getElementById(`ccfCell${r}_${c}`).value.trim());
+                rows.push({ before: vals.slice(0, 4), after: vals.slice(4) });
+            }
+            const requester = document.getElementById('ccfRequester').value.trim();
+            const bytes = ClassChangeForm.fill(template, {
+                rows,
+                workStatus: document.getElementById('ccfWork').value.trim(),
+                reason: document.getElementById('ccfReason').value.trim(),
+                requester
+            }, CFB);
+
+            const url = URL.createObjectURL(new Blob([bytes], { type: 'application/x-hwp' }));
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `수업변경 요청서(${requester || '000'}).hwp`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            showToast('📝 요청서가 다운로드되었습니다');
+        } catch (err) {
+            console.error(err);
+            showToast('요청서 생성 실패: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '⬇️ 한글(HWP) 요청서 다운로드';
+        }
     }
 
     // NEIS 급식 API
