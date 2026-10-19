@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#2b6cb0">
+<title>📋 10월 학력평가 개인 감독 시간표 & 교대 확인</title>
+<link rel="icon" type="image/png" href="./favicon.png">
+<style>
+  :root {
+    --primary: #2b6cb0;
+    --primary-dark: #1a365d;
+    --primary-light: #ebf8ff;
+    --primary-border: #bee3f8;
+    --accent: #319795;
+    --orange: #dd6b20;
+    --orange-light: #fffaf0;
+    --orange-border: #fbd38d;
+    --green: #2f855a;
+    --green-light: #f0fff4;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-600: #718096;
+    --gray-800: #2d3748;
+    --card-radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: #f4f7fa;
+    color: var(--gray-800);
+    padding: 16px 12px 40px;
+    line-height: 1.5;
+    font-size: 14px;
+  }
+  .wrap { max-width: 600px; margin: 0 auto; }
+
+  /* 상단 헤더 및 타이틀 */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--primary);
+    text-decoration: none;
+    background: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--primary-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .home-link:hover { background: var(--primary-light); }
+  .date-badge {
+    font-size: 12px;
+    background: #fed7d7;
+    color: #c53030;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  .header-box {
+    text-align: center;
+    background: linear-gradient(135deg, #2b6cb0 0%, #319795 100%);
+    color: white;
+    border-radius: var(--card-radius);
+    padding: 20px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 14px rgba(43, 108, 176, 0.2);
+  }
+  .header-box h1 { font-size: 20px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.4px; }
+  .header-box p { font-size: 13px; opacity: 0.95; line-height: 1.4; }
+  .highlight-notice {
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* 검색 영역 */
+  .search-box { position: relative; margin-bottom: 14px; }
+  #nameInput {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    outline: none;
+    background: white;
+    box-shadow: 0 2px 8px rgba(43, 108, 176, 0.08);
+    font-family: inherit;
+  }
+  #nameInput:focus {
+    box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.25);
+  }
+  #suggest {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,.15);
+  }
+  #suggest div {
+    padding: 12px 16px;
+    font-size: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #suggest div:hover { background: var(--primary-light); color: var(--primary); font-weight: 600; }
+  #suggest div:last-child { border-bottom: none; }
+
+  /* 빠른 교사 칩 목록 (선택 도우미) */
+  .quick-chip-area {
+    margin-bottom: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-height: 96px;
+    overflow-y: auto;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+  }
+  .quick-chip {
+    background: var(--gray-100);
+    color: var(--gray-800);
+    padding: 4px 9px;
+    border-radius: 14px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid var(--gray-200);
+    transition: all 0.15s;
+  }
+  .quick-chip:hover, .quick-chip.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* 개인 감독 시간표 카드 */
+  .card {
+    background: #fff;
+    border-radius: var(--card-radius);
+    padding: 18px 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    display: none;
+    margin-bottom: 16px;
+    border: 1px solid var(--gray-200);
+  }
+  .card.show { display: block; animation: fadeIn 0.25s ease-out; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .who { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .who h2 { font-size: 21px; font-weight: 800; color: var(--primary-dark); }
+  .badge {
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--primary-border);
+  }
+  .total { font-size: 14px; color: var(--gray-600); margin-bottom: 14px; }
+  .total strong { color: var(--orange); font-size: 19px; font-weight: 800; }
+
+  /* 시간표 테이블 */
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { padding: 11px 8px; text-align: center; border-bottom: 1px solid var(--gray-200); }
+  th { background: #f8fafc; font-size: 12px; color: var(--gray-600); font-weight: 700; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  tr.rest td { color: #a0aec0; background: #fafbfc; }
+  tr.duty { background: white; }
+  tr.duty td { font-weight: 600; }
+  tr.duty td.room-cell { text-align: left; padding-left: 10px; }
+  .room-name { color: var(--primary); font-size: 14.5px; font-weight: 700; }
+  
+  /* 교대 안내 배지 (핵심 강조) */
+  .handoff-box {
+    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    white-space: normal;
+  }
+  .handoff-box.next-22 {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+    font-weight: 700;
+  }
+  .handoff-box.next-42 {
+    background: #fffaf0;
+    color: #c05621;
+    border: 1px solid #fbd38d;
+    font-weight: 700;
+  }
+  .handoff-box.prev-duty {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+    font-size: 11.5px;
+  }
+  .handoff-box.same-duty {
+    background: #f0fff4;
+    color: #276749;
+    border: 1px solid #b2f5ea;
+    font-weight: 600;
+  }
+  .handoff-box.partner-duty {
+    background: #faf5ff;
+    color: #6b46c1;
+    border: 1px solid #e9d8fd;
+    font-weight: 600;
+  }
+
+  .note {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.6;
+    background: var(--gray-50);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+  }
+  .action-btn-group { display: flex; gap: 8px; margin-top: 14px; }
+  .btn-action {
+    flex: 1;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: filter 0.15s;
+  }
+  .btn-print { background: var(--primary); color: #fff; }
+  .btn-share { background: #edf2f7; color: var(--gray-800); }
+  .btn-action:active { filter: brightness(0.92); }
+
+  /* 전체 19개 고사실 교대표 아코디언 */
+  .all-rooms-section {
+    background: white;
+    border-radius: var(--card-radius);
+    padding: 16px;
+    margin-top: 16px;
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .all-rooms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+  .all-rooms-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toggle-arrow { font-size: 13px; color: var(--gray-600); transition: transform 0.2s; }
+  .all-rooms-content { margin-top: 14px; display: none; }
+  .all-rooms-content.open { display: block; }
+  .grade-table-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--gray-800);
+    margin: 12px 0 6px 0;
+    padding-left: 4px;
+    border-left: 3px solid var(--primary);
+  }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+  .matrix-table th { background: #edf2f7; padding: 7px 4px; border: 1px solid var(--gray-200); text-align: center; }
+  .matrix-table td { padding: 7px 4px; border: 1px solid var(--gray-200); text-align: center; }
+  .matrix-room { font-weight: 700; color: var(--primary-dark); background: #f8fafc; }
+  .t-next-name { font-weight: 700; color: #c05621; }
+  .arrow-sep { color: #a0aec0; margin: 0 2px; }
+
+  @media print {
+    body { background: #fff; padding: 0; color: #000; }
+    .top-bar, .search-box, .quick-chip-area, .action-btn-group, .all-rooms-section, .home-link { display: none !important; }
+    .card { box-shadow: none; display: block !important; border: 1px solid #ccc; }
+    .header-box { background: none; color: #000; padding: 10px 0; border-bottom: 2px solid #000; box-shadow: none; }
+    .header-box h1 { font-size: 18px; }
+    .highlight-notice { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top-bar">
+    <a href="./index.html" class="home-link">🐱 메인 시간표 앱으로</a>
+    <span class="date-badge">10월 19일(월)~20일(화) 운영</span>
+  </div>
+
+  <div class="header-box">
+    <h1>📋 10월 학력평가 개인 감독 시간표</h1>
+    <p>이름을 검색하거나 아래 명단을 누르면 개인 감독 일정이 표시됩니다.</p>
+    <div class="highlight-notice">
+      💡 <strong>2-1교시 &amp; 4-1교시 다음 교대 교사</strong>가 바로 확인되도록 안내됩니다!
+    </div>
+  </div>
+
+  <!-- 검색 영역 -->
+  <div class="search-box">
+    <input id="nameInput" type="text" placeholder="선생님 성함 입력 (예: 김수진, 신욱항)" autocomplete="off">
+    <div id="suggest"></div>
+  </div>
+
+  <!-- 빠른 교사 선택 칩 (전체 교사 명단) -->
+  <div class="quick-chip-area" id="quickChips">
+    <!-- JS로 칩 생성 -->
+  </div>
+
+  <!-- 개인 시간표 카드 -->
+  <div class="card" id="card">
+    <div class="who">
+      <h2 id="whoName">선생님</h2>
+      <span class="badge" id="whoGroup">담임</span>
+    </div>
+    <p class="total">총 감독 시간 <strong id="whoTotal">0분</strong></p>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>교시</th>
+            <th>시간</th>
+            <th>과목</th>
+            <th style="min-width: 150px;">감독 교실 &amp; 교대 안내</th>
+            <th>시간</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      ※ <strong>교대 안내</strong>: 2-1교시(수학1)와 4-1교시(탐구1) 종료 시 교대하여 들어오실 선생님을 확인 후 교재(교대)해 주세요.<br>
+      ※ 3학년 4-2교시는 26분으로 계산되며, 짝꿍 배정(○○+○○)은 시간을 균등 분할 계산합니다.<br>
+      ※ '-' 표시는 해당 교시에 감독이 없음을 나타냅니다.
+    </div>
+
+    <div class="action-btn-group">
+      <button class="btn-action btn-print" onclick="window.print()">🖨️ 시간표 인쇄하기</button>
+      <button class="btn-action btn-share" onclick="copyCurrentLink()">🔗 링크 복사</button>
+    </div>
+  </div>
+
+  <!-- 전체 19개 고사실 교대 매칭표 (아코디언) -->
+  <div class="all-rooms-section">
+    <div class="all-rooms-header" onclick="toggleAllRooms()">
+      <div class="all-rooms-title">
+        <span>🏫</span>
+        <span>전체 19개 고사실 교대 현황표 (2-1➔2-2 / 4-1➔4-2)</span>
+      </div>
+      <span class="toggle-arrow" id="toggleArrow">▼ 펼치기</span>
+    </div>
+    <div class="all-rooms-content" id="allRoomsContent">
+      <p style="font-size:12px; color:var(--gray-600); margin-bottom:10px;">
+        각 고사실별 수학(2-1 ➔ 2-2) 및 탐구(4-1 ➔ 4-2) 전/후임 교대 감독관 명단입니다.
+      </p>
+      
+      <div class="grade-table-title">1학년 고사실 (6개 학급)</div>
+      <div class="table-responsive">
+        <table class="matrix-table" id="matrix1st">
+          <thead>
+            <tr>
+              <th>학급</th>
+              <th>2-1교시</th>
+              <th>➔</th>
+              <th>2-2교시</th>
+              <th>4-1교시</th>
+              <th>➔</th>
+              <th>4-2교시</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="grade-table-title">2학년 고사실 (6개 학급)</div>
+      <div class="table-responsive">
+        <table class="matrix-table" id="matrix2nd">
+          <thead>
+            <tr>
+              <th>학급</th>
+              <th>2-1교시</th>
+              <th>➔</th>
+              <th>2-2교시</th>
+              <th>4-1교시</th>
+              <th>➔</th>
+              <th>4-2교시</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="grade-table-title">3학년 고사실 (7개 학급)</div>
+      <div class="table-responsive">
+        <table class="matrix-table" id="matrix3rd">
+          <thead>
+            <tr>
+              <th>학급</th>
+              <th>2-1교시</th>
+              <th>➔</th>
+              <th>2-2교시</th>
+              <th>4-1교시</th>
+              <th>➔</th>
+              <th>4-2교시</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 사용자가 제공한 10월 학력평가 감독 원본 데이터
+const DATA = {"periods": [{"key": "p1", "name": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "min": 80}, {"key": "p21", "name": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "min": 50}, {"key": "p22", "name": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "min": 50}, {"key": "p3", "name": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "min": 70}, {"key": "p41", "name": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "min": 80}, {"key": "p42", "name": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "min": 60}], "personal": {"서진숙": {"info": {"hr": "담임", "class": "1-1(인)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-1(인)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-1(인)", "min": 60, "duty": true}], "total": 140}, "강주혁": {"info": {"hr": "담임", "class": "1-2(의)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-2(의)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-2(의)", "min": 60, "duty": true}], "total": 140}, "최재민": {"info": {"hr": "담임", "class": "1-3(예)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-3(예)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-3(미)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 130}, "윤의국": {"info": {"hr": "담임", "class": "1-4(지)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-4(지)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-4(지)", "min": 60, "duty": true}], "total": 140}, "임진삼": {"info": {"hr": "담임", "class": "1-5(원)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-5(원)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-5(원)", "min": 60, "duty": true}], "total": 140}, "우서영": {"info": {"hr": "담임", "class": "1-6(형)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "1-6(형)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-6(형)", "min": 60, "duty": true}], "total": 140}, "원종범": {"info": {"hr": "담임", "class": "2-1(진)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-1(진)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-1(진)", "min": 60, "duty": true}], "total": 140}, "윤종희": {"info": {"hr": "담임", "class": "2-2(선)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-2(선)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-2(선)", "min": 60, "duty": true}], "total": 140}, "양진택": {"info": {"hr": "담임", "class": "2-3(미)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-3(애)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-3(미)", "min": 60, "duty": true}], "total": 110}, "선소희": {"info": {"hr": "담임", "class": "2-4(덕)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-4(덕)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-4(덕)", "min": 60, "duty": true}], "total": 140}, "구성덕": {"info": {"hr": "담임", "class": "2-5(성)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-5(성)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-5(성)", "min": 60, "duty": true}], "total": 140}, "김수경": {"info": {"hr": "담임", "class": "2-6(현)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-6(현)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "2-6(현)", "min": 60, "duty": true}], "total": 140}, "김영주": {"info": {"hr": "담임", "class": "3-1(신)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-1(신)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-1(신)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-1(신)", "min": 26, "duty": true}], "total": 156}, "김보라": {"info": {"hr": "담임", "class": "3-2(망)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-2(망)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-2(망)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-2(망)", "min": 26, "duty": true}], "total": 156}, "김지혜": {"info": {"hr": "담임", "class": "3-3(애)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-3(애)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-3(애)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-3(애)", "min": 26, "duty": true}], "total": 156}, "배민욱": {"info": {"hr": "담임", "class": "3-4(은)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-4(은)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-4(은)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-4(은)", "min": 26, "duty": true}], "total": 156}, "정은혜": {"info": {"hr": "담임", "class": "3-5(혜)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-5(혜)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-5(혜)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-5(혜)", "min": 26, "duty": true}], "total": 156}, "임성우": {"info": {"hr": "담임", "class": "3-6(화)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-6(화)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-6(화)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-6(화)", "min": 26, "duty": true}], "total": 156}, "우승훈": {"info": {"hr": "담임", "class": "3-7(영)", "group": "담임고정"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "3-7(영)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "3-7(영)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "3-7(영)", "min": 26, "duty": true}], "total": 156}, "조혜림": {"info": {"hr": "비담임", "class": null, "group": "150분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-1(진)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "1-3(예)", "min": 60, "duty": true}], "total": 130}, "이효정": {"info": {"hr": "비담임", "class": null, "group": "150분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-1(신)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-3(예)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 150}, "김수진": {"info": {"hr": "비담임", "class": null, "group": "170분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "2-3(미)", "min": 80, "duty": true}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-6(형)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 130}, "신미경": {"info": {"hr": "비담임", "class": null, "group": "170분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-5(성)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-5(성)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-3(예)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 170}, "신욱항": {"info": {"hr": "비담임", "class": null, "group": "170분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-4(덕)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-5(원)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-1(인)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "김윤희": {"info": {"hr": "비담임", "class": null, "group": "170분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-4(덕)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-1(신)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-4(덕)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 170}, "전성민": {"info": {"hr": "비담임", "class": null, "group": "180분(3교시 제외)"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-1(인)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-2(망)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-5(원)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "구인혜": {"info": {"hr": "비담임", "class": null, "group": "180분(3교시 제외)"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-4(지)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-4(은)(황주윤+구인혜)", "min": 35, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-6(형)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 165}, "김동하": {"info": {"hr": "비담임", "class": null, "group": "180분(3교시 제외)"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-5(원)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "-", "min": 0, "duty": false}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-4(지)(김동하+이미나)", "min": 35, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-5(혜)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 165}, "백수정": {"info": {"hr": "비담임", "class": null, "group": "180분(3교시 제외)"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-2(의)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-2(의)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-6(현)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 180}, "황주윤": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-6(현)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-6(현)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-4(은)(황주윤+구인혜)", "min": 35, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-1(신)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 215}, "송정하": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-2(망)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-5(성)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-3(애)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "이미나": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-2(선)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-2(선)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-4(지)(김동하+이미나)", "min": 35, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-4(지)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 215}, "이수진": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-4(은)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-6(현)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-4(은)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "황상희": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-6(화)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-6(형)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-2(망)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "정주연": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-6(형)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-2(선)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-6(화)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "정다영": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-3(미)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-3(애)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-1(진)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "조성용": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-5(원)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-6(화)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-2(선)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "박경화": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-5(혜)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-5(혜)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-5(성)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "선민수": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-4(지)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "3-7(영)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-3(미)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "김선우": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "3-7(영)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "2-3(미)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "1-2(의)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "김재희": {"info": {"hr": "비담임", "class": null, "group": "170분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "2-1(진)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "2-1(진)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-1(인)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "-", "min": 0, "duty": false}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 170}, "김민철": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "-", "min": 0, "duty": false}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-1(인)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "1-2(의)", "min": 70, "duty": true}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "3-7(영)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 200}, "정태진": {"info": {"hr": "비담임", "class": null, "group": "200분"}, "schedule": [{"period": "1교시", "time": "08:40~10:00", "subject": "국어(80)", "room": "-", "min": 0, "duty": false}, {"period": "2-1교시", "time": "10:30~11:20", "subject": "수학1(50)", "room": "1-3(예)", "min": 50, "duty": true}, {"period": "2-2교시", "time": "11:20~12:10", "subject": "수학2(50)", "room": "1-3(예)", "min": 50, "duty": true}, {"period": "3교시", "time": "13:10~14:20", "subject": "영어(70)", "room": "-", "min": 0, "duty": false}, {"period": "4-1교시", "time": "14:50~16:10", "subject": "탐구1(80)", "room": "2-4(덕)", "min": 80, "duty": true}, {"period": "4-2교시", "time": "16:10~17:10", "subject": "탐구2(60/26)", "room": "-", "min": 0, "duty": false}], "total": 180}}, "names": ["강주혁", "구성덕", "구인혜", "김동하", "김민철", "김보라", "김선우", "김수경", "김수진", "김영주", "김윤희", "김재희", "김지혜", "박경화", "배민욱", "백수정", "서진숙", "선민수", "선소희", "송정하", "신미경", "신욱항", "양진택", "우서영", "우승훈", "원종범", "윤의국", "윤종희", "이미나", "이수진", "이효정", "임성우", "임진삼", "전성민", "정다영", "정은혜", "정주연", "정태진", "조성용", "조혜림", "최재민", "황상희", "황주윤"]};
+
+// -------------------------------------------------------------
+// 1. 고사실명 정규화 및 교실별 교시 감독관 매핑 맵 자동 생성
+// -------------------------------------------------------------
+function cleanRoomName(r) {
+  if (!r || r === '-') return null;
+  const m = r.match(/^(\d-\d\([^)]+\))/);
+  return m ? m[1] : r.trim();
+}
+
+// roomScheduleMap: { [roomName]: { '1교시': [교사], '2-1교시': [교사], ... } }
+const roomScheduleMap = {};
+Object.entries(DATA.personal).forEach(([teacher, pData]) => {
+  pData.schedule.forEach(s => {
+    if (s.duty && s.room && s.room !== '-') {
+      const cr = cleanRoomName(s.room);
+      if (!cr) return;
+      if (!roomScheduleMap[cr]) roomScheduleMap[cr] = {};
+      if (!roomScheduleMap[cr][s.period]) roomScheduleMap[cr][s.period] = [];
+      roomScheduleMap[cr][s.period].push(teacher);
+    }
+  });
+});
+
+// -------------------------------------------------------------
+// 2. 교대 정보 분석 헬퍼
+// -------------------------------------------------------------
+function getHandoffInfo(s, currentTeacher) {
+  if (!s.duty || !s.room || s.room === '-') return null;
+  const cr = cleanRoomName(s.room);
+  if (!cr || !roomScheduleMap[cr]) return null;
+
+  const roomDuty = roomScheduleMap[cr];
+
+  // 2-1교시: 2-2교시 다음 교대자 조회
+  if (s.period === '2-1교시') {
+    const nextList = roomDuty['2-2교시'] || [];
+    if (nextList.length === 0) return { type: 'none', text: '다음 교대: 없음' };
+    if (nextList.includes(currentTeacher)) {
+      return { type: 'same-duty', text: '👉 연속 감독 (본인 계속 진행)' };
+    }
+    return { type: 'next-22', text: `👉 다음 교대(2-2교시): ${nextList.join(', ')} 선생님` };
+  }
+
+  // 4-1교시: 4-2교시 다음 교대자 조회
+  if (s.period === '4-1교시') {
+    const nextList = roomDuty['4-2교시'] || [];
+    if (nextList.length === 0) return { type: 'none', text: '다음 교대: 없음' };
+    if (nextList.includes(currentTeacher)) {
+      return { type: 'same-duty', text: '👉 연속 감독 (본인 계속 진행)' };
+    }
+    return { type: 'next-42', text: `👉 다음 교대(4-2교시): ${nextList.join(', ')} 선생님` };
+  }
+
+  // 2-2교시: 2-1교시 이전 감독자 조회 (교대 인계자)
+  if (s.period === '2-2교시') {
+    const prevList = roomDuty['2-1교시'] || [];
+    if (prevList.length > 0 && !prevList.includes(currentTeacher)) {
+      return { type: 'prev-duty', text: `👈 이전 감독(2-1교시): ${prevList.join(', ')} 선생님` };
+    }
+  }
+
+  // 4-2교시: 4-1교시 이전 감독자 조회 (교대 인계자)
+  if (s.period === '4-2교시') {
+    const prevList = roomDuty['4-1교시'] || [];
+    if (prevList.length > 0 && !prevList.includes(currentTeacher)) {
+      return { type: 'prev-duty', text: `👈 이전 감독(4-1교시): ${prevList.join(', ')} 선생님` };
+    }
+  }
+
+  // 3교시 영어 (동반 짝꿍 배정 체크)
+  if (s.period === '3교시') {
+    const curList = roomDuty['3교시'] || [];
+    const partners = curList.filter(t => t !== currentTeacher);
+    if (partners.length > 0) {
+      return { type: 'partner-duty', text: `👥 동반 감독: ${partners.join(', ')} 선생님` };
+    }
+  }
+
+  return null;
+}
+
+// -------------------------------------------------------------
+// 3. UI 렌더링 & 검색
+// -------------------------------------------------------------
+const input = document.getElementById('nameInput');
+const suggest = document.getElementById('suggest');
+const card = document.getElementById('card');
+const quickChipsContainer = document.getElementById('quickChips');
+
+// 빠른 칩 렌더링
+function renderQuickChips() {
+  quickChipsContainer.innerHTML = '';
+  DATA.names.forEach(name => {
+    const chip = document.createElement('div');
+    chip.className = 'quick-chip';
+    chip.textContent = name;
+    chip.onclick = () => show(name);
+    quickChipsContainer.appendChild(chip);
+  });
+}
+
+function show(name) {
+  const p = DATA.personal[name];
+  if (!p) return;
+
+  // 칩 활성화 상태 표시
+  document.querySelectorAll('.quick-chip').forEach(c => {
+    c.classList.toggle('active', c.textContent === name);
+  });
+
+  document.getElementById('whoName').textContent = name + ' 선생님';
+  document.getElementById('whoGroup').textContent = p.info.group + (p.info.hr === '담임' ? ' · ' + p.info.class + ' 담임' : '');
+  document.getElementById('whoTotal').textContent = p.total + '분';
+  
+  const tb = document.getElementById('tbody');
+  tb.innerHTML = '';
+
+  p.schedule.forEach(s => {
+    const tr = document.createElement('tr');
+    tr.className = s.duty ? 'duty' : 'rest';
+    const minTxt = s.duty ? s.min + '분' : '-';
+
+    let roomHtml = `<span class="room-name">${s.room}</span>`;
+    const handoff = getHandoffInfo(s, name);
+    if (handoff) {
+      roomHtml += `<br><span class="handoff-box ${handoff.type}">${handoff.text}</span>`;
+    }
+
+    tr.innerHTML = `
+      <td>${s.period}</td>
+      <td style="white-space:nowrap; font-size:12px;">${s.time}</td>
+      <td>${s.subject}</td>
+      <td class="room-cell">${roomHtml}</td>
+      <td>${minTxt}</td>
+    `;
+    tb.appendChild(tr);
+  });
+
+  card.classList.add('show');
+  suggest.style.display = 'none';
+  input.value = name;
+
+  // URL hash/query 업데이트 (공유 용이)
+  try {
+    const newUrl = window.location.pathname + '?teacher=' + encodeURIComponent(name);
+    window.history.replaceState({ teacher: name }, '', newUrl);
+  } catch(e) {}
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// 검색 이벤트 리스너
+input.addEventListener('input', () => {
+  const q = input.value.trim();
+  if (!q) { suggest.style.display = 'none'; return; }
+  const matched = DATA.names.filter(n => n.includes(q)).slice(0, 8);
+  if (!matched.length) { suggest.style.display = 'none'; return; }
+  suggest.innerHTML = '';
+  matched.forEach(n => {
+    const d = document.createElement('div');
+    const pInfo = DATA.personal[n];
+    const subText = pInfo ? (pInfo.info.hr === '담임' ? pInfo.info.class + ' 담임' : pInfo.info.group) : '';
+    d.innerHTML = `<span><strong>${n}</strong> 선생님</span><span style="font-size:12px; color:#718096;">${subText}</span>`;
+    d.onclick = () => show(n);
+    suggest.appendChild(d);
+  });
+  suggest.style.display = 'block';
+});
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const q = input.value.trim();
+    const exact = DATA.names.find(n => n === q) || DATA.names.find(n => n.includes(q));
+    if (exact) show(exact);
+  }
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-box')) suggest.style.display = 'none';
+});
+
+// 링크 복사
+function copyCurrentLink() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => {
+      alert('📋 현재 시간표 조회 링크가 복사되었습니다!');
+    }).catch(() => prompt('아래 링크를 복사하세요:', url));
+  } else {
+    prompt('아래 링크를 복사하세요:', url);
+  }
+}
+
+// -------------------------------------------------------------
+// 4. 전체 19개 고사실 교대 매칭표 생성
+// -------------------------------------------------------------
+function buildMatrixTables() {
+  const grade1 = ["1-1(인)", "1-2(의)", "1-3(예)", "1-4(지)", "1-5(원)", "1-6(형)"];
+  const grade2 = ["2-1(진)", "2-2(선)", "2-3(미)", "2-4(덕)", "2-5(성)", "2-6(현)"];
+  const grade3 = ["3-1(신)", "3-2(망)", "3-3(애)", "3-4(은)", "3-5(혜)", "3-6(화)", "3-7(영)"];
+
+  function populate(tableId, roomList) {
+    const tbody = document.querySelector(`#${tableId} tbody`);
+    tbody.innerHTML = '';
+    roomList.forEach(r => {
+      const rd = roomScheduleMap[r] || {};
+      const t21 = (rd['2-1교시'] || []).join(', ') || '-';
+      const t22 = (rd['2-2교시'] || []).join(', ') || '-';
+      const t41 = (rd['4-1교시'] || []).join(', ') || '-';
+      const t42 = (rd['4-2교시'] || []).join(', ') || '-';
+
+      const isSame2 = (t21 === t22 && t21 !== '-');
+      const isSame4 = (t41 === t42 && t41 !== '-');
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="matrix-room">${r}</td>
+        <td>${t21}</td>
+        <td class="arrow-sep">➔</td>
+        <td class="${isSame2 ? '' : 't-next-name'}">${t22}${isSame2 ? ' <span style="font-size:10px; color:#276749;">(동일)</span>' : ''}</td>
+        <td>${t41}</td>
+        <td class="arrow-sep">➔</td>
+        <td class="${isSame4 ? '' : 't-next-name'}">${t42}${isSame4 ? ' <span style="font-size:10px; color:#276749;">(동일)</span>' : ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  populate('matrix1st', grade1);
+  populate('matrix2nd', grade2);
+  populate('matrix3rd', grade3);
+}
+
+function toggleAllRooms() {
+  const content = document.getElementById('allRoomsContent');
+  const arrow = document.getElementById('toggleArrow');
+  const isOpen = content.classList.contains('open');
+  if (isOpen) {
+    content.classList.remove('open');
+    arrow.textContent = '▼ 펼치기';
+  } else {
+    content.classList.add('open');
+    arrow.textContent = '▲ 접기';
+  }
+}
+
+// 초기화
+window.addEventListener('DOMContentLoaded', () => {
+  renderQuickChips();
+  buildMatrixTables();
+
+  // URL 파라미터 체크 (예: ?teacher=김수진)
+  const params = new URLSearchParams(window.location.search);
+  const teacherParam = params.get('teacher') || params.get('name');
+  if (teacherParam && DATA.personal[teacherParam]) {
+    show(teacherParam);
+  } else {
+    // 기본으로 첫 번째 이름 또는 담임 교사 표시하지 않고 검색 유도
+  }
+});
+</script>
+</body>
+</html>
