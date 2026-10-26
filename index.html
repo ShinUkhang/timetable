@@ -6268,6 +6268,20 @@ window.IMPORTANT_NOTICE_DATA = {
       "summary": "⏱️ 9/30(수) 오전 단축: 2교시(09:40~), 3교시(10:30~), 4교시(11:20~)"
     },
     {
+      "rawDate": "10월 29일",
+      "timeStr": "종일",
+      "content": "10월 29일(목) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
+      "note": "금 시간표 운영",
+      "summary": "⚠️ 10/29(목) 오늘 금요일 시간표 운영"
+    },
+    {
+      "rawDate": "10월 30일",
+      "timeStr": "종일",
+      "content": "10월 30일(금) 오늘은 난원제로 정규 수업이 없습니다.",
+      "note": "난원제 (수업 없음)",
+      "summary": "🎉 10/30(금) 오늘 난원제 — 수업 없음"
+    },
+    {
       "rawDate": "10월 6일",
       "timeStr": "종일",
       "content": "10월 6일(화) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
@@ -11051,17 +11065,48 @@ window.LIBRARY_SCHEDULE_DATA = {
     }
 
     // 오늘 요일 계산 (0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6: 토)
-    function getTodayDayStr() {
-        const now = new Date();
-        const mm = now.getMonth() + 1;
-        const dd = now.getDate();
-        // 10월 6일(화)은 금요일 시간표로 대체 운영
-        if (mm === 10 && dd === 6) {
-            return '금';
-        }
-        const d = now.getDay();
+    // 날짜별 시간표 대체 운영 (day: 그날 적용할 요일 시간표, null이면 수업 없음)
+    const SCHEDULE_OVERRIDES = {
+        '2026-10-06': { day: '금', label: '금 시간표', desc: '금요일 시간표 운영' },
+        '2026-10-29': { day: '금', label: '금 시간표', desc: '금요일 시간표 운영' },
+        '2026-10-30': { day: null, label: '난원제', desc: '난원제 (수업 없음)' }
+    };
+    const WEEKDAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+
+    function toIsoDate(dt) {
+        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+    }
+    function getScheduleOverride(dt = new Date()) {
+        return SCHEDULE_OVERRIDES[toIsoDate(dt)] || null;
+    }
+    // 그 날짜에 실제로 운영되는 요일 시간표 (주말·수업 없는 날은 null)
+    function getEffectiveDayStr(dt) {
+        const ov = getScheduleOverride(dt);
+        if (ov) return ov.day;
         const map = { 1: '월', 2: '화', 3: '수', 4: '목', 5: '금' };
-        return map[d] || null;
+        return map[dt.getDay()] || null;
+    }
+
+    // 오늘 요일 계산 (대체 운영일은 대체 요일, 수업 없는 날은 null)
+    function getTodayDayStr() {
+        return getEffectiveDayStr(new Date());
+    }
+
+    // 오늘부터 이번 주 금요일까지의 대체 운영 안내 배지
+    function getScheduleNoticeBadge(fontSize = 12) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const notes = [];
+        for (let i = 0; i <= 6; i++) {
+            const dt = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+            if (i > 0 && dt.getDay() === 1) break; // 다음 주 월요일 전까지
+            const ov = getScheduleOverride(dt);
+            if (!ov) continue;
+            const when = i === 0 ? `오늘(${WEEKDAY_NAMES[dt.getDay()]})` : `${dt.getMonth() + 1}/${dt.getDate()}(${WEEKDAY_NAMES[dt.getDay()]})`;
+            notes.push(`${when} ${ov.desc}`);
+        }
+        if (!notes.length) return '';
+        return `<span style="display:inline-block; background:#fef08a; color:#854d0e; font-size:${fontSize}px; padding:2px 8px; border-radius:4px; font-weight:bold; margin-left:6px; vertical-align:middle;">⚠️ ${notes.join(' · ')}</span>`;
     }
 
     // 날짜 배지 초기화
@@ -11069,16 +11114,13 @@ window.LIBRARY_SCHEDULE_DATA = {
         const now = new Date();
         const mm = now.getMonth() + 1;
         const dd = now.getDate();
-        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-        const dayStr = dayNames[now.getDay()];
-        
+        const dayStr = WEEKDAY_NAMES[now.getDay()];
+        const ov = getScheduleOverride(now);
+
         const el = document.getElementById('headerDateBadge');
         if (el) {
-            if (mm === 10 && dd === 6) {
-                el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="background:#fef08a; color:#854d0e; font-size:10.5px; padding:1px 6px; border-radius:4px; font-weight:800; vertical-align:middle;">금 시간표</span> <span style="font-size:10px; opacity:0.8;">🔄</span>`;
-            } else {
-                el.innerHTML = `${mm}월 ${dd}일(${dayStr}) <span style="font-size:10px; opacity:0.8;">🔄</span>`;
-            }
+            const ovBadge = ov ? `<span style="background:#fef08a; color:#854d0e; font-size:10.5px; padding:1px 6px; border-radius:4px; font-weight:800; vertical-align:middle;">${ov.label}</span> ` : '';
+            el.innerHTML = `${mm}월 ${dd}일(${dayStr}) ${ovBadge}<span style="font-size:10px; opacity:0.8;">🔄</span>`;
         }
         
         const todayKor = getTodayDayStr();
@@ -11784,13 +11826,7 @@ window.LIBRARY_SCHEDULE_DATA = {
         if (kimAnnual) kimAnnual.style.display = 'none';
 
         if (titleEl) {
-            const now = new Date();
-            const isOct6 = (now.getMonth() + 1 === 10 && now.getDate() === 6);
-            if (isOct6) {
-                titleEl.innerHTML = `📅 ${t} 선생님 주간 시간표 <span style="background:#fef08a; color:#854d0e; font-size:12px; padding:2px 8px; border-radius:4px; font-weight:bold; margin-left:6px; vertical-align:middle;">⚠️ 오늘(화) 금 시간표 운영</span>`;
-            } else {
-                titleEl.innerText = `📅 ${t} 선생님 주간 시간표`;
-            }
+            titleEl.innerHTML = `📅 ${t} 선생님 주간 시간표 ${getScheduleNoticeBadge(12)}`;
         }
         const todayStr = getTodayDayStr();
         
@@ -11877,13 +11913,7 @@ window.LIBRARY_SCHEDULE_DATA = {
 
         const classTitleEl = document.getElementById('classTimetableTitle');
         if (classTitleEl) {
-            const now = new Date();
-            const isOct6 = (now.getMonth() + 1 === 10 && now.getDate() === 6);
-            if (isOct6) {
-                classTitleEl.innerHTML = `🏫 [${cls}반] 일과 시간표 <span style="background:#fef08a; color:#854d0e; font-size:12px; padding:2px 8px; border-radius:4px; font-weight:bold; margin-left:6px; vertical-align:middle;">⚠️ 오늘(화) 금 시간표 운영</span>`;
-            } else {
-                classTitleEl.innerText = `🏫 [${cls}반] 일과 시간표`;
-            }
+            classTitleEl.innerHTML = `🏫 [${cls}반] 일과 시간표 ${getScheduleNoticeBadge(12)}`;
         }
         const todayStr = getTodayDayStr();
         const table = document.getElementById('classTimetableTable');
@@ -12110,26 +12140,29 @@ window.LIBRARY_SCHEDULE_DATA = {
         return `${dt.getMonth() + 1}/${dt.getDate()}`;
     }
     // 오늘 포함 가장 가까운 해당 요일
-    function ccfNextDate(dayName) {
-        const dt = new Date();
-        dt.setHours(0, 0, 0, 0);
-        const target = days.indexOf(dayName) + 1; // 월=1
-        dt.setDate(dt.getDate() + ((target - dt.getDay() + 7) % 7));
-        return dt;
+    // from 날짜부터 그 요일 시간표가 실제로 운영되는 가장 가까운 날 (대체 운영·수업 없는 날 반영)
+    function ccfFindDate(from, dayName) {
+        const dt = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+        for (let i = 0; i < 60; i++) {
+            if (getEffectiveDayStr(dt) === dayName) return dt;
+            dt.setDate(dt.getDate() + 1);
+        }
+        return new Date(from.getFullYear(), from.getMonth(), from.getDate());
     }
-    // 기준 날짜와 같은 주의 해당 요일 (이미 지났으면 다음 주)
+    function ccfNextDate(dayName) {
+        return ccfFindDate(new Date(), dayName);
+    }
+    // 기준 날짜와 같은 주에서 해당 요일 시간표가 운영되는 날 (이미 지났거나 없으면 그 다음)
     function ccfSameWeekDate(baseIso, dayName) {
         const base = ccfParseDate(baseIso);
-        const dt = new Date(base);
-        dt.setDate(base.getDate() - (base.getDay() + 6) % 7 + days.indexOf(dayName));
+        const mon = new Date(base.getFullYear(), base.getMonth(), base.getDate() - (base.getDay() + 6) % 7);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        if (dt < today) dt.setDate(dt.getDate() + 7);
-        return dt;
+        return ccfFindDate(mon < today ? today : mon, dayName);
     }
-    // 요일 이름 → 같은 주에서 그 날짜와 맞는지 확인용 요일 텍스트
+    // 그 날짜에 운영되는 요일 시간표
     function ccfDayOf(iso) {
-        return iso ? '일월화수목금토'[ccfParseDate(iso).getDay()] : '';
+        return iso ? getEffectiveDayStr(ccfParseDate(iso)) : '';
     }
 
     function ccfSubjectOf(teacher, cls, day, period) {
@@ -12273,7 +12306,7 @@ window.LIBRARY_SCHEDULE_DATA = {
             ccfItems[i].date2 = ccfIsoDate(ccfSameWeekDate(value, ccfItems[i].partnerDay));
         }
         if (ccfDayOf(ccfItems[i][key]) !== (key === 'date1' ? ccfItems[i].day : ccfItems[i].partnerDay)) {
-            showToast('⚠️ 고른 날짜의 요일이 시간표 요일과 다릅니다');
+            showToast('⚠️ 고른 날짜에는 이 요일 시간표가 운영되지 않습니다 (대체 운영·수업 없는 날 확인)');
         }
         ccfSaveItems();
         openChangeForm();
@@ -13171,13 +13204,7 @@ window.LIBRARY_SCHEDULE_DATA = {
             </div>
             <div style="font-size:12px; color:var(--primary-dark); font-weight:bold; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                 <span>📅 <strong>${day}요일 ${periodDisplay}</strong> 기준 좌석 상태입니다.</span>
-                ${(function(){
-                    const now = new Date();
-                    if (now.getMonth() + 1 === 10 && now.getDate() === 6) {
-                        return `<span style="background:#fef08a; color:#854d0e; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:bold;">⚠️ 오늘(10/6 화) 금요일 시간표 운영 중</span>`;
-                    }
-                    return '';
-                })()}
+                ${getScheduleNoticeBadge(11)}
             </div>
         `;
 
@@ -15670,6 +15697,28 @@ ${n.content}
                         content: colContent,
                         note: colNote,
                         summary: summary
+                    });
+                }
+
+                // 10월 30일 난원제 (수업 없음) 공지 보장
+                if (!newNotices.some(n => n.rawDate && n.rawDate.includes('10월 30일'))) {
+                    newNotices.unshift({
+                        "rawDate": "10월 30일",
+                        "timeStr": "종일",
+                        "content": "10월 30일(금) 오늘은 난원제로 정규 수업이 없습니다.",
+                        "note": "난원제 (수업 없음)",
+                        "summary": "🎉 10/30(금) 오늘 난원제 — 수업 없음"
+                    });
+                }
+
+                // 10월 29일 금 시간표 운영 공지 보장
+                if (!newNotices.some(n => n.rawDate && n.rawDate.includes('10월 29일'))) {
+                    newNotices.unshift({
+                        "rawDate": "10월 29일",
+                        "timeStr": "종일",
+                        "content": "10월 29일(목) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
+                        "note": "금 시간표 운영",
+                        "summary": "⚠️ 10/29(목) 오늘 금요일 시간표 운영"
                     });
                 }
 

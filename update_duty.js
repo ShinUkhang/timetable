@@ -687,6 +687,28 @@ async function parseGoogleDocNotice() {
                 });
             }
 
+            // 10월 30일 난원제 (수업 없음) 공지 보장
+            if (!importantNoticeData.notices.some(n => n.rawDate && n.rawDate.includes('10월 30일'))) {
+                importantNoticeData.notices.unshift({
+                    "rawDate": "10월 30일",
+                    "timeStr": "종일",
+                    "content": "10월 30일(금) 오늘은 난원제로 정규 수업이 없습니다.",
+                    "note": "난원제 (수업 없음)",
+                    "summary": "🎉 10/30(금) 오늘 난원제 — 수업 없음"
+                });
+            }
+
+            // 10월 29일 금 시간표 운영 공지 보장
+            if (!importantNoticeData.notices.some(n => n.rawDate && n.rawDate.includes('10월 29일'))) {
+                importantNoticeData.notices.unshift({
+                    "rawDate": "10월 29일",
+                    "timeStr": "종일",
+                    "content": "10월 29일(목) 오늘은 금요일 시간표로 대체 운영됩니다.\n전체 교사 및 학생 시간표, 교무실 좌석 상태가 금요일 일과를 기준으로 적용됩니다.",
+                    "note": "금 시간표 운영",
+                    "summary": "⚠️ 10/29(목) 오늘 금요일 시간표 운영"
+                });
+            }
+
             // 10월 6일 금요일 시간표 대체 운영 공지 보장
             if (!importantNoticeData.notices.some(n => n.rawDate && n.rawDate.includes('10월 6일'))) {
                 importantNoticeData.notices.unshift({
