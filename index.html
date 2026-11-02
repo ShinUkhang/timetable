@@ -2241,7 +2241,7 @@
             <div class="proctor-legend">
                 <span><i class="lg lg-mine"></i>선택한 선생님</span>
                 <span><i class="lg lg-now"></i>지금 교시</span>
-                <span style="margin-left:auto;">이름을 누르면 시간표로 이동</span>
+                <span style="margin-left:auto;">내 칸: 보강·교환 추천 / 다른 이름: 시간표로 이동</span>
             </div>
         </div>
 
@@ -11306,7 +11306,9 @@ window.SENIOR_PROCTOR_DATA = {
             t += `<tr class="${p === nowP ? 'now' : ''}"><td class="p-col">${p}</td>`;
             t += periods[p].map(n => n === 'CP'
                 ? '<td class="name cp">CP</td>'
-                : `<td class="name${n === me ? ' mine' : ''}" onclick="selectTeacherAndGo('${n}')">${n}</td>`).join('');
+                : n === me
+                    ? `<td class="name mine" onclick="openSwapModal('${n}', '${proctorDay}', ${p}, '')" title="보강·교환 추천">${n}</td>`
+                    : `<td class="name" onclick="selectTeacherAndGo('${n}')">${n}</td>`).join('');
             t += '</tr>';
         }
         document.getElementById('proctorTable').innerHTML = t;
@@ -12102,10 +12104,11 @@ window.SENIOR_PROCTOR_DATA = {
                     // 3학년 임장 (이동수업 없는 주간)
                     const pc = getProctorClass(t, d, p);
                     const origLine = cellText && !isFree(cellText) ? `<div class="proctor-orig">원래: ${cellText.replace(/\n/g, ' ')}</div>` : '';
-                    html += `<td class="t-cell-proctor${todayClass}" onclick="openProctorTab('${d}')">
+                    html += `<td class="t-cell-proctor${todayClass}" onclick="openSwapModal('${t}', '${d}', ${p}, '')">
                         <div class="proctor-cell-title">🎓 임장</div>
                         <div class="proctor-cell-class">${pc.id} ${pc.name}</div>
                         ${origLine}
+                        <span class="t-cell-swap-hint">추천</span>
                     </td>`;
                 } else if (getReplacedSeniorClasses(t, d, p).length) {
                     // 3학년 수업이지만 이번 주는 다른 교사가 임장
@@ -12179,12 +12182,19 @@ window.SENIOR_PROCTOR_DATA = {
 
     // 수업 교환/보강 모달 (공강 교사 먼저 ➡️ 그 다음 스왑 순서)
     function openSwapModal(myTeacher, day, period, subjectText) {
+        period = Number(period);
+        // 3학년 임장 시간이면 임장 기준으로 보강·교환을 추천
+        const proctor = getProctorClass(myTeacher, day, period);
+        if (proctor) subjectText = `3학년 임장 ${proctor.id}(${proctor.name})`;
         document.getElementById('sheetModalTitle').innerText = `🔄 [${day}요일 ${period}교시] 추천 목록`;
         document.getElementById('sheetModalSubtitle').innerText = `${myTeacher} 선생님: ${subjectText}`;
 
         let targetClasses = [];
         let targetGrades = new Set();
-        if (typeof classNames !== 'undefined' && typeof classSchedule !== 'undefined') {
+        if (proctor) {
+            targetClasses = [proctor.id];
+            targetGrades.add('3');
+        } else if (typeof classNames !== 'undefined' && typeof classSchedule !== 'undefined') {
             for (let cls of classNames) {
                 let cellData = classSchedule[cls]?.[period]?.[day];
                 if (cellData && cellData.some(item => item.teacher === myTeacher)) {
@@ -12213,7 +12223,35 @@ window.SENIOR_PROCTOR_DATA = {
 
         // 2. 상호 맞바꾸기(스왑) 계산
         let mutualSwaps = [];
-        for (let cls of classNames) {
+        if (proctor) {
+            // 임장끼리 맞교환: 다른 선생님의 임장 시간과 서로 바꿈
+            const pdata = window.SENIOR_PROCTOR_DATA;
+            for (const d of days) {
+                const dayData = pdata.days[d];
+                if (!dayData) continue;
+                for (const p of Object.keys(dayData.periods).map(Number)) {
+                    if (d === day && p === period) continue;
+                    dayData.periods[p].forEach((partnerTeacher, i) => {
+                        if (partnerTeacher === 'CP' || partnerTeacher === myTeacher || !teachers.includes(partnerTeacher)) return;
+                        if (mutualSwaps.some(m => m.partner === partnerTeacher && m.partnerDay === d && m.partnerPeriod === p)) return;
+                        if (!isTeacherFreeAt(myTeacher, d, p) || !isTeacherFreeAt(partnerTeacher, day, period)) return;
+                        const cls = pdata.classes[i];
+                        mutualSwaps.push({
+                            partner: partnerTeacher,
+                            partnerDay: d,
+                            partnerPeriod: p,
+                            partnerSubject: '임장',
+                            className: cls.id,
+                            isSameClass: cls.id === proctor.id,
+                            isSameDay: d === day,
+                            totalPure: getPureClassCount(partnerTeacher),
+                            dayPure: getPureClassCount(partnerTeacher, day)
+                        });
+                    });
+                }
+            }
+        }
+        for (let cls of (proctor ? [] : classNames)) {
             let clsGrade = cls.split('-')[0];
             if (!Array.from(targetGrades).includes(clsGrade)) continue;
 
@@ -12229,6 +12267,8 @@ window.SENIOR_PROCTOR_DATA = {
 
                             let isDuplicate = mutualSwaps.some(m => m.partner === partnerTeacher && m.partnerDay === d && m.partnerPeriod === p);
                             if (isDuplicate) continue;
+                            // 임장 주간에 실제로는 열리지 않는 3학년 수업은 교환 대상에서 제외
+                            if (getReplacedSeniorClasses(partnerTeacher, d, p).some(r => r.cls === cls)) continue;
                             
                             let iAmFreeThen = isTeacherFreeAt(myTeacher, d, p);
                             let partnerIsFreeNow = isTeacherFreeAt(partnerTeacher, day, period);
@@ -12262,7 +12302,7 @@ window.SENIOR_PROCTOR_DATA = {
             return a.partnerPeriod - b.partnerPeriod;
         });
 
-        ccfBase = { me: myTeacher, day, period, subjectText, classes: targetClasses };
+        ccfBase = { me: myTeacher, day, period, subjectText, classes: targetClasses, subject: proctor ? '임장' : '' };
         ccfContexts = [];
         let html = '';
 
@@ -12415,7 +12455,7 @@ window.SENIOR_PROCTOR_DATA = {
             day: b.day,
             period: b.period,
             cls: b.classes.join(','),
-            subject: (b.classes.length && ccfSubjectOf(b.me, b.classes[0], b.day, b.period)) || b.subjectText,
+            subject: b.subject || (b.classes.length && ccfSubjectOf(b.me, b.classes[0], b.day, b.period)) || b.subjectText,
             partner: ctx.partner,
             date1
         };
