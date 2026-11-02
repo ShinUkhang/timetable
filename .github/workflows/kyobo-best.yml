@@ -1,0 +1,41 @@
+# 교보문고 베스트셀러 순위를 매시간 받아 kyobo-data 브랜치에 저장한다.
+# (main 브랜치에는 커밋하지 않으므로 github_upload.bat 의 push 와 충돌하지 않음)
+# 앱은 raw.githubusercontent.com/.../kyobo-data/kyobo_best.json 을 읽는다.
+name: 교보문고 베스트셀러 수집
+
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kyobo-best.yml'
+      - 'scripts/fetch_kyobo_best.js'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kyobo-best
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 순위 받기
+        run: node scripts/fetch_kyobo_best.js out/kyobo_best.json
+      - name: kyobo-data 브랜치에 올리기
+        run: |
+          cd out
+          git init -q -b kyobo-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kyobo_best.json
+          git commit -q -m "교보문고 베스트셀러 $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" kyobo-data

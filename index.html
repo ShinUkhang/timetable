@@ -1706,6 +1706,140 @@
         margin-top: 4px;
     }
 
+    /* ================= 도서관 탭 ================= */
+    #tab-library { --lib: #0f766e; --lib-dark: #134e4a; --lib-soft: #ecfdf5; --lib-line: #a7f3d0; --paper: #fffbf2; }
+    .lib-hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        padding: 20px 18px 16px;
+        margin-bottom: 14px;
+        color: white;
+        background:
+            radial-gradient(120% 140% at 100% 0%, rgba(253, 230, 138, 0.35) 0%, rgba(253, 230, 138, 0) 45%),
+            linear-gradient(135deg, #134e4a 0%, #0f766e 55%, #14b8a6 100%);
+        box-shadow: 0 10px 24px rgba(15, 118, 110, 0.28);
+    }
+    .lib-hero-deco { position: absolute; right: -6px; top: -10px; font-size: 92px; opacity: 0.16; transform: rotate(-12deg); pointer-events: none; }
+    .lib-hero-kicker { display: inline-block; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.18); padding: 3px 9px; border-radius: 999px; }
+    .lib-hero-title { margin: 8px 0 4px; font-size: 22px; font-weight: 900; letter-spacing: -0.6px; }
+    .lib-hero-sub { font-size: 12.5px; opacity: 0.92; line-height: 1.5; }
+    .lib-hero-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .lib-chip {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-size: 12px; font-weight: 700; color: white; text-decoration: none;
+        background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35);
+        padding: 6px 11px; border-radius: 999px;
+    }
+    .lib-chip:hover { background: rgba(255,255,255,0.26); }
+    .lib-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+    .lib-stat { background: rgba(255,255,255,0.14); border-radius: 12px; padding: 8px 10px; }
+    .lib-stat-num { font-size: 19px; font-weight: 900; line-height: 1.1; }
+    .lib-stat-label { font-size: 10.5px; opacity: 0.88; margin-top: 2px; }
+
+    .lib-seg {
+        position: sticky; top: 58px; z-index: 20;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+        background: white; border: 1px solid var(--gray-200); border-radius: 14px;
+        padding: 4px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .lib-seg-btn {
+        border: none; background: none; border-radius: 10px; padding: 9px 0;
+        font-size: 13px; font-weight: 800; color: var(--gray-600); cursor: pointer;
+    }
+    .lib-seg-btn.active { background: var(--lib); color: white; box-shadow: 0 3px 8px rgba(15,118,110,0.3); }
+    .lib-panel { display: none; }
+    .lib-panel.active { display: block; animation: fadeIn 0.18s ease-in-out; }
+
+    .lib-card { border-radius: 16px; }
+    .lib-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .lib-card-title { font-size: 15px; font-weight: 800; color: var(--lib-dark); }
+    .lib-icon-btn { border: 1px solid var(--gray-200); background: white; border-radius: 10px; width: 34px; height: 34px; cursor: pointer; font-size: 15px; flex: none; }
+    .lib-link-sm { font-size: 12px; font-weight: 700; color: var(--lib); text-decoration: none; }
+    .lib-week-nav { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .lib-week-arrow, .lib-week-current {
+        border: 1px solid var(--lib-line); background: var(--lib-soft); color: var(--lib-dark);
+        border-radius: 10px; padding: 7px 10px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    }
+    .lib-week-current { flex: 1; background: var(--lib); border-color: var(--lib); color: white; font-size: 12.5px; }
+    .lib-table-wrap { border-color: var(--lib-line); }
+    #libraryTabTimetableTable th { background: var(--lib-soft) !important; color: var(--lib-dark) !important; }
+    #libraryTabTimetableTable td.period-col { background: var(--lib-soft) !important; color: var(--lib-dark) !important; }
+    .lib-class-cell { background: linear-gradient(180deg, #ccfbf1 0%, #99f6e4 100%) !important; color: var(--lib-dark) !important; cursor: pointer; }
+    .lib-class-cell .lib-class-name { font-size: 11.5px; font-weight: 800; line-height: 1.3; }
+    .lib-class-cell .lib-class-tag { display: inline-block; margin-top: 3px; font-size: 9.5px; background: white; color: var(--lib); padding: 1px 6px; border-radius: 999px; font-weight: 700; }
+    .lib-free-cell { color: #94a3b8 !important; font-size: 10.5px !important; }
+    .lib-hint { margin-top: 10px; font-size: 11.5px; color: var(--lib-dark); background: var(--lib-soft); border: 1px solid var(--lib-line); border-radius: 10px; padding: 9px 12px; line-height: 1.5; }
+    .lib-summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; user-select: none; }
+    .lib-summary::-webkit-details-marker { display: none; }
+    .lib-summary-hint { font-size: 11px; color: var(--gray-500); }
+    .lib-count { display: inline-block; min-width: 22px; text-align: center; font-size: 11px; background: var(--lib); color: white; border-radius: 999px; padding: 1px 7px; margin-left: 4px; vertical-align: 2px; }
+    .lib-search { width: 100%; box-sizing: border-box; padding: 9px 12px; font-size: 13px; border: 1px solid var(--gray-300); border-radius: 10px; outline: none; margin: 10px 0 8px; background: white; }
+    .lib-search:focus { border-color: var(--lib); box-shadow: 0 0 0 3px rgba(15,118,110,0.12); }
+    .lib-list-box { max-height: 320px; overflow-y: auto; border: 1px solid var(--gray-200); border-radius: 10px; background: white; }
+    .lib-empty { text-align: center; padding: 26px 12px; color: var(--gray-500); font-size: 13px; }
+
+    /* 희망도서 */
+    .book-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 4px; }
+    .book-sum-box { background: var(--paper); border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; }
+    .book-sum-num { font-size: 20px; font-weight: 900; color: #92400e; line-height: 1.1; }
+    .book-sum-label { font-size: 11px; color: #a16207; margin-top: 2px; }
+    .book-deadline { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239; border-radius: 12px; padding: 9px 12px; font-size: 12.5px; font-weight: 700; }
+    .book-deadline b { font-size: 15px; }
+    .book-filter-row { margin-top: 10px; }
+    .book-filter-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+    .book-filter-chip { flex: none; border: 1px solid var(--gray-300); background: white; border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 700; color: var(--gray-700); cursor: pointer; }
+    .book-filter-chip.active { background: var(--lib-dark); border-color: var(--lib-dark); color: white; }
+    .book-list { display: grid; gap: 8px; }
+    .book-item { display: flex; gap: 12px; align-items: flex-start; background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 11px 12px; }
+    .book-spine { flex: none; width: 40px; height: 54px; border-radius: 4px 7px 7px 4px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 900; color: white; box-shadow: inset 4px 0 0 rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.12); }
+    .book-body { flex: 1; min-width: 0; }
+    .book-title { font-size: 14px; font-weight: 800; color: var(--gray-800); line-height: 1.35; word-break: keep-all; }
+    .book-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
+    .book-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 7px; }
+    .book-who { font-size: 11px; font-weight: 700; color: var(--lib-dark); background: var(--lib-soft); border-radius: 999px; padding: 2px 8px; }
+    .book-price { font-size: 11px; color: var(--gray-600); }
+    .book-status { font-size: 11px; font-weight: 800; border-radius: 999px; padding: 2px 9px; }
+    .st-buy { background: #dbeafe; color: #1e40af; }
+    .st-plan { background: #fef3c7; color: #92400e; }
+    .st-own { background: #dcfce7; color: #166534; }
+    .st-out { background: #fee2e2; color: #991b1b; }
+    .st-etc { background: var(--gray-100); color: var(--gray-700); }
+    .book-link { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--lib); text-decoration: none; white-space: nowrap; }
+
+    /* 베스트셀러 */
+    .best-toggle { display: inline-flex; background: var(--gray-100); border-radius: 10px; padding: 3px; gap: 2px; }
+    .best-toggle button { border: none; background: none; border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 800; color: var(--gray-600); cursor: pointer; }
+    .best-toggle button.active { background: white; color: var(--lib-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .best-meta { font-size: 11.5px; color: var(--gray-600); margin: 8px 0 10px; }
+    .best-list { display: grid; gap: 8px; }
+    .best-item { display: flex; gap: 12px; align-items: center; text-decoration: none; color: inherit; background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 10px 12px; transition: transform 0.12s, box-shadow 0.12s; }
+    .best-item:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+    .best-rank { flex: none; width: 30px; text-align: center; }
+    .best-rank-num { font-size: 20px; font-weight: 900; color: var(--gray-700); line-height: 1; font-style: italic; }
+    .best-item.top .best-rank-num { color: #d97706; }
+    .best-move { font-size: 10px; font-weight: 800; margin-top: 3px; }
+    .mv-up { color: #dc2626; } .mv-down { color: #2563eb; } .mv-same { color: var(--gray-500); } .mv-new { color: #d97706; }
+    .best-cover { flex: none; width: 52px; height: 74px; border-radius: 4px; object-fit: cover; background: var(--gray-100); box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
+    .best-body { flex: 1; min-width: 0; }
+    .best-title { font-size: 13.5px; font-weight: 800; color: var(--gray-800); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .best-sub { font-size: 11.5px; color: var(--gray-600); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .best-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+    .best-tag { font-size: 10.5px; font-weight: 700; background: var(--gray-100); color: var(--gray-700); border-radius: 999px; padding: 1px 7px; }
+    .best-tag.req { background: #fef3c7; color: #92400e; }
+
+    @media (min-width: 768px) {
+        .lib-hero { padding: 26px 26px 20px; }
+        .lib-hero-title { font-size: 26px; }
+        .lib-stats { grid-template-columns: repeat(3, minmax(0, 160px)); }
+        .book-summary { grid-template-columns: repeat(4, 1fr); }
+        .book-list, .best-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1200px) {
+        .lib-seg { top: 75px; max-width: 520px; }
+        .best-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
     /* ================= 기기별 화면 최적화 =================
        ~767px  : 휴대폰 (기본 스타일)
        768px~  : 태블릿 — 넓은 본문, 큰 글씨, 가운데 팝업
@@ -1993,76 +2127,89 @@
 
     <!-- ==================== 탭: 도서관 시간표 ==================== -->
     <section id="tab-library" class="tab-content">
-        <!-- 도서관 상단 헤더 배너 -->
-        <div class="m-card" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; border: none; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
-                <div>
-                    <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-                        <span style="font-size:22px;">📚</span>
-                        <h2 style="font-size:16px; font-weight:800; margin:0; letter-spacing:-0.5px;">배화여고 학교도서관 활용수업</h2>
-                    </div>
-                    <div style="font-size:12px; opacity:0.92; line-height:1.4;">
-                        담당: <b>김동하 선생님</b> (내선 <b>333</b>) · 도서관 위치: 본관 3층
-                    </div>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <a href="https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing" target="_blank" class="m-btn m-btn-xs" style="background:rgba(255,255,255,0.22); color:#fff; text-decoration:none; display:inline-flex; align-items:center; gap:4px; border:1px solid rgba(255,255,255,0.4); border-radius:6px; font-size:11.5px; padding:5px 9px;">
-                        <span>📊 원본 구글시트 ↗</span>
-                    </a>
-                    <button onclick="fetchLiveGoogleSheetsLibrary(true)" class="m-btn m-btn-xs" style="background:white; color:#0369a1; border:none; font-weight:bold; font-size:11.5px; padding:5px 9px; border-radius:6px; cursor:pointer;">
-                        🔄 새로고침
-                    </button>
-                    <a href="tel:333" class="m-btn m-btn-xs" style="background:#38bdf8; color:#0c4a6e; border:none; font-weight:bold; font-size:11.5px; padding:5px 9px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">
-                        📞 내선 333
-                    </a>
-                </div>
+        <!-- 도서관 히어로 -->
+        <div class="lib-hero">
+            <div class="lib-hero-deco" aria-hidden="true">📚</div>
+            <div class="lib-hero-kicker">본관 3층 · 담당 김동하 선생님</div>
+            <h2 class="lib-hero-title">배화여고 학교도서관</h2>
+            <div class="lib-hero-sub">활용수업 예약 현황, 교직원 희망도서, 교보문고 베스트셀러를 한곳에서</div>
+            <div class="lib-hero-actions">
+                <a href="tel:333" class="lib-chip">📞 내선 333</a>
+                <a href="https://docs.google.com/spreadsheets/d/1A5YTxhvW4R6L5y7uWisIWn5ao8rXggU1dNh_6qTWPOY/edit?gid=0#gid=0" target="_blank" class="lib-chip">✍️ 희망도서 신청</a>
+                <a href="https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing" target="_blank" class="lib-chip">📊 활용수업 시트</a>
             </div>
-            
-            <!-- 주간 네비게이션 컨트롤 -->
-            <div style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:14px; background:rgba(0,0,0,0.14); padding:6px; border-radius:8px;">
-                <button onclick="changeKimWeek(-1)" class="m-btn m-btn-sm" style="background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.3); padding:5px 12px; font-size:12px; border-radius:6px; cursor:pointer;">◀ 이전주</button>
-                <button onclick="changeKimWeek(0)" id="libraryTabCurrentWeekBtn" class="m-btn m-btn-sm" style="background:white; color:#0284c7; border:none; padding:5px 14px; font-size:13px; font-weight:bold; border-radius:6px; cursor:pointer;">📅 이번 주</button>
-                <button onclick="changeKimWeek(1)" class="m-btn m-btn-sm" style="background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.3); padding:5px 12px; font-size:12px; border-radius:6px; cursor:pointer;">다음주 ▶</button>
+            <div class="lib-stats" id="libHeroStats"></div>
+        </div>
+
+        <!-- 하위 메뉴 -->
+        <div class="lib-seg" role="tablist">
+            <button class="lib-seg-btn active" data-panel="class" onclick="setLibraryPanel('class')">📅 활용수업</button>
+            <button class="lib-seg-btn" data-panel="books" onclick="setLibraryPanel('books')">📝 희망도서</button>
+            <button class="lib-seg-btn" data-panel="best" onclick="setLibraryPanel('best')">🏆 베스트셀러</button>
+        </div>
+
+        <!-- 1) 활용수업 -->
+        <div class="lib-panel active" id="libPanelClass">
+            <div class="m-card lib-card">
+                <div class="lib-card-head">
+                    <div id="libraryTabTimetableTitle" class="lib-card-title">📖 주간 도서관 활용수업 현황</div>
+                    <button onclick="fetchLiveGoogleSheetsLibrary(true)" class="lib-icon-btn" title="새로고침">🔄</button>
+                </div>
+                <div class="lib-week-nav">
+                    <button onclick="changeKimWeek(-1)" class="lib-week-arrow">‹ 이전주</button>
+                    <button onclick="changeKimWeek(0)" id="libraryTabCurrentWeekBtn" class="lib-week-current">📅 이번 주</button>
+                    <button onclick="changeKimWeek(1)" class="lib-week-arrow">다음주 ›</button>
+                </div>
+                <div class="t-table-wrapper lib-table-wrap">
+                    <table class="t-table" id="libraryTabTimetableTable"></table>
+                </div>
+                <div class="lib-hint">ℹ️ 빈 교시는 예약이 없어 <b>자유 열람·대출·자습</b>이 가능합니다. 예약·변경은 내선 333 (김동하T)</div>
+            </div>
+
+            <div class="m-card lib-card">
+                <details open>
+                    <summary class="lib-summary">
+                        <span class="lib-card-title">📑 연간 활용수업 일정 <span class="lib-count" id="libraryTabTotalClassCount">0</span></span>
+                        <span class="lib-summary-hint">접기/펼치기</span>
+                    </summary>
+                    <input type="text" id="libraryTabSearchInput" class="lib-search" placeholder="🔍 날짜, 요일, 과목, 학급, 교사명 검색" oninput="filterLibraryTabClasses()">
+                    <div id="libraryTabListContainer" class="lib-list-box"></div>
+                </details>
             </div>
         </div>
 
-        <!-- 주간 시간표 카드 -->
-        <div class="m-card" style="padding: 10px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin: 4px 6px 10px 6px;">
-                <div id="libraryTabTimetableTitle" style="font-weight:bold; font-size:15px; color:#0369a1;">
-                    📖 주간 도서관 활용수업 현황
+        <!-- 2) 교직원 희망도서 -->
+        <div class="lib-panel" id="libPanelBooks">
+            <div class="m-card lib-card">
+                <div class="lib-card-head">
+                    <div class="lib-card-title">📝 교직원 희망도서 신청 현황</div>
+                    <button onclick="fetchBookRequests(true)" class="lib-icon-btn" title="새로고침">🔄</button>
                 </div>
-                <div style="font-size:11px; color:#64748b;">
-                    💡 터치 시 상세 확인
+                <div id="bookReqSummary" class="book-summary"></div>
+                <div class="book-filter-row">
+                    <div class="book-filter-chips" id="bookReqFilterChips"></div>
+                    <input type="text" id="bookReqSearch" class="lib-search" placeholder="🔍 도서명·저자·신청자 검색" oninput="renderBookRequests()">
                 </div>
-            </div>
-
-            <div class="t-table-wrapper">
-                <table class="t-table" id="libraryTabTimetableTable">
-                    <!-- JS 렌더링 -->
-                </table>
-            </div>
-
-            <div style="margin-top:10px; font-size:11.5px; color:#0369a1; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:9px 12px; display:flex; align-items:center; gap:6px;">
-                <span>ℹ️</span>
-                <span><b>비어있는 교시</b>는 활용수업 예약이 없어 <b>자유 열람 및 도서 대출·자습</b>이 가능합니다. (예약/변경 문의: 도서관 내선 333, 김동하T)</span>
+                <div id="bookReqList" class="book-list"><div class="lib-empty">신청 목록을 불러오는 중입니다… ⏳</div></div>
+                <div class="lib-hint">구입은 4·7·9·12월에 진행되며, 도서관운영위원회 심의 후 입고됩니다. 급히 필요한 도서는 김동하T에게 직접 말씀해 주세요.</div>
             </div>
         </div>
 
-        <!-- 2026 연간 활용수업 전체 등록 일정 목록 카드 -->
-        <div class="m-card" style="margin-top: 12px; padding: 12px;">
-            <details open style="font-size:13px;">
-                <summary style="font-weight:bold; color:#0f172a; cursor:pointer; display:flex; justify-content:space-between; align-items:center; user-select:none; padding-bottom:6px;">
-                    <span style="font-size:14px;">📑 2026학년도 도서관 활용수업 연간 전체 일정 (<span id="libraryTabTotalClassCount">0</span>건)</span>
-                    <span style="font-size:11px; color:#64748b; font-weight:normal;">접기/펼치기</span>
-                </summary>
-                <div style="margin-top:10px;">
-                    <input type="text" id="libraryTabSearchInput" placeholder="🔍 날짜, 요일, 과목, 학급, 교사명 검색..." oninput="filterLibraryTabClasses()" style="width:100%; box-sizing:border-box; padding:8px 12px; font-size:12.5px; border:1px solid #cbd5e1; border-radius:8px; margin-bottom:8px; outline:none;">
-                    <div id="libraryTabListContainer" style="max-height:280px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:8px; background:#fff;">
-                        <!-- JS 렌더링 -->
-                    </div>
+        <!-- 3) 교보문고 베스트셀러 -->
+        <div class="lib-panel" id="libPanelBest">
+            <div class="m-card lib-card">
+                <div class="lib-card-head">
+                    <div class="lib-card-title">🏆 교보문고 베스트셀러</div>
+                    <a href="https://store.kyobobook.co.kr/bestseller/realtime" target="_blank" class="lib-link-sm">교보문고 ↗</a>
                 </div>
-            </details>
+                <div class="best-toggle" id="bestToggle">
+                    <button class="active" data-kind="realtime" onclick="setBestKind('realtime')">⚡ 실시간</button>
+                    <button data-kind="daily" onclick="setBestKind('daily')">일간</button>
+                    <button data-kind="weekly" onclick="setBestKind('weekly')">주간</button>
+                </div>
+                <div class="best-meta" id="bestMeta"></div>
+                <div id="bestList" class="best-list"><div class="lib-empty">순위를 불러오는 중입니다… ⏳</div></div>
+            </div>
         </div>
     </section>
 
@@ -11362,6 +11509,8 @@ window.SENIOR_PROCTOR_DATA = {
             }
         } else if (tabId === 'tab-library') {
             renderLibraryTab();
+            if (!bookRequests) fetchBookRequests();
+            if (!kyoboBest) fetchKyoboBest();
         } else if (tabId === 'tab-proctor') {
             renderProctorTab();
         }
@@ -11621,7 +11770,7 @@ window.SENIOR_PROCTOR_DATA = {
         }
 
         if (titleEl) {
-            titleEl.innerHTML = `📖 주간 도서관 활용수업 현황 <span style="font-size:12px; font-weight:normal; color:#64748b;">(${weekDates[0].fullDisplay} ~ ${weekDates[4].fullDisplay})</span>`;
+            titleEl.innerHTML = `📖 주간 활용수업 `;
         }
 
         const todayIso = typeof getTodayIsoDate === 'function' ? getTodayIsoDate() : '';
@@ -11644,14 +11793,12 @@ window.SENIOR_PROCTOR_DATA = {
 
                 if (cellText) {
                     const escapedText = cellText.replace(/'/g, "\\'");
-                    html += `<td class="t-cell-class${todayClass}" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd; font-weight:bold; cursor:pointer;" onclick="showToast('[도서관 활용수업] ${iso} (${day}) ${p}교시: ${escapedText}')">
-                        <div style="font-size:12px; color:#0284c7; line-height:1.3; font-weight:bold;">📚 ${cellText}</div>
-                        <span style="display:inline-block; margin-top:3px; font-size:9.5px; background:#bae6fd; color:#0369a1; padding:1px 5px; border-radius:3px; font-weight:600;">도서관 수업</span>
+                    html += `<td class="lib-class-cell${todayClass}" onclick="showToast('[도서관 활용수업] ${iso} (${day}) ${p}교시: ${escapedText}')">
+                        <div class="lib-class-name">${cellText}</div>
+                        <span class="lib-class-tag">📚 수업</span>
                     </td>`;
                 } else {
-                    html += `<td class="t-cell-free${todayClass}" style="font-size:11px; color:#64748b; line-height:1.4;">
-                        도서관 이용가능<br><span style="font-size:9.5px; color:#94a3b8;">(열람/대출)</span>
-                    </td>`;
+                    html += `<td class="t-cell-free lib-free-cell${todayClass}">이용 가능</td>`;
                 }
             });
             html += '</tr>';
@@ -11659,6 +11806,227 @@ window.SENIOR_PROCTOR_DATA = {
         if (table) table.innerHTML = html;
 
         filterLibraryTabClasses();
+        renderLibraryHeroStats();
+    }
+
+    // ===== 도서관: 하위 메뉴 / 희망도서 / 교보문고 베스트셀러 =====
+    const BOOK_REQ_SHEET_ID = '1A5YTxhvW4R6L5y7uWisIWn5ao8rXggU1dNh_6qTWPOY';
+    const KYOBO_BEST_URL = 'https://raw.githubusercontent.com/ShinUkhang/timetable/kyobo-data/kyobo_best.json';
+    let libraryPanel = 'class';
+    let bookRequests = null;      // { title, deadline, list: [...] }
+    let bookReqFilter = '전체';
+    let kyoboBest = null;
+    let bestKind = 'realtime';
+
+    function libEsc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+
+    function setLibraryPanel(panel) {
+        libraryPanel = panel;
+        document.querySelectorAll('.lib-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.panel === panel));
+        document.querySelectorAll('.lib-panel').forEach(el => el.classList.remove('active'));
+        const id = { class: 'libPanelClass', books: 'libPanelBooks', best: 'libPanelBest' }[panel];
+        document.getElementById(id)?.classList.add('active');
+        if (panel === 'books' && !bookRequests) fetchBookRequests();
+        if (panel === 'best' && !kyoboBest) fetchKyoboBest();
+    }
+
+    function renderLibraryHeroStats() {
+        const el = document.getElementById('libHeroStats');
+        if (!el) return;
+        const todayIso = getTodayIsoDate();
+        const todayCount = Object.keys(window.LIBRARY_SCHEDULE_DATA?.scheduleByDate?.[todayIso] || {}).length;
+        const reqCount = bookRequests ? bookRequests.list.length : '–';
+        const top = kyoboBest?.realtime?.items?.[0];
+        el.innerHTML = `
+            <div class="lib-stat"><div class="lib-stat-num">${todayCount}</div><div class="lib-stat-label">오늘 활용수업</div></div>
+            <div class="lib-stat"><div class="lib-stat-num">${reqCount}</div><div class="lib-stat-label">희망도서 신청</div></div>
+            <div class="lib-stat"><div class="lib-stat-num" style="font-size:14px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${top ? libEsc(top.title.replace(/\(.*?\)/g, '').trim()) : '–'}</div><div class="lib-stat-label">실시간 1위</div></div>`;
+    }
+
+    // 줄바꿈이 들어간 칸도 처리하는 CSV 파서
+    function parseCsvFull(text) {
+        const rows = [];
+        let row = [], cur = '', q = false;
+        for (let i = 0; i < text.length; i++) {
+            const c = text[i];
+            if (q) {
+                if (c === '"') {
+                    if (text[i + 1] === '"') { cur += '"'; i++; } else q = false;
+                } else cur += c;
+            } else if (c === '"') q = true;
+            else if (c === ',') { row.push(cur); cur = ''; }
+            else if (c === '\n' || c === '\r') {
+                if (c === '\r' && text[i + 1] === '\n') i++;
+                row.push(cur); rows.push(row); row = []; cur = '';
+            } else cur += c;
+        }
+        if (cur || row.length) { row.push(cur); rows.push(row); }
+        return rows;
+    }
+
+    async function fetchBookRequests(manual) {
+        const listEl = document.getElementById('bookReqList');
+        if (manual && listEl) listEl.innerHTML = '<div class="lib-empty">신청 목록을 불러오는 중입니다… ⏳</div>';
+        try {
+            const res = await fetch(`https://docs.google.com/spreadsheets/d/${BOOK_REQ_SHEET_ID}/export?format=csv&gid=0&t=${Date.now()}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const rows = parseCsvFull(await res.text()).map(r => r.map(c => c.trim()));
+            const title = rows[0]?.[0] || '교직원 희망도서 신청';
+            const headerIdx = rows.findIndex(r => r[0] === '순번' && r.some(c => c.includes('서명')));
+            const h = rows[headerIdx] || [];
+            const col = name => h.findIndex(c => c.includes(name));
+            const ci = { no: 0, who: col('신청자'), title: col('서명'), author: col('저자'), pub: col('출판사'), year: col('출판년도'), price: col('정가'), qty: col('권수'), status: col('비고') };
+            const list = rows.slice(headerIdx + 1)
+                .filter(r => r[0] !== '예시' && r[ci.title])
+                .map(r => ({
+                    no: r[ci.no], who: r[ci.who], title: r[ci.title], author: r[ci.author], pub: r[ci.pub],
+                    year: r[ci.year], price: parseInt((r[ci.price] || '').replace(/[^0-9]/g, '')) || 0,
+                    qty: parseInt(r[ci.qty]) || 1, status: r[ci.status] || '접수'
+                }));
+            const dl = title.match(/(\d+)월\s*(\d+)일/);
+            bookRequests = { title, list, deadline: dl ? { m: +dl[1], d: +dl[2] } : null };
+            if (manual) showToast('📝 희망도서 목록을 새로 불러왔습니다');
+        } catch (e) {
+            console.warn('희망도서 시트 불러오기 실패:', e.message);
+            if (listEl) listEl.innerHTML = '<div class="lib-empty">신청 목록을 불러오지 못했습니다. 잠시 후 🔄를 눌러 주세요.</div>';
+            return;
+        }
+        renderBookRequests();
+        renderLibraryHeroStats();
+        if (kyoboBest) renderBest();
+    }
+
+    function bookStatusClass(st) {
+        if (/품절|절판/.test(st)) return 'st-out';
+        if (/소장/.test(st)) return 'st-own';
+        if (/예정/.test(st)) return 'st-plan';
+        if (/구입|완료|입고/.test(st)) return 'st-buy';
+        return 'st-etc';
+    }
+    const BOOK_SPINE_COLORS = ['#0f766e', '#b45309', '#7c3aed', '#be123c', '#1d4ed8', '#15803d', '#a16207', '#0e7490'];
+
+    function renderBookRequests() {
+        if (!bookRequests) return;
+        const { list, deadline } = bookRequests;
+
+        // 요약
+        const total = list.reduce((s, b) => s + b.qty, 0);
+        const sum = list.reduce((s, b) => s + b.price * b.qty, 0);
+        const people = new Set(list.map(b => b.who).filter(Boolean)).size;
+        const ownCount = list.filter(b => /소장/.test(b.status)).length;
+        let dlHtml = '';
+        if (deadline) {
+            const now = new Date(); now.setHours(0, 0, 0, 0);
+            const end = new Date(now.getFullYear(), deadline.m - 1, deadline.d);
+            const diff = Math.round((end - now) / 86400000);
+            dlHtml = `<div class="book-deadline"><span>⏰ 신청 마감 ${deadline.m}월 ${deadline.d}일</span><b>${diff > 0 ? 'D-' + diff : diff === 0 ? 'D-DAY' : '마감'}</b></div>`;
+        }
+        document.getElementById('bookReqSummary').innerHTML = `${dlHtml}
+            <div class="book-sum-box"><div class="book-sum-num">${total}권</div><div class="book-sum-label">신청 도서</div></div>
+            <div class="book-sum-box"><div class="book-sum-num">${people}명</div><div class="book-sum-label">신청 교직원</div></div>
+            <div class="book-sum-box"><div class="book-sum-num">${sum.toLocaleString()}원</div><div class="book-sum-label">정가 합계</div></div>
+            <div class="book-sum-box"><div class="book-sum-num">${ownCount}권</div><div class="book-sum-label">이미 소장</div></div>`;
+
+        // 상태 필터
+        const statuses = ['전체', ...new Set(list.map(b => b.status))];
+        if (!statuses.includes(bookReqFilter)) bookReqFilter = '전체';
+        document.getElementById('bookReqFilterChips').innerHTML = statuses.map(st => {
+            const n = st === '전체' ? list.length : list.filter(b => b.status === st).length;
+            return `<button class="book-filter-chip${st === bookReqFilter ? ' active' : ''}" data-st="${libEsc(st)}" onclick="bookReqFilter = this.dataset.st; renderBookRequests();">${libEsc(st)} ${n}</button>`;
+        }).join('');
+
+        // 목록
+        const q = (document.getElementById('bookReqSearch')?.value || '').trim().toLowerCase();
+        const shown = list.filter(b => (bookReqFilter === '전체' || b.status === bookReqFilter) &&
+            (!q || [b.title, b.author, b.pub, b.who].some(v => (v || '').toLowerCase().includes(q))));
+        const listEl = document.getElementById('bookReqList');
+        if (!shown.length) {
+            listEl.innerHTML = `<div class="lib-empty">${list.length ? '조건에 맞는 도서가 없습니다.' : '아직 신청된 도서가 없습니다.'}</div>`;
+            return;
+        }
+        listEl.innerHTML = shown.map((b, i) => {
+            const color = BOOK_SPINE_COLORS[(b.title.charCodeAt(0) || i) % BOOK_SPINE_COLORS.length];
+            const meta = [b.author, b.pub, b.year].filter(Boolean).map(libEsc).join(' · ');
+            return `<div class="book-item">
+                <div class="book-spine" style="background:${color};">${libEsc(b.title.trim().charAt(0))}</div>
+                <div class="book-body">
+                    <div class="book-title">${libEsc(b.title)}</div>
+                    <div class="book-sub">${meta}</div>
+                    <div class="book-tags">
+                        <span class="book-status ${bookStatusClass(b.status)}">${libEsc(b.status)}</span>
+                        ${b.who ? `<span class="book-who">👤 ${libEsc(b.who)}</span>` : ''}
+                        ${b.price ? `<span class="book-price">${b.price.toLocaleString()}원${b.qty > 1 ? ` × ${b.qty}` : ''}</span>` : ''}
+                        <a class="book-link" href="https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(b.title)}" target="_blank">교보 ↗</a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function fetchKyoboBest() {
+        try {
+            const res = await fetch(`${KYOBO_BEST_URL}?t=${Math.floor(Date.now() / 300000)}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            kyoboBest = await res.json();
+        } catch (e) {
+            console.warn('교보문고 순위 불러오기 실패:', e.message);
+            document.getElementById('bestList').innerHTML = `<div class="lib-empty">순위를 아직 불러올 수 없습니다.<br><a href="https://store.kyobobook.co.kr/bestseller/realtime" target="_blank" class="lib-link-sm">교보문고에서 바로 보기 ↗</a></div>`;
+            return;
+        }
+        renderBest();
+        renderLibraryHeroStats();
+    }
+
+    function setBestKind(kind) {
+        bestKind = kind;
+        document.querySelectorAll('#bestToggle button').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
+        renderBest();
+    }
+
+    // 제목 비교용 (괄호·공백·기호 제거)
+    function bookKey(t) {
+        return String(t || '').replace(/\(.*?\)|\[.*?\]/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '').toLowerCase();
+    }
+
+    function renderBest() {
+        if (!kyoboBest) return;
+        const data = kyoboBest[bestKind] || { items: [] };
+        const ymw = data.ymw || '';
+        const label = { realtime: '실시간', daily: '일간', weekly: '주간' }[bestKind];
+        let when = '';
+        if (/^\d{8}/.test(ymw)) when = `${+ymw.slice(4, 6)}월 ${+ymw.slice(6, 8)}일${ymw.length >= 10 ? ` ${+ymw.slice(8, 10)}시` : ''} 기준`;
+        const upd = kyoboBest.updatedAt ? new Date(kyoboBest.updatedAt) : null;
+        document.getElementById('bestMeta').innerText =
+            `교보문고 ${label} 베스트 ${when}${upd ? ` · ${upd.getMonth() + 1}/${upd.getDate()} ${String(upd.getHours()).padStart(2, '0')}:${String(upd.getMinutes()).padStart(2, '0')} 수집 (매시간 갱신)` : ''}`;
+
+        const requested = new Set((bookRequests?.list || []).map(b => bookKey(b.title)));
+        const listEl = document.getElementById('bestList');
+        if (!data.items.length) {
+            listEl.innerHTML = '<div class="lib-empty">순위 정보가 없습니다.</div>';
+            return;
+        }
+        listEl.innerHTML = data.items.map(b => {
+            let move = '<div class="best-move mv-same">–</div>';
+            if (!b.prevRank) move = '<div class="best-move mv-new">NEW</div>';
+            else if (b.prevRank > b.rank) move = `<div class="best-move mv-up">▲${b.prevRank - b.rank}</div>`;
+            else if (b.prevRank < b.rank) move = `<div class="best-move mv-down">▼${b.rank - b.prevRank}</div>`;
+            const isReq = requested.has(bookKey(b.title));
+            return `<a class="best-item${b.rank <= 3 ? ' top' : ''}" href="https://product.kyobobook.co.kr/detail/${encodeURIComponent(b.id)}" target="_blank">
+                <div class="best-rank"><div class="best-rank-num">${b.rank}</div>${move}</div>
+                <img class="best-cover" loading="lazy" alt="" src="https://contents.kyobobook.co.kr/sih/fit-in/150x0/pdt/${encodeURIComponent(b.isbn)}.jpg" onerror="this.style.visibility='hidden'">
+                <div class="best-body">
+                    <div class="best-title">${libEsc(b.title)}</div>
+                    <div class="best-sub">${libEsc(b.author)} · ${libEsc(b.publisher)}</div>
+                    <div class="best-tags">
+                        ${b.category ? `<span class="best-tag">${libEsc(b.category)}</span>` : ''}
+                        ${b.rating ? `<span class="best-tag">★ ${b.rating}</span>` : ''}
+                        ${isReq ? '<span class="best-tag req">📝 희망도서 신청됨</span>' : ''}
+                    </div>
+                </div>
+            </a>`;
+        }).join('');
     }
 
     function filterLibraryTabClasses() {
