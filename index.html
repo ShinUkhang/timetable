@@ -1706,6 +1706,123 @@
         margin-top: 4px;
     }
 
+    /* ================= 기기별 화면 최적화 =================
+       ~767px  : 휴대폰 (기본 스타일)
+       768px~  : 태블릿 — 넓은 본문, 큰 글씨, 가운데 팝업
+       1200px~ : PC — 왼쪽 사이드 메뉴, 2단 배치 */
+    @media (min-width: 768px) {
+        body { font-size: 15px; }
+        .app-header { padding: 12px 24px; }
+        .app-title-cat { width: 36px; height: 36px; }
+        .app-title-text { font-size: 19px; }
+        .today-badge { font-size: 13px; padding: 5px 12px; }
+        .container { max-width: 960px; padding: 20px 24px 32px; }
+        .m-card { padding: 20px; margin-bottom: 16px; }
+        .m-card-title { font-size: 16px; }
+
+        .t-table { font-size: 13px; }
+        .t-table th { font-size: 13px; height: 38px; }
+        .t-table th, .t-table td { height: 56px; padding: 6px 4px; }
+        .t-table th.period-col, .t-table td.period-col { width: 44px; }
+
+        .nav-icon { font-size: 20px; }
+        .nav-label { font-size: 11.5px; letter-spacing: -0.3px; }
+        .nav-item { padding: 6px 2px; }
+
+        /* 바텀시트 → 화면 가운데 팝업 */
+        .modal-backdrop { align-items: center; padding: 24px; }
+        .modal-sheet {
+            max-width: 680px;
+            max-height: 86vh;
+            border-radius: 20px;
+            padding: 22px 24px 24px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            animation: sheetPop 0.2s ease-out;
+        }
+        .sheet-handle { display: none; }
+        @keyframes sheetPop { from { transform: translateY(16px) scale(0.98); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        .toast { bottom: 100px; }
+        .ccf-bar { bottom: calc(90px + var(--safe-bottom)); }
+
+        /* 급식: 메뉴와 점심 짝꿍 나란히 */
+        #tab-lunch.active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+        #tab-lunch.active > * { margin-bottom: 0; }
+
+        /* 3학년 임장: 내 임장·부탁 / 임장표 */
+        #tab-proctor.active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: 16px; align-items: start; }
+        #tab-proctor.active > .proctor-hero { grid-column: 1 / -1; }
+        #tab-proctor.active > .proctor-me-card { grid-column: 1; }
+        #tab-proctor.active > .proctor-notes-card { grid-column: 1; }
+        #tab-proctor.active > .proctor-table-card { grid-column: 2; grid-row: 2 / span 2; }
+        .proctor-table td.name { font-size: 13.5px; padding: 11px 0; }
+    }
+
+    @media (min-width: 1200px) {
+        :root { --side-w: 216px; --header-h: 61px; }
+        body { padding-bottom: 24px; padding-left: var(--side-w); }
+        .app-header { margin-left: calc(-1 * var(--side-w)); padding-left: 24px; }
+        .container { max-width: 1320px; padding: 24px 32px 40px; }
+
+        /* 하단 탭 → 왼쪽 사이드 메뉴 */
+        .bottom-nav {
+            top: var(--header-h);
+            bottom: 0;
+            right: auto;
+            width: var(--side-w);
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 4px;
+            padding: 16px 12px;
+            border-top: none;
+            border-right: 1px solid var(--gray-200);
+            box-shadow: none;
+            overflow-y: auto;
+        }
+        .nav-item {
+            flex: none;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+        }
+        .nav-item:hover { background: var(--gray-100); }
+        .nav-item.active { background: var(--primary-light); }
+        .nav-item:active { transform: none; }
+        .nav-icon { margin: 0; font-size: 19px; }
+        .nav-label { font-size: 14.5px; letter-spacing: -0.2px; text-align: left; }
+
+        .toast { bottom: 40px; left: calc(50% + var(--side-w) / 2); }
+        .ccf-bar { bottom: 32px; left: calc(50% + var(--side-w) / 2); }
+        .modal-backdrop { padding-left: calc(24px + var(--side-w)); }
+
+        /* 내 시간표·반별 시간표: 왼쪽 선택/안내, 오른쪽 큰 시간표 */
+        #tab-my.active, #tab-class.active {
+            display: grid;
+            grid-template-columns: 380px minmax(0, 1fr);
+            column-gap: 20px;
+            align-items: start;
+        }
+        #tab-my.active > *, #tab-class.active > * { grid-column: 1; }
+        #tab-my.active > .layout-first { order: -1; }
+        #tab-my.active > .layout-main, #tab-class.active > .layout-main {
+            grid-column: 2;
+            grid-row: 1 / span 12;
+            position: sticky;
+            top: calc(var(--header-h) + 16px);
+        }
+        .t-table { font-size: 14px; }
+        .t-table th, .t-table td { height: 64px; }
+
+        /* 공강·전체: 두 카드 나란히 */
+        #tab-group.active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+        #tab-group.active > * { margin-bottom: 0; }
+
+        /* 결·보강: 검색 카드 아래 목록을 여러 열로 */
+        #substituteListArea { columns: 2; column-gap: 16px; }
+        #substituteListArea > * { break-inside: avoid; }
+    }
 </style>
 </head>
 <body>
@@ -1776,7 +1893,7 @@
             </div>
         </div>
 
-        <div class="m-card">
+        <div class="m-card layout-first">
             <div class="m-card-title">
                 <span>👤 선생님 선택 (가나다순)</span>
                 <button id="saveTeacherBtn" class="m-btn m-btn-outline m-btn-sm" onclick="saveCurrentTeacher()">⭐ 기본으로 저장</button>
@@ -1799,7 +1916,7 @@
             </div>
         </div>
 
-        <div class="m-card" style="padding: 10px;">
+        <div class="m-card layout-main" style="padding: 10px;">
             <!-- 도서관 담당 김동하 교사 전용 툴바 -->
             <div id="kimDonghaToolbar" style="display:none; margin-bottom: 12px; background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
@@ -1864,7 +1981,7 @@
             </p>
         </div>
 
-        <div class="m-card" style="padding: 10px;">
+        <div class="m-card layout-main" style="padding: 10px;">
             <div id="classTimetableTitle" style="font-weight:bold; font-size:15px; color:var(--green); margin: 4px 6px 10px 6px;"></div>
             <div class="t-table-wrapper">
                 <table class="t-table" id="classTimetableTable">
@@ -2117,7 +2234,7 @@
             <div id="proctorMine"></div>
         </div>
 
-        <div class="m-card">
+        <div class="m-card proctor-table-card">
             <div class="m-card-title">📅 요일별 임장표</div>
             <div class="proctor-day-chips" id="proctorDayChips"></div>
             <div class="proctor-table-wrap"><table class="proctor-table" id="proctorTable"></table></div>
