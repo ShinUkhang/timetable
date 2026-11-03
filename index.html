@@ -1793,6 +1793,35 @@
     .book-list { display: grid; gap: 8px; }
     .book-item { display: flex; gap: 12px; align-items: flex-start; background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 11px 12px; }
     .book-spine { flex: none; width: 40px; height: 54px; border-radius: 4px 7px 7px 4px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 900; color: white; box-shadow: inset 4px 0 0 rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.12); }
+    /* 희망도서 마감 임박: 하단 탭 강조 + 홈 배너 */
+    .nav-item { position: relative; }
+    .nav-badge {
+        position: absolute; top: 0; left: 50%; transform: translateX(4px);
+        background: #e11d48; color: white; font-size: 9px; font-weight: 800; line-height: 1;
+        padding: 3px 5px; border-radius: 999px; white-space: nowrap; z-index: 1;
+        box-shadow: 0 0 0 2px white;
+    }
+    .nav-item.nav-alert { color: #0f766e; font-weight: 800; }
+    .nav-item.nav-alert .nav-icon { animation: navAlertBounce 1.6s ease-in-out infinite; }
+    .nav-item.nav-alert::before {
+        content: ""; position: absolute; inset: 2px 4px; border-radius: 12px;
+        background: rgba(20, 184, 166, 0.14); box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.5);
+        animation: navAlertPulse 1.8s ease-out infinite; z-index: -1;
+    }
+    @keyframes navAlertBounce { 0%, 100% { transform: translateY(0); } 15% { transform: translateY(-4px); } 30% { transform: translateY(0); } }
+    @keyframes navAlertPulse { 0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.45); } 70% { box-shadow: 0 0 0 8px rgba(20, 184, 166, 0); } 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); } }
+
+    .book-dl-banner {
+        align-items: center; gap: 10px; cursor: pointer;
+        background: linear-gradient(135deg, #134e4a 0%, #0f766e 60%, #14b8a6 100%);
+        color: white; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px;
+        box-shadow: 0 6px 16px rgba(15, 118, 110, 0.28);
+    }
+    .book-dl-dday { flex: none; background: #fde68a; color: #92400e; font-weight: 900; font-size: 14px; border-radius: 10px; padding: 6px 9px; }
+    .book-dl-text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; line-height: 1.35; }
+    .book-dl-text small { font-size: 11px; opacity: 0.88; }
+    .book-dl-go { flex: none; background: white; color: #0f766e; font-size: 12px; font-weight: 800; text-decoration: none; border-radius: 999px; padding: 6px 11px; }
+    .book-dl-close { flex: none; background: rgba(255,255,255,0.18); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 12px; }
     .book-spine { position: relative; overflow: hidden; }
     .book-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: white; }
     .book-rank { display: inline-block; margin-top: 6px; font-size: 11.5px; font-weight: 700; color: #92400e; background: linear-gradient(90deg, #fef3c7, #fde68a); border-radius: 8px; padding: 3px 9px; }
@@ -1942,6 +1971,8 @@
             border-radius: 10px;
         }
         .nav-item:hover { background: var(--gray-100); }
+        .nav-badge { position: static; transform: none; order: 3; margin-left: auto; font-size: 10.5px; padding: 3px 7px; box-shadow: none; }
+        .nav-item.nav-alert::before { inset: 0; border-radius: 10px; }
         .nav-item.active { background: var(--primary-light); }
         .nav-item:active { transform: none; }
         .nav-icon { margin: 0; font-size: 19px; }
@@ -2009,6 +2040,9 @@
     <section id="tab-my" class="tab-content active">
 
         <!-- 🔥 오늘 결·보강 실시간 알림 배너 (오늘 결보강 내역이 있으면 최상단 자동 노출) -->
+        <!-- 📚 희망도서 신청 마감 임박 배너 (마감 2주 전부터 자동 노출) -->
+        <div id="bookDeadlineBanner" class="book-dl-banner" style="display:none;" onclick="openBookRequestsPanel()"></div>
+
         <div id="todayAutoSubBanner" style="display:none;"></div>
 
         <!-- ⭐ 오늘(현재) 지도 당번 즉시 보기 배너 (안 눌러도 자동 표시) -->
@@ -2649,6 +2683,7 @@
         <span class="nav-label">반별시간표</span>
     </button>
     <button id="navItemLibrary" class="nav-item" onclick="switchTab('tab-library', this)">
+        <span class="nav-badge" id="navLibraryBadge" style="display:none;"></span>
         <span class="nav-icon">📚</span>
         <span class="nav-label">도서관</span>
     </button>
@@ -11532,6 +11567,11 @@ window.SENIOR_PROCTOR_DATA = {
             renderLibraryTab();
             if (!bookRequests) fetchBookRequests();
             if (!kyoboBest) fetchKyoboBest();
+            // 마감 임박 기간에는 처음 열 때 희망도서 화면부터
+            if (isBookDeadlineNear() && !bookDeadlinePanelShown) {
+                bookDeadlinePanelShown = true;
+                setLibraryPanel('books');
+            }
         } else if (tabId === 'tab-proctor') {
             renderProctorTab();
         }
@@ -11916,6 +11956,7 @@ window.SENIOR_PROCTOR_DATA = {
         }
         renderBookRequests();
         renderLibraryHeroStats();
+        updateBookDeadlineAlert();
         if (kyoboBest) renderBest();
     }
 
@@ -11997,6 +12038,59 @@ window.SENIOR_PROCTOR_DATA = {
                 </div>
             </div>`;
         }).join('');
+    }
+
+    // ===== 희망도서 신청 마감 임박 알림 (마감 14일 전 ~ 마감일) =====
+    const BOOK_DEADLINE_ALERT_DAYS = 14;
+    let bookDeadlinePanelShown = false;
+
+    function getBookDeadlineDiff() {
+        const dl = bookRequests?.deadline;
+        if (!dl) return null;
+        const now = new Date(); now.setHours(0, 0, 0, 0);
+        const end = new Date(now.getFullYear(), dl.m - 1, dl.d);
+        return Math.round((end - now) / 86400000);
+    }
+    function isBookDeadlineNear() {
+        const diff = getBookDeadlineDiff();
+        return diff !== null && diff >= 0 && diff <= BOOK_DEADLINE_ALERT_DAYS;
+    }
+
+    function updateBookDeadlineAlert() {
+        const near = isBookDeadlineNear();
+        const diff = getBookDeadlineDiff();
+        const dText = diff === 0 ? 'D-DAY' : `D-${diff}`;
+        const nav = document.getElementById('navItemLibrary');
+        const badge = document.getElementById('navLibraryBadge');
+        if (nav) nav.classList.toggle('nav-alert', near);
+        if (badge) {
+            badge.style.display = near ? '' : 'none';
+            badge.textContent = dText;
+        }
+        const banner = document.getElementById('bookDeadlineBanner');
+        if (!banner) return;
+        let closed = false;
+        try { closed = sessionStorage.getItem('closedBookDeadlineBanner') === '1'; } catch (e) {}
+        if (!near || closed) { banner.style.display = 'none'; return; }
+        const dl = bookRequests.deadline;
+        const count = bookRequests.list.reduce((s, b) => s + b.qty, 0);
+        banner.style.display = 'flex';
+        banner.innerHTML = `
+            <span class="book-dl-dday">${dText}</span>
+            <span class="book-dl-text"><b>📚 희망도서 신청 마감 ${dl.m}/${dl.d}</b><small>${count}권 신청됨 · 현황 보기 ›</small></span>
+            <a class="book-dl-go" href="https://docs.google.com/spreadsheets/d/${BOOK_REQ_SHEET_ID}/edit?gid=0#gid=0" target="_blank" onclick="event.stopPropagation()">✍️ 신청</a>
+            <button class="book-dl-close" onclick="event.stopPropagation(); closeBookDeadlineBanner();" title="닫기">✕</button>`;
+    }
+
+    function closeBookDeadlineBanner() {
+        try { sessionStorage.setItem('closedBookDeadlineBanner', '1'); } catch (e) {}
+        document.getElementById('bookDeadlineBanner').style.display = 'none';
+    }
+
+    function openBookRequestsPanel() {
+        bookDeadlinePanelShown = true;
+        switchTab('tab-library', document.getElementById('navItemLibrary'));
+        setLibraryPanel('books');
     }
 
     // 희망도서의 교보 상품 정보 (GitHub Actions가 매시간 시트를 읽어 분야·ISBN을 찾아 둠)
@@ -15991,6 +16085,7 @@ ${n.content}
         try { initData(); } catch (e) { console.error('initData error:', e); }
         try { buildClassSchedule(); } catch (e) { console.error('buildClassSchedule error:', e); }
         try { initProctorTab(); } catch (e) { console.error('initProctorTab error:', e); }
+        try { fetchBookRequests(); } catch (e) { console.error('fetchBookRequests error:', e); }
         try { initEventTab(); } catch (e) { console.error('initEventTab error:', e); }
         try { renderMyTimetable(); } catch (e) { console.error('renderMyTimetable error:', e); }
         try { renderClassTimetable(); } catch (e) { console.error('renderClassTimetable error:', e); }
