@@ -5,6 +5,11 @@ const xlsx = require('xlsx');
 const dutyDir = path.join(__dirname, '등교급식지도');
 const htmlPath = path.join(__dirname, 'index.html');
 
+// 공통데이터 (교무 통합관리): 4개 프로그램이 함께 쓰는 시간표 + 수업교체에서 확정한 교체내역
+const commonDir = path.join(__dirname, '..', '공통데이터');
+const commonTimetableDir = path.join(commonDir, '시간표');
+const commonChangesFile = path.join(commonDir, '교체확정', '교체내역.json');
+
 console.log('====================================================');
 console.log('🏫 배화여고 야자감독 데이터 자동 동기화');
 console.log('====================================================');
@@ -796,12 +801,63 @@ async function parseGoogleSheetsLibrary() {
     }
 }
 
+// 공통데이터/교체확정/교체내역.json → 결보강 목록에 합치기 (구글 시트와 같은 건은 한 번만)
+function mergeCommonChanges() {
+    if (!fs.existsSync(commonChangesFile)) return;
+    try {
+        const local = JSON.parse(fs.readFileSync(commonChangesFile, 'utf8')).list || [];
+        const key = e => `${e.origDate}|${e.origTeacher}|${e.origPeriod}`;
+        const seen = new Set(substituteData.list.map(key));
+        let added = 0;
+        for (const e of local) {
+            if (seen.has(key(e))) continue;
+            const { isoDate, source, ...entry } = e;
+            // fromCommon: 앱이 구글 시트를 실시간으로 다시 읽어도 이 항목은 유지 (index.html fetchLiveGoogleSheetsSubstitute)
+            substituteData.list.push({ ...entry, fromCommon: true });
+            seen.add(key(e));
+            added++;
+        }
+        const dateNum = d => {
+            const m = (d || '').match(/(\d+)\/(\d+)/);
+            return m ? parseInt(m[1]) * 100 + parseInt(m[2]) : 0;
+        };
+        substituteData.list.sort((a, b) =>
+            (dateNum(a.origDate) - dateNum(b.origDate)) ||
+            ((a.origPeriod || 0) - (b.origPeriod || 0)) ||
+            (a.origTeacher || '').localeCompare(b.origTeacher || '', 'ko'));
+        console.log(`   ✔ 수업교체 확정내역 ${added}건 추가 반영 (공통데이터)`);
+    } catch (e) {
+        console.warn('   ⚠ 공통데이터 교체내역 읽기 실패:', e.message);
+    }
+}
+
+// 공통데이터/시간표 의 최신 시간표 카드로 index.html 의 교사 시간표 카드 교체
+function syncCommonTimetable(html) {
+    if (!fs.existsSync(commonTimetableDir)) return html;
+    const files = fs.readdirSync(commonTimetableDir)
+        .filter(f => f.toLowerCase().endsWith('.html'))
+        .map(f => path.join(commonTimetableDir, f))
+        .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+    if (!files.length) return html;
+    const cardRe = /(?:<div class="card"><div class="card-header">교사 .*\r?\n)+/;
+    const srcMatch = fs.readFileSync(files[0], 'utf8').match(cardRe);
+    const dstMatch = html.match(cardRe);
+    if (!srcMatch || !dstMatch) {
+        console.warn('   ⚠ 공통 시간표 카드를 찾지 못해 시간표는 그대로 둡니다.');
+        return html;
+    }
+    const count = (srcMatch[0].match(/card-header/g) || []).length;
+    console.log(`[시간표] 공통데이터 시간표 반영: ${path.basename(files[0])} (교사 ${count}명)`);
+    return html.slice(0, dstMatch.index) + srcMatch[0] + html.slice(dstMatch.index + dstMatch[0].length);
+}
+
 async function main() {
     // 등교·중식지도 삭제 요청에 따라 야자감독만 동기화
     // parseLocalExcel();
     await parseGoogleSheetsNightDuty();
     // await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
+    mergeCommonChanges();
     await parseGoogleDocNotice();
     await parseGoogleSheetsLibrary();
     syncEventFiles();
@@ -818,6 +874,7 @@ async function main() {
     }
 
     let html = fs.readFileSync(htmlPath, 'utf8');
+    html = syncCommonTimetable(html);
 
     // 1. 야자감독 데이터 주입
     const dutyInjection = `<!-- DUTY_DATA_START -->
