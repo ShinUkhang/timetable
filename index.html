@@ -15909,12 +15909,6 @@ window.SENIOR_PROCTOR_DATA = {
                 }
             }
 
-            // 수업교체 프로그램에서 확정한 내역(공통데이터, fromCommon)은 시트에 없어도 유지
-            const liveKeys = new Set(newList.map(e => `${e.origDate}|${e.origTeacher}|${e.origPeriod}`));
-            ((window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) || [])
-                .filter(e => e.fromCommon && !liveKeys.has(`${e.origDate}|${e.origTeacher}|${e.origPeriod}`))
-                .forEach(e => newList.push(e));
-
             // 항상 날짜 및 교시 오름차순(1교시 -> 7교시) 정렬
             sortSubstituteList(newList);
 

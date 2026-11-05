@@ -5,10 +5,9 @@ const xlsx = require('xlsx');
 const dutyDir = path.join(__dirname, '등교급식지도');
 const htmlPath = path.join(__dirname, 'index.html');
 
-// 공통데이터 (교무 통합관리): 4개 프로그램이 함께 쓰는 시간표 + 수업교체에서 확정한 교체내역
+// 공통데이터 (교무 통합관리): 4개 프로그램이 함께 쓰는 시간표 (결보강은 구글 시트만 사용)
 const commonDir = path.join(__dirname, '..', '공통데이터');
 const commonTimetableDir = path.join(commonDir, '시간표');
-const commonChangesFile = path.join(commonDir, '교체확정', '교체내역.json');
 
 console.log('====================================================');
 console.log('🏫 배화여고 야자감독 데이터 자동 동기화');
@@ -801,36 +800,6 @@ async function parseGoogleSheetsLibrary() {
     }
 }
 
-// 공통데이터/교체확정/교체내역.json → 결보강 목록에 합치기 (구글 시트와 같은 건은 한 번만)
-function mergeCommonChanges() {
-    if (!fs.existsSync(commonChangesFile)) return;
-    try {
-        const local = JSON.parse(fs.readFileSync(commonChangesFile, 'utf8')).list || [];
-        const key = e => `${e.origDate}|${e.origTeacher}|${e.origPeriod}`;
-        const seen = new Set(substituteData.list.map(key));
-        let added = 0;
-        for (const e of local) {
-            if (seen.has(key(e))) continue;
-            const { isoDate, source, ...entry } = e;
-            // fromCommon: 앱이 구글 시트를 실시간으로 다시 읽어도 이 항목은 유지 (index.html fetchLiveGoogleSheetsSubstitute)
-            substituteData.list.push({ ...entry, fromCommon: true });
-            seen.add(key(e));
-            added++;
-        }
-        const dateNum = d => {
-            const m = (d || '').match(/(\d+)\/(\d+)/);
-            return m ? parseInt(m[1]) * 100 + parseInt(m[2]) : 0;
-        };
-        substituteData.list.sort((a, b) =>
-            (dateNum(a.origDate) - dateNum(b.origDate)) ||
-            ((a.origPeriod || 0) - (b.origPeriod || 0)) ||
-            (a.origTeacher || '').localeCompare(b.origTeacher || '', 'ko'));
-        console.log(`   ✔ 수업교체 확정내역 ${added}건 추가 반영 (공통데이터)`);
-    } catch (e) {
-        console.warn('   ⚠ 공통데이터 교체내역 읽기 실패:', e.message);
-    }
-}
-
 // 공통데이터/시간표 의 최신 시간표 카드로 index.html 의 교사 시간표 카드 교체
 function syncCommonTimetable(html) {
     if (!fs.existsSync(commonTimetableDir)) return html;
@@ -857,7 +826,6 @@ async function main() {
     await parseGoogleSheetsNightDuty();
     // await parseGoogleSheetsMorningLunchDuty();
     await parseGoogleSheetsSubstitute();
-    mergeCommonChanges();
     await parseGoogleDocNotice();
     await parseGoogleSheetsLibrary();
     syncEventFiles();
