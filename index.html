@@ -1706,6 +1706,72 @@
         margin-top: 4px;
     }
 
+    /* ================= 바탕화면 모드 (?wallpaper=1) ================= */
+    body.wp-mode { padding: 0 !important; margin: 0; overflow: hidden; background: #0b1220; }
+    body.wp-mode > *:not(#wallpaperRoot) { display: none !important; }
+    body.wp-mode #wallpaperRoot { display: block !important; position: fixed; inset: 0; overflow: hidden;
+        background:
+            radial-gradient(1200px 700px at 85% -10%, rgba(56, 189, 248, 0.18), transparent 60%),
+            radial-gradient(900px 600px at 10% 110%, rgba(167, 139, 250, 0.16), transparent 60%),
+            linear-gradient(135deg, #0b1220 0%, #111c33 55%, #0f1a2e 100%); }
+    .wp-stage {
+        position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; box-sizing: border-box;
+        padding: 30px 40px 62px 150px; transform-origin: 0 0;
+        display: flex; flex-direction: column; gap: 14px; color: #e2e8f0;
+        font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    }
+    .wp-head { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .wp-brand { display: flex; align-items: center; gap: 14px; }
+    .wp-brand img { width: 52px; height: 52px; border-radius: 50%; border: 3px solid #fbd38d; background: #fffaf0; object-fit: cover; }
+    .wp-title { font-size: 30px; font-weight: 900; letter-spacing: -0.8px; color: white; }
+    .wp-sub { font-size: 15px; color: #94a3b8; margin-top: 2px; }
+    .wp-sub b { color: #fde68a; }
+    .wp-clock { display: flex; align-items: center; gap: 16px; }
+    .wp-time { font-size: 50px; font-weight: 800; color: white; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1; }
+    .wp-date { font-size: 15px; color: #cbd5e1; text-align: right; line-height: 1.5; }
+    .wp-period { display: inline-block; font-size: 15px; font-weight: 800; color: #0b1220; background: #fde68a; border-radius: 999px; padding: 4px 12px; }
+    .wp-period.off { background: #334155; color: #cbd5e1; }
+    .wp-quick { display: flex; flex-wrap: wrap; gap: 8px; }
+    .wp-quick span { font-size: 14.5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 4px 12px; color: #e2e8f0; }
+    .wp-quick b { color: #fde68a; margin-left: 4px; font-variant-numeric: tabular-nums; }
+    .wp-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.62fr 1fr 1fr; gap: 16px; }
+    .wp-col { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+    .wp-card { background: rgba(255,255,255,0.97); color: #1e293b; border-radius: 16px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+    .wp-card-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+    .wp-card-title { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
+    .wp-card-loc { font-size: 12.5px; color: #64748b; font-weight: 600; }
+    .wp-depts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+    .wp-dept { border-radius: 12px; padding: 6px 7px 7px; background: #f8fafc; border: 1px solid #e2e8f0; border-top: 4px solid var(--dc, #64748b); }
+    .wp-dept-name { font-size: 13.5px; font-weight: 800; color: var(--dc, #334155); margin: 0 2px 4px; }
+    .wp-desks { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .wp-desk { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 4px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 3px 8px 3px 10px; min-height: 30px; overflow: hidden; }
+    .wp-desk::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #cbd5e1; }
+    .wp-desk.in::before { background: #22c55e; }
+    .wp-desk.out { background: #f1f5f9; }
+    .wp-desk.out::before { background: #94a3b8; }
+    .wp-desk.empty { background: transparent; border-style: dashed; }
+    .wp-desk.empty::before { display: none; }
+    .wp-name { font-size: 15.5px; font-weight: 800; color: #0f172a; white-space: nowrap; line-height: 1.2; }
+    .wp-role { font-size: 10.5px; font-weight: 800; color: white; background: var(--dc, #64748b); border-radius: 4px; padding: 1px 4px; margin-left: 3px; vertical-align: 2px; }
+    .wp-state { display: block; line-height: 1.15; font-size: 10.5px; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+    .wp-desk.in .wp-state { color: #15803d; }
+    .wp-ext { font-size: 16px; font-weight: 900; color: var(--dc, #1d4ed8); font-variant-numeric: tabular-nums; }
+    .wp-list { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 14px; }
+    .wp-list div { display: flex; justify-content: space-between; font-size: 15px; border-bottom: 1px dotted #e2e8f0; padding: 4px 0; }
+    .wp-list b { font-variant-numeric: tabular-nums; color: #b45309; }
+    .wp-list.three { grid-template-columns: 1fr 1fr 1fr; }
+    .wp-sub-title { font-size: 13.5px; font-weight: 800; color: #475569; margin: 12px 0 4px; }
+    .wp-sub-title:first-of-type { margin-top: 0; }
+    .wp-hr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .wp-hr-col { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 6px 8px; }
+    .wp-hr-grade { font-size: 13.5px; font-weight: 900; color: #0f766e; margin-bottom: 3px; }
+    .wp-hr-row { display: grid; grid-template-columns: 22px 1fr auto; font-size: 13.5px; padding: 1px 0; border-bottom: 1px dotted #e2e8f0; }
+    .wp-hr-row:last-child { border-bottom: none; }
+    .wp-hr-row span:first-child { font-weight: 800; color: #0f766e; }
+    .wp-hr-row b { font-variant-numeric: tabular-nums; color: #0f766e; }
+    .wp-legend { display: flex; gap: 16px; align-items: center; font-size: 13px; color: #94a3b8; }
+    .wp-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
     /* ================= 도서관 탭 ================= */
     #tab-library { --lib: #0f766e; --lib-dark: #134e4a; --lib-soft: #ecfdf5; --lib-line: #a7f3d0; --paper: #fffbf2; }
     .lib-hero {
@@ -2673,6 +2739,9 @@
 </main>
 
 <!-- 하단 고정 탭 바 (귀여운 노란 고양이 이모티콘 탑재!) -->
+<!-- 🖥️ 바탕화면 모드 (index.html?wallpaper=1) -->
+<div id="wallpaperRoot" style="display:none;"><div id="wpStage" class="wp-stage"></div></div>
+
 <nav class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('tab-my', this)">
         <span class="nav-icon">👤</span>
@@ -13304,6 +13373,180 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     document.addEventListener('DOMContentLoaded', ccfUpdateBar);
+
+    // ===== 🖥️ 바탕화면 모드 =====
+    // index.html?wallpaper=1         : 실시간 (지금 교시 기준 자리 상태, 30초마다 갱신)
+    // index.html?wallpaper=1&static=1 : 고정 이미지용 (자리 상태 없이 좌석·내선만) — make_wallpaper.js 가 JPG로 찍음
+    const WP_PARAMS = new URLSearchParams(location.search);
+    const WP_MODE = WP_PARAMS.has('wallpaper');
+    const WP_STATIC = WP_PARAMS.has('static');
+    const WP_DEPT_COLORS = [
+        [/교무혁신|일반/, '#2563eb'], [/교육연구/, '#7c3aed'], [/2학년/, '#0891b2'], [/진로|창의/, '#c2410c'],
+        [/안전/, '#be123c'], [/창가|복도|1학년/, '#16a34a'], [/3학년/, '#0f766e'], [/교목/, '#a16207'], [/교장|교감/, '#6b21a8']
+    ];
+    // 교시 시각 (분): 1교시 08:20 ~ 7교시 16:00
+    const WP_PERIODS = [['1', 500, 550], ['2', 560, 610], ['3', 620, 670], ['4', 680, 730], ['lunch', 730, 790], ['5', 790, 840], ['6', 850, 900], ['7', 910, 960]];
+
+    function wpDeptColor(text) {
+        return (WP_DEPT_COLORS.find(([re]) => re.test(text)) || [null, '#475569'])[1];
+    }
+    function wpTimeText(m) {
+        return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+    }
+
+    // 지금 기준 교시: { key: 상태 계산에 쓸 교시(없으면 null), label }
+    function wpCurrentPeriod() {
+        const day = getTodayDayStr();
+        if (!day) return { key: null, label: getScheduleOverride()?.desc || '오늘은 수업이 없는 날' };
+        const now = new Date();
+        const mins = now.getHours() * 60 + now.getMinutes();
+        if (mins < 480) return { key: null, label: '수업 시작 전' };
+        if (mins >= 960) return { key: null, label: '오늘 수업 끝' };
+        for (let i = 0; i < WP_PERIODS.length; i++) {
+            const [key, start, end] = WP_PERIODS[i];
+            if (mins >= start && mins < end) {
+                return { key, label: key === 'lunch' ? `점심시간 ${wpTimeText(start)}~${wpTimeText(end)}` : `${key}교시 ${wpTimeText(start)}~${wpTimeText(end)}` };
+            }
+            if (mins < start) return { key, label: `쉬는 시간 · 다음 ${key === 'lunch' ? '점심' : key + '교시'}` };
+        }
+        return { key: null, label: '' };
+    }
+
+    function wpDesk(cell, day, period, color) {
+        if (cell.empty) return `<div class="wp-desk empty"></div>`;
+        let cls = '', state = '';
+        if (period && teachers.includes(cell.name)) {
+            const st = getSeatTeacherStatus(cell.name, day, period);
+            cls = st.isAtDesk ? ' in' : ' out';
+            // 자리 있음은 초록 막대로 표시하고, 수업 중일 때만 무슨 수업인지 적음
+            state = st.isAtDesk ? '' : st.statusText;
+        }
+        const role = cell.role ? `<span class="wp-role">${cell.role}</span>` : '';
+        return `<div class="wp-desk${cls}" style="--dc:${color};">
+            <div style="min-width:0;"><span class="wp-name">${cell.name}</span>${role}${state ? `<span class="wp-state">${state}</span>` : ''}</div>
+            <span class="wp-ext">${cell.ext}</span>
+        </div>`;
+    }
+
+    function wpSection(id) {
+        return seatLayoutSections.find(s => s.id === id);
+    }
+
+    function renderWallpaper() {
+        const stage = document.getElementById('wpStage');
+        if (!stage) return;
+        const day = getTodayDayStr();
+        const live = !WP_STATIC;
+        const pc = live ? wpCurrentPeriod() : { key: null, label: '' };
+        const period = live && day ? pc.key : null;
+        const now = new Date();
+        const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+        const deptCard = (col) => {
+            const color = wpDeptColor(col.header);
+            return `<div class="wp-dept" style="--dc:${color};">
+                <div class="wp-dept-name">${col.header.replace(/\s*&\s*일반/, '')}</div>
+                <div class="wp-desks">${col.rows.flat().map(c => wpDesk(c, day, period, color)).join('')}</div>
+            </div>`;
+        };
+
+        const main1 = wpSection('seat-sec-main1');
+        const main2 = wpSection('seat-sec-main2');
+        const annex = wpSection('seat-sec-annex');
+        const admin = wpSection('seat-sec-admin');
+        const order = [/교무혁신/, /교육연구/, /2학년/, /진로|창의/, /안전/];
+        const main1Cols = [...main1.columns].sort((a, b) => order.findIndex(r => r.test(a.header)) - order.findIndex(r => r.test(b.header)));
+
+        // 행정·시설 목록
+        const listOf = (col) => col.rows.flat().filter(c => !c.empty).map(c => `<div><span>${c.name}</span><b>${c.ext}</b></div>`).join('');
+        const adminCols = admin.columns;
+        const adminHtml = adminCols.map(col => `<div class="wp-sub-title">${col.header}</div>
+            <div class="wp-list${/특별실/.test(col.header) ? ' three' : ''}">${listOf(col)}</div>`).join('');
+
+        const hrHtml = homeroomClassList.map(g => `<div class="wp-hr-col">
+            <div class="wp-hr-grade">${g.grade}</div>
+            ${g.list.filter(c => c.ext && c.ext !== '-').map(c => `<div class="wp-hr-row"><span>${c.class.replace('반', '')}</span><span>${c.teacher}</span><b>${c.ext}</b></div>`).join('')}
+        </div>`).join('');
+
+        const right = live
+            ? `<div class="wp-clock">
+                <div class="wp-date">${now.getMonth() + 1}월 ${now.getDate()}일 (${dayNames[now.getDay()]})<br>
+                    <span class="wp-period${period ? '' : ' off'}">${pc.label}</span></div>
+                <div class="wp-time">${wpTimeText(now.getHours() * 60 + now.getMinutes())}</div>
+              </div>`
+            : `<div class="wp-date" style="font-size:16px;">${now.getFullYear()}학년도 · ${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')} 기준<br><span style="color:#94a3b8;">실시간 자리 상태: shinukhang.github.io/timetable</span></div>`;
+
+        stage.innerHTML = `
+            <div class="wp-head">
+                <div class="wp-brand">
+                    <img src="cat.png" alt="">
+                    <div>
+                        <div class="wp-title">배화여자고등학교 교직원 좌석 · 연락처</div>
+                        <div class="wp-sub">밖에서 걸 때 <b>02-724-0 + 내선 3자리</b> (예: 301 → 02-724-0301)</div>
+                    </div>
+                </div>
+                ${right}
+            </div>
+            <div class="wp-quick">
+                <span>교장실<b>301</b></span><span>교감실<b>310</b></span><span>행정실장<b>303</b></span><span>보건실<b>356</b></span>
+                <span>도서관<b>333</b></span><span>방송실<b>461</b></span><span>당직실<b>467</b></span><span>인쇄실<b>455</b></span>
+                <span>정문<b>737-6606</b></span><span>행정실 FAX<b>723-0752</b></span>
+                ${period ? `<span class="wp-legend" style="margin-left:auto; background:none; border:none;"><span><i style="background:#22c55e;"></i>자리 있음</span><span><i style="background:#94a3b8;"></i>수업 중</span></span>` : ''}
+            </div>
+            <div class="wp-body">
+                <div class="wp-col">
+                    <div class="wp-card">
+                        <div class="wp-card-head"><span class="wp-card-title">🏢 본관 1교무실</span><span class="wp-card-loc">교무혁신 · 교육연구 · 2학년 · 진로/창의 · 안전생활</span></div>
+                        <div class="wp-depts">${main1Cols.map(deptCard).join('')}</div>
+                    </div>
+                    <div class="wp-card" style="flex:1;">
+                        <div class="wp-card-head"><span class="wp-card-title">🚪 담임교실 내선</span><span class="wp-card-loc">반 · 담임 · 교실</span></div>
+                        <div class="wp-hr">${hrHtml}</div>
+                    </div>
+                </div>
+                <div class="wp-col">
+                    <div class="wp-card">
+                        <div class="wp-card-head"><span class="wp-card-title">🏫 본관 2교무실</span><span class="wp-card-loc">1학년부</span></div>
+                        <div class="wp-depts" style="grid-template-columns:1fr;">${main2.columns.map(deptCard).join('')}</div>
+                    </div>
+                    <div class="wp-card">
+                        <div class="wp-card-head"><span class="wp-card-title">🌿 별관교무실</span><span class="wp-card-loc">3학년부 2층 · 교목실 3층</span></div>
+                        <div class="wp-depts" style="grid-template-columns:1fr;">${annex.columns.map(deptCard).join('')}</div>
+                    </div>
+                </div>
+                <div class="wp-col">
+                    <div class="wp-card" style="flex:1;">
+                        <div class="wp-card-head"><span class="wp-card-title">🏛️ 행정실 · 시설 · 특별실</span><span class="wp-card-loc">행정실 본관 1층</span></div>
+                        ${adminHtml}
+                    </div>
+                </div>
+            </div>`;
+        wpFit();
+    }
+
+    // 화면 크기에 맞춰 1920×1080 무대를 확대/축소
+    function wpFit() {
+        const stage = document.getElementById('wpStage');
+        if (!stage) return;
+        const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        stage.style.transform = `scale(${s})`;
+        stage.style.left = `${(window.innerWidth - 1920 * s) / 2}px`;
+        stage.style.top = `${(window.innerHeight - 1080 * s) / 2}px`;
+    }
+
+    function initWallpaper() {
+        if (!WP_MODE) return;
+        document.body.classList.add('wp-mode');
+        document.title = '배화여고 교직원 좌석 · 연락처';
+        renderWallpaper();
+        window.addEventListener('resize', wpFit);
+        if (!WP_STATIC) {
+            setInterval(renderWallpaper, 30 * 1000);
+            // 결보강·시간표 데이터를 새로 받기 위해 3시간마다 새로고침
+            setTimeout(() => location.reload(), 3 * 60 * 60 * 1000);
+        }
+    }
+    window.addEventListener('load', () => setTimeout(() => { try { initWallpaper(); } catch (e) { console.error('initWallpaper error:', e); } }, 0));
 
     // NEIS 급식 API
     // 급식: 선택 날짜 (기본 오늘, 주말이면 다음 월요일)
