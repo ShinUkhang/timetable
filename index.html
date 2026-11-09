@@ -12918,7 +12918,8 @@ window.SENIOR_PROCTOR_DATA = {
                         if (s.type === 'substitute') {
                             badgesHtml += `<span class="sub-badge-in-cell orig" title="사유: ${s.reason || '미기재'}">🔴 결강 (보강: ${s.subTeacher}T)</span>`;
                         } else if (s.type === 'swap') {
-                            badgesHtml += `<span class="sub-badge-in-cell swap" title="사유: ${s.reason || '미기재'}">↔️ 교환 (${s.newDate} ${s.newTime})</span>`;
+                            const partner = getSwapPartner(s);
+                            badgesHtml += `<span class="sub-badge-in-cell swap" title="사유: ${s.reason || '미기재'}">↔️ 교환 (${s.newDate} ${s.newTime})${partner ? ` · ${partner}T` : ''}</span>`;
                         }
                     }
                     html += `<td class="t-cell-class t-cell-orig-sub${todayClass}" style="cursor:pointer;" onclick="openSwapModal('${t}', '${d}', ${p}, '${cellText.replace(/\n/g, ' ')}')">
@@ -12942,7 +12943,7 @@ window.SENIOR_PROCTOR_DATA = {
                     let badgesHtml = '';
                     for (const s of mySwapIns) {
                         badgesHtml += `<span class="sub-badge-in-cell swap" title="사유: ${s.reason || '미기재'}">↔️ [교환] ${s.newClass || s.subjectClass}</span>
-                        <div style="font-size:9.5px; color:#553c9e; font-weight:bold; margin-top:2px;">(${s.origDate} ${s.origTime} 수업 이동)</div>`;
+                        <div style="font-size:9.5px; color:#553c9e; font-weight:bold; margin-top:2px;">(${s.origDate} ${s.origTime} 수업 이동${getSwapPartner(s) ? ` · ${getSwapPartner(s)}T와 교환` : ''})</div>`;
                     }
                     html += `<td class="t-cell-class t-cell-swap-entry${todayClass}" style="cursor:pointer;" onclick="showToast('[교환 수업] ${mySwapIns[0].newClass || mySwapIns[0].subjectClass} (${mySwapIns[0].origDate} ${mySwapIns[0].origTime}에서 이동)')">
                         ${badgesHtml}
@@ -15927,6 +15928,28 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     // 메인 탭 상단 '오늘의 결·보강' 상시 노출 배너
+    // 맞교환 상대 교사 (결보강 시트에는 상대 이름이 없어서 찾아냄)
+    // ① 시트에 짝이 되는 교환 줄 (상대가 내 바뀐 시간의 수업을 내 원래 시간으로 옮긴 줄)
+    // ② 없으면 바뀐 시간에 그 반을 원래 가르치던 교사 (시간표 기준)
+    function getSwapPartner(item) {
+        if (!item || item.type !== 'swap') return '';
+        if (item._partner !== undefined) return item._partner;
+        const md = d => (String(d || '').match(/(\d+)\s*\/\s*(\d+)/) || []).slice(1).join('/');
+        const list = window.SUBSTITUTE_DATA?.list || [];
+        const pair = list.find(o => o !== item && o.type === 'swap' && o.origTeacher !== item.origTeacher &&
+            o.origDay === item.newDay && o.origPeriod === item.newPeriod &&
+            o.newDay === item.origDay && o.newPeriod === item.origPeriod &&
+            md(o.origDate) === md(item.newDate));
+        let partner = pair ? pair.origTeacher : '';
+        if (!partner && item.newDay && item.newPeriod) {
+            const cls = (String(item.newClass || item.subjectClass || '').match(/\d-\d/) || [])[0];
+            const cell = cls ? (classSchedule[cls]?.[item.newPeriod]?.[item.newDay] || []) : [];
+            partner = (cell.find(it => it.teacher && it.teacher !== item.origTeacher) || {}).teacher || '';
+        }
+        item._partner = partner;
+        return partner;
+    }
+
     function renderTodayAutoSubBanner() {
         const banner = document.getElementById('todayAutoSubBanner');
         if (!banner) return;
@@ -15990,6 +16013,7 @@ window.SENIOR_PROCTOR_DATA = {
                             </button>
                             <span style="font-size:11px; color:var(--gray-500);">➔</span>
                             <span style="font-weight:bold; color:#553c9e; font-size:12px;">${item.newDate} ${item.newTime}</span>
+                            ${getSwapPartner(item) ? `<button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${getSwapPartner(item)}')"><span>↔️ ${getSwapPartner(item)}T와 교환</span></button>` : ''}
                         </div>
                         ${item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : ''}
                     </div>
@@ -16140,6 +16164,13 @@ window.SENIOR_PROCTOR_DATA = {
                         <span style="color:#553c9e; font-weight:700; font-size:12px;">변경 일시:</span>
                         <span style="font-weight:800; color:#553c9e; font-size:13px;">${item.newDate} ${item.newTime} (${item.newClass || item.subjectClass})</span>
                     </div>
+                    ${getSwapPartner(item) ? `<div class="sub-body-row" style="margin-top:6px;">
+                        <span style="color:#553c9e; font-weight:700; font-size:12px;">교환 상대:</span>
+                        <button class="sub-teacher-btn" onclick="selectTeacherAndGo('${getSwapPartner(item)}')" title="${getSwapPartner(item)} 선생님 시간표 보기">
+                            <span>↔️ ${getSwapPartner(item)}T</span>
+                            <span style="font-size:10px;">➔</span>
+                        </button>
+                    </div>` : ''}
                 `;
             }
 
