@@ -2811,7 +2811,10 @@
         <div class="m-card" style="padding:12px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                 <span style="font-weight:800; font-size:14px; color:var(--primary-dark);">📅 결·보강 내역 조회</span>
-                <span id="substituteCountBadge" style="font-size:11px; color:var(--primary); font-weight:bold; background:var(--primary-light); padding:2px 8px; border-radius:10px;">0건</span>
+                <span style="display:flex; align-items:center; gap:6px;">
+                    <span id="substituteCountBadge" style="font-size:11px; color:var(--primary); font-weight:bold; background:var(--primary-light); padding:2px 8px; border-radius:10px;">0건</span>
+                    <button class="m-btn m-btn-sm" style="padding:4px 10px; font-size:12px;" onclick="printSubstituteList()" title="선택한 날짜의 결·보강을 A4로 출력">🖨️ 출력</button>
+                </span>
             </div>
             <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin-bottom:8px;" id="subDateFilterChips">
                 <button class="phone-filter-chip active sub-date-chip" onclick="filterSubstituteDate('전체', this)">전체</button>
@@ -16380,11 +16383,8 @@ window.SENIOR_PROCTOR_DATA = {
         container.innerHTML = html;
     }
 
-    function renderSubstituteList() {
-        const area = document.getElementById('substituteListArea');
-        const countBadge = document.getElementById('substituteCountBadge');
-        if (!area) return;
-
+    // 결보강 탭의 날짜 칩·검색어로 거른 목록 (날짜·교시 순)
+    function getFilteredSubstituteList() {
         const subList = (window.SUBSTITUTE_DATA && window.SUBSTITUTE_DATA.list) ? window.SUBSTITUTE_DATA.list : [];
         const keyword = (document.getElementById('subSearchInput')?.value || '').trim().toLowerCase();
         const filterDate = window.currentSubFilterDate || '전체';
@@ -16416,8 +16416,112 @@ window.SENIOR_PROCTOR_DATA = {
             return true;
         });
 
-        // 항상 날짜 및 교시 오름차순(1교시 -> 7교시) 정렬
-        const filtered = sortSubstituteList(rawFiltered);
+        return sortSubstituteList(rawFiltered);
+    }
+
+    // 결·보강 A4 출력 (지금 고른 날짜 칩·검색어 기준, 날짜별로 한 표씩)
+    function printSubstituteList() {
+        const list = getFilteredSubstituteList();
+        if (!list.length) { showToast('출력할 결·보강 내역이 없습니다'); return; }
+        const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        const filterDate = window.currentSubFilterDate || '전체';
+        const keyword = (document.getElementById('subSearchInput')?.value || '').trim();
+        const now = new Date();
+        const stamp = `${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+        // 날짜별 묶기 (정렬 순서 유지)
+        const groups = [];
+        list.forEach(item => {
+            let g = groups.find(x => x.date === item.origDate);
+            if (!g) groups.push(g = { date: item.origDate, items: [] });
+            g.items.push(item);
+        });
+
+        const tables = groups.map(g => {
+            const subN = g.items.filter(i => i.type === 'substitute').length;
+            const swapN = g.items.length - subN;
+            const rows = g.items.map(i => {
+                const isSub = i.type === 'substitute';
+                const partner = isSub ? '' : getSwapPartner(i);
+                const detail = isSub
+                    ? `<b>${esc(i.subTeacher)}</b> 선생님`
+                    : `<b>${esc(i.newDate)} ${esc(i.newTime)}</b>${partner ? ` · ${esc(partner)} 선생님과` : ''}`;
+                return `<tr>
+                    <td class="p">${esc(i.origPeriod || '')}<small>교시</small></td>
+                    <td>${esc(i.subjectClass)}</td>
+                    <td>${esc(i.origTeacher)}</td>
+                    <td><span class="tag ${isSub ? 'sub' : 'swap'}">${isSub ? '보강' : '교환'}</span></td>
+                    <td class="d">${detail}</td>
+                    <td class="r">${esc(i.reason || '')}</td>
+                </tr>`;
+            }).join('');
+            return `<section>
+                <h2>${groups.length > 1 ? esc(g.date) : ''} <span>총 ${g.items.length}건 · 보강 ${subN} · 교환 ${swapN}</span></h2>
+                <table>
+                    <colgroup><col style="width:11%"><col style="width:22%"><col style="width:13%"><col style="width:9%"><col style="width:31%"><col style="width:14%"></colgroup>
+                    <thead><tr><th>교시</th><th>학급 (과목)</th><th>원래 교사</th><th>구분</th><th>보강 교사 / 교환 시간</th><th>사유</th></tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </section>`;
+        }).join('');
+
+        const title = groups.length === 1 ? `${groups[0].date} 결·보강 안내` : '결·보강 안내';
+        const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<title>${esc(title)}</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; color: #111; margin: 0; width: 186mm; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #111; padding-bottom: 6px; margin-bottom: 10px; }
+  h1 { font-size: 21pt; margin: 0; letter-spacing: -0.5px; }
+  .meta { font-size: 9pt; color: #555; text-align: right; line-height: 1.5; }
+  section { margin-bottom: 12px; break-inside: avoid; }
+  h2 { font-size: 13pt; margin: 0 0 5px; }
+  h2 span { font-size: 9.5pt; font-weight: normal; color: #555; margin-left: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 11pt; }
+  th { background: #eef2f7; font-size: 9.5pt; font-weight: bold; padding: 6px 4px; border: 1px solid #9aa4b2; }
+  td { border: 1px solid #9aa4b2; padding: 7px 6px; text-align: center; vertical-align: middle; word-break: keep-all; }
+  tr { break-inside: avoid; }
+  td.p { font-size: 15pt; font-weight: 900; }
+  td.p small { font-size: 8pt; font-weight: normal; margin-left: 1px; }
+  td.d { text-align: left; }
+  td.r { font-size: 9.5pt; color: #444; }
+  .tag { display: inline-block; font-size: 9.5pt; font-weight: bold; border-radius: 4px; padding: 1px 6px; border: 1px solid; }
+  .tag.sub { color: #166534; border-color: #166534; background: #ecfdf3; }
+  .tag.swap { color: #5b21b6; border-color: #5b21b6; background: #f5f3ff; }
+  footer { margin-top: 8px; font-size: 8.5pt; color: #666; display: flex; justify-content: space-between; }
+  @media print { th, .tag { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style></head><body>
+<header>
+  <h1>${esc(title)}</h1>
+  <div class="meta">배화여자고등학교<br>${filterDate === '전체' ? '전체 날짜' : filterDate === '오늘' ? '오늘' : esc(filterDate)}${keyword ? ` · 검색: ${esc(keyword)}` : ''} · 출력 ${stamp}</div>
+</header>
+${tables}
+<footer><span>※ 결보강 구글 시트 기준 · 변경 사항은 시트를 확인하세요.</span><span>shinukhang.github.io/timetable</span></footer>
+</body></html>`;
+
+        let frame = document.getElementById('subPrintFrame');
+        if (frame) frame.remove();
+        frame = document.createElement('iframe');
+        frame.id = 'subPrintFrame';
+        frame.style.cssText = 'position:fixed; right:0; bottom:0; width:0; height:0; border:0;';
+        document.body.appendChild(frame);
+        const doc = frame.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+        setTimeout(() => {
+            frame.contentWindow.focus();
+            frame.contentWindow.print();
+        }, 300);
+    }
+
+    function renderSubstituteList() {
+        const area = document.getElementById('substituteListArea');
+        const countBadge = document.getElementById('substituteCountBadge');
+        if (!area) return;
+
+        const filtered = getFilteredSubstituteList();
 
         if (countBadge) {
             countBadge.innerText = `${filtered.length}건`;
