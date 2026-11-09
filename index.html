@@ -1706,6 +1706,75 @@
         margin-top: 4px;
     }
 
+    /* ================= 주간 교육활동 계획 ================= */
+    .wkb-banner {
+        display: flex; gap: 12px; align-items: stretch; cursor: pointer;
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #38bdf8 100%);
+        color: white; border-radius: 14px; padding: 11px 13px; margin-bottom: 12px;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+    .wkb-banner-date { flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.16); border-radius: 10px; padding: 4px 9px; min-width: 46px; }
+    .wkb-banner-date b { font-size: 20px; line-height: 1.1; }
+    .wkb-banner-date span { font-size: 11px; opacity: 0.9; }
+    .wkb-banner-body { flex: 1; min-width: 0; }
+    .wkb-banner-head { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 700; opacity: 0.92; margin-bottom: 3px; }
+    .wkb-banner-item { font-size: 13px; font-weight: 700; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wkb-banner-item .me { background: #fde68a; color: #92400e; font-size: 10.5px; font-weight: 900; border-radius: 4px; padding: 0 4px; margin-right: 4px; }
+    .wkb-banner-item .who { font-size: 10.5px; opacity: 0.8; margin-right: 4px; }
+
+    #tab-weekplan { --wk: #2563eb; --wk-dark: #1e3a8a; --wk-soft: #eff6ff; }
+    .wk-hero { border-radius: 18px; padding: 16px; margin-bottom: 12px; color: white;
+        background: radial-gradient(120% 140% at 100% 0%, rgba(125, 211, 252, 0.35) 0%, rgba(125, 211, 252, 0) 50%), linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.25); }
+    .wk-hero-kicker { font-size: 11.5px; font-weight: 700; opacity: 0.85; }
+    .wk-hero-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 10px; }
+    .wk-hero-title { font-size: 21px; font-weight: 900; letter-spacing: -0.5px; text-align: center; flex: 1; }
+    .wk-now { display: block; width: fit-content; margin: 4px auto 0; font-size: 11.5px; font-weight: 900; background: #fde68a; color: #92400e; border-radius: 999px; padding: 1px 9px; letter-spacing: 0; }
+    body:has(#tab-weekplan.active) #weekPlanBanner { display: none !important; }
+    .wk-arrow { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.14); color: white; font-size: 22px; font-weight: 800; cursor: pointer; }
+    .wk-hero-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .wk-chip { font-size: 12px; font-weight: 700; color: white; text-decoration: none; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 6px 11px; cursor: pointer; }
+    .wk-search { width: 100%; box-sizing: border-box; padding: 10px 13px; font-size: 13.5px; border: 1px solid var(--gray-300); border-radius: 12px; margin-bottom: 12px; background: white; outline: none; }
+    .wk-search:focus { border-color: var(--wk); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+    .wk-days { display: grid; gap: 10px; }
+    .wk-day { background: white; border: 1px solid var(--gray-200); border-radius: 16px; overflow: hidden; }
+    .wk-day.today { border: 2px solid var(--wk); box-shadow: 0 6px 18px rgba(37,99,235,0.15); }
+    .wk-day.past { opacity: 0.72; }
+    .wk-day-head { display: flex; align-items: center; gap: 8px; padding: 9px 13px; background: var(--wk-soft); border-bottom: 1px solid var(--gray-200); }
+    .wk-day.today .wk-day-head { background: var(--wk); color: white; }
+    .wk-day-date { font-size: 15px; font-weight: 900; }
+    .wk-day-dow { font-size: 12px; font-weight: 800; border-radius: 999px; padding: 1px 8px; background: white; color: var(--wk-dark); }
+    .wk-day-dow.sat { color: #2563eb; } .wk-day-dow.sun { color: #dc2626; }
+    .wk-today-tag { margin-left: auto; font-size: 11px; font-weight: 900; background: #fde68a; color: #92400e; border-radius: 999px; padding: 2px 8px; }
+    .wk-day-cols { display: grid; grid-template-columns: 1fr; }
+    .wk-col { padding: 9px 13px 11px; }
+    .wk-col + .wk-col { border-top: 1px dashed var(--gray-200); }
+    .wk-col-title { font-size: 11.5px; font-weight: 900; margin-bottom: 5px; }
+    .wk-col-title.stu { color: #0f766e; } .wk-col-title.tch { color: #7c3aed; }
+    .wk-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+    .wk-items li { font-size: 13px; line-height: 1.5; color: var(--gray-800); padding-left: 10px; position: relative; white-space: pre-line; word-break: keep-all; }
+    .wk-items li::before { content: ""; position: absolute; left: 0; top: 8px; width: 4px; height: 4px; border-radius: 50%; background: var(--gray-500); }
+    .wk-items li.repeat { color: var(--gray-500); font-size: 12px; }
+    .wk-items li.mine { background: #fef9c3; border-radius: 6px; padding: 2px 6px 2px 14px; }
+    .wk-items li.mine::before { left: 5px; top: 10px; background: #ca8a04; }
+    .wk-items li.hit mark { background: #fde68a; padding: 0 1px; border-radius: 2px; }
+    .wk-time { font-weight: 800; color: var(--wk-dark); }
+    .wk-tag-trip { display: inline-block; font-size: 10.5px; font-weight: 900; color: white; background: #ea580c; border-radius: 4px; padding: 0 4px; margin-right: 3px; vertical-align: 1px; }
+    .wk-empty-line { font-size: 12px; color: var(--gray-500); }
+    .wk-extra { margin-top: 12px; display: grid; gap: 10px; }
+    .wk-extra-card { background: white; border: 1px solid var(--gray-200); border-radius: 16px; padding: 12px 14px; }
+    .wk-extra-card h4 { margin: 0 0 8px; font-size: 14.5px; font-weight: 900; color: var(--wk-dark); }
+    .wk-search-result { background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 10px 13px; margin-bottom: 8px; }
+    .wk-search-result .when { font-size: 12px; font-weight: 800; color: var(--wk); margin-bottom: 3px; }
+    @media (min-width: 768px) {
+        .wk-day-cols { grid-template-columns: 1fr 1fr; }
+        .wk-col + .wk-col { border-top: none; border-left: 1px dashed var(--gray-200); }
+        .wk-extra { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1200px) {
+        .wk-days { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ================= 바탕화면 모드 (?wallpaper=1) ================= */
     body.wp-mode { padding: 0 !important; margin: 0; overflow: hidden; background: #0b1220; }
     body.wp-mode > *:not(#wallpaperRoot) { display: none !important; }
@@ -2102,6 +2171,9 @@
         </div>
     </div>
 
+    <!-- 📅 오늘의 주요 일정 배너 (주간 교육활동 계획 구글 문서) -->
+    <div id="weekPlanBanner" class="wkb-banner" style="display:none;" onclick="openWeekPlanTab()"></div>
+
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
 
@@ -2222,6 +2294,25 @@
     </section>
 
     <!-- ==================== 탭 2: 반별 시간표 ==================== -->
+    <!-- ==================== 주간 교육활동 계획 ==================== -->
+    <section id="tab-weekplan" class="tab-content">
+        <div class="wk-hero">
+            <div class="wk-hero-kicker">2026 주간 교육활동 계획</div>
+            <div class="wk-hero-row">
+                <button class="wk-arrow" onclick="moveWeekPlan(-1)" title="지난 주">‹</button>
+                <div class="wk-hero-title" id="wkTitle">불러오는 중…</div>
+                <button class="wk-arrow" onclick="moveWeekPlan(1)" title="다음 주">›</button>
+            </div>
+            <div class="wk-hero-actions">
+                <button class="wk-chip" onclick="moveWeekPlan(0)">📍 이번 주</button>
+                <button class="wk-chip" onclick="fetchWeekPlan(true)">🔄 새로고침</button>
+                <a class="wk-chip" href="https://docs.google.com/document/d/1pcAX_3qfyklDpZLWnaJoMpHXcOps6p7YbUkemwcDrb0/edit" target="_blank">📝 원본 문서 ↗</a>
+            </div>
+        </div>
+        <input type="text" id="wkSearch" class="wk-search" placeholder="🔍 모든 주 일정 검색 (예: 출장, 수능, 신욱항)" oninput="renderWeekPlan()">
+        <div id="wkBody"><div class="lib-empty">주간 일정을 불러오는 중입니다… ⏳</div></div>
+    </section>
+
     <section id="tab-class" class="tab-content">
         <div class="m-card">
             <div class="m-card-title">🏫 반별(교실) 시간표 조회</div>
@@ -2746,6 +2837,10 @@
     <button class="nav-item active" onclick="switchTab('tab-my', this)">
         <span class="nav-icon">👤</span>
         <span class="nav-label">내시간표</span>
+    </button>
+    <button id="navItemWeekPlan" class="nav-item" onclick="switchTab('tab-weekplan', this)">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">주간일정</span>
     </button>
     <button class="nav-item" onclick="switchTab('tab-class', this)">
         <span class="nav-icon">🏫</span>
@@ -11854,6 +11949,8 @@ window.SENIOR_PROCTOR_DATA = {
                 bookDeadlinePanelShown = true;
                 setLibraryPanel('books');
             }
+        } else if (tabId === 'tab-weekplan') {
+            if (weekPlans) renderWeekPlan(); else fetchWeekPlan();
         } else if (tabId === 'tab-proctor') {
             renderProctorTab();
         }
@@ -13545,6 +13642,222 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     document.addEventListener('DOMContentLoaded', ccfUpdateBar);
+
+    // ===== 📅 주간 교육활동 계획 (구글 문서, 주마다 탭 하나) =====
+    const WEEKPLAN_DOC_ID = '1pcAX_3qfyklDpZLWnaJoMpHXcOps6p7YbUkemwcDrb0';
+    let weekPlans = null;      // [{ start, end, days: [{ iso, m, d, dow, student: [], teacher: [] }], refs, notices }] (날짜순)
+    let weekPlanIdx = null;
+
+    // 칸 내용 → 항목 목록 ('-' 또는 '*'로 시작하면 새 항목, 아니면 앞 항목에 이어 붙임)
+    function wkSplitItems(cell) {
+        const items = [];
+        for (const raw of String(cell || '').split(/\r?\n/)) {
+            const line = raw.replace(/\s+$/, '');
+            if (!line.trim()) continue;
+            if (/^\s*[-*]/.test(line)) items.push(line.trim().replace(/^-\s*/, ''));
+            else if (items.length) items[items.length - 1] += '\n' + line.trim();
+            else items.push(line.trim());
+        }
+        return items;
+    }
+
+    // 문서 텍스트(export?format=txt) → 주간 계획 목록
+    function parseWeekPlanDoc(text) {
+        const plans = [];
+        const re = /(\d{4})\s*주간 교육활동 계획/g;
+        const heads = [...text.matchAll(re)];
+        heads.forEach((h, hi) => {
+            const year = +h[1];
+            const body = text.slice(h.index + h[0].length, hi + 1 < heads.length ? heads[hi + 1].index : text.length);
+            const cells = body.split(/\r?\n\t/).map(c => c.replace(/^\t+/, ''));
+            const plan = { days: [], refs: { student: [], teacher: [] }, notices: { a: [], b: [] } };
+            for (let k = 0; k < cells.length; k++) {
+                const c = cells[k].trim();
+                if (/^\d{1,2}$/.test(c) && /^\d{1,2}$/.test((cells[k + 1] || '').trim()) && /^[월화수목금토일]$/.test((cells[k + 2] || '').trim())) {
+                    const m = +c, d = +cells[k + 1].trim();
+                    const y = year + (m < 3 ? 1 : 0); // 학년도: 3월~이듬해 2월
+                    plan.days.push({
+                        iso: `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`,
+                        m, d, dow: cells[k + 2].trim(),
+                        student: wkSplitItems(cells[k + 3]),
+                        teacher: wkSplitItems(cells[k + 4])
+                    });
+                    k += 4;
+                } else if (c === '참고') {
+                    plan.refs = { student: wkSplitItems(cells[k + 1]), teacher: wkSplitItems(cells[k + 2]) };
+                    k += 2;
+                } else if (/^연간/.test(c)) {
+                    plan.notices = { a: wkSplitItems(cells[k + 1]), b: wkSplitItems(cells[k + 2]) };
+                    k += 2;
+                }
+            }
+            if (plan.days.length) {
+                plan.days.sort((a, b) => a.iso.localeCompare(b.iso));
+                plan.start = plan.days[0].iso;
+                plan.end = plan.days[plan.days.length - 1].iso;
+                plans.push(plan);
+            }
+        });
+        return plans.sort((a, b) => a.start.localeCompare(b.start));
+    }
+
+    function currentWeekPlanIndex() {
+        if (!weekPlans?.length) return null;
+        const today = getTodayIsoDate();
+        let i = weekPlans.findIndex(p => p.days.some(d => d.iso === today));
+        if (i < 0) i = weekPlans.findIndex(p => p.start > today);
+        if (i < 0) i = weekPlans.length - 1;
+        return i;
+    }
+
+    // 한 주에 3일 이상 똑같이 나오는 항목(예: 고3 수험생기도회)은 배너에서 뺌
+    function wkRepeatedSet(plan) {
+        const count = {};
+        plan.days.forEach(d => new Set([...d.student, ...d.teacher].map(t => t.replace(/\s+/g, '').replace(/\(.*?\)/g, ''))).forEach(k => { count[k] = (count[k] || 0) + 1; }));
+        return new Set(Object.keys(count).filter(k => count[k] >= 3));
+    }
+    function wkIsRepeated(set, text) {
+        return set.has(text.replace(/\s+/g, '').replace(/\(.*?\)/g, ''));
+    }
+    function wkMyName() {
+        try { return localStorage.getItem('bae_my_teacher') || document.getElementById('myTeacherSelect')?.value || ''; } catch (e) { return ''; }
+    }
+
+    async function fetchWeekPlan(manual) {
+        try {
+            const res = await fetch(`https://docs.google.com/document/d/${WEEKPLAN_DOC_ID}/export?format=txt&t=${Date.now()}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            weekPlans = parseWeekPlanDoc((await res.text()).replace(/^﻿/, ''));
+            if (weekPlanIdx === null || manual) weekPlanIdx = currentWeekPlanIndex();
+            if (manual) showToast('📅 주간 일정을 새로 불러왔습니다');
+        } catch (e) {
+            console.warn('주간 교육활동 계획 불러오기 실패:', e.message);
+            const body = document.getElementById('wkBody');
+            if (body && !weekPlans) body.innerHTML = '<div class="lib-empty">주간 일정을 불러오지 못했습니다. 잠시 후 🔄를 눌러 주세요.</div>';
+            return;
+        }
+        renderWeekPlanBanner();
+        renderWeekPlan();
+    }
+
+    // 맨 위 배너: 오늘(주말이면 다음 날짜) 주요 일정
+    function renderWeekPlanBanner() {
+        const el = document.getElementById('weekPlanBanner');
+        if (!el || !weekPlans?.length) return;
+        const today = getTodayIsoDate();
+        let target = null, plan = null;
+        for (const p of weekPlans) {
+            const d = p.days.find(x => x.iso >= today && (x.student.length || x.teacher.length));
+            if (d && (!target || d.iso < target.iso)) { target = d; plan = p; }
+        }
+        if (!target || target.iso > toIsoDate(new Date(Date.now() + 4 * 86400000))) { el.style.display = 'none'; return; }
+        const rep = wkRepeatedSet(plan);
+        const me = wkMyName();
+        let items = [
+            ...target.teacher.map(t => ({ t, who: '교사' })),
+            ...target.student.map(t => ({ t, who: '학생' }))
+        ].filter(x => !wkIsRepeated(rep, x.t));
+        items = items.map(x => ({ ...x, mine: me && x.t.includes(me) })).sort((a, b) => b.mine - a.mine);
+        if (!items.length) { el.style.display = 'none'; return; }
+        const isToday = target.iso === today;
+        const shown = items.slice(0, 3);
+        el.style.display = 'flex';
+        el.innerHTML = `
+            <div class="wkb-banner-date"><b>${target.d}</b><span>${target.m}월 ${target.dow}</span></div>
+            <div class="wkb-banner-body">
+                <div class="wkb-banner-head"><span>📅 ${isToday ? '오늘의 주요 일정' : `${target.m}/${target.d}(${target.dow}) 주요 일정`}</span><span>${items.length > 3 ? `외 ${items.length - 3}건 · ` : ''}주간일정 ›</span></div>
+                ${shown.map(x => `<div class="wkb-banner-item">${x.mine ? '<span class="me">내 일정</span>' : `<span class="who">${x.who}</span>`}${libEsc(x.t.split('\n')[0])}</div>`).join('')}
+            </div>`;
+    }
+
+    function openWeekPlanTab() {
+        weekPlanIdx = currentWeekPlanIndex();
+        switchTab('tab-weekplan', document.getElementById('navItemWeekPlan'));
+    }
+
+    function moveWeekPlan(delta) {
+        if (!weekPlans?.length) return;
+        weekPlanIdx = delta === 0 ? currentWeekPlanIndex() : Math.max(0, Math.min(weekPlans.length - 1, weekPlanIdx + delta));
+        document.getElementById('wkSearch').value = '';
+        renderWeekPlan();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 항목 한 줄 꾸미기: 시각 강조, 출장 표시, 검색어 표시
+    function wkItemHtml(text, q) {
+        let h = libEsc(text);
+        h = h.replace(/^(출장\s*-?\s*)/, '<span class="wk-tag-trip">출장</span>');
+        h = h.replace(/^((?:<span class="wk-tag-trip">출장<\/span>)?)(\d{1,2}:\d{2}(?:\s*~\s*\d{1,2}:\d{2})?)/, '$1<span class="wk-time">$2</span>');
+        if (q) h = h.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), m => `<mark>${m}</mark>`);
+        return h;
+    }
+    function wkList(items, rep, me, q) {
+        if (!items.length) return '<div class="wk-empty-line">-</div>';
+        return `<ul class="wk-items">${items.map(t => {
+            const cls = [rep && wkIsRepeated(rep, t) ? 'repeat' : '', me && t.includes(me) ? 'mine' : '', q ? 'hit' : ''].filter(Boolean).join(' ');
+            return `<li class="${cls}">${wkItemHtml(t, q)}</li>`;
+        }).join('')}</ul>`;
+    }
+
+    function renderWeekPlan() {
+        const body = document.getElementById('wkBody');
+        const titleEl = document.getElementById('wkTitle');
+        if (!body || !weekPlans) return;
+        if (!weekPlans.length) { body.innerHTML = '<div class="lib-empty">등록된 주간 일정이 없습니다.</div>'; return; }
+        if (weekPlanIdx === null) weekPlanIdx = currentWeekPlanIndex();
+        const me = wkMyName();
+        const q = (document.getElementById('wkSearch')?.value || '').trim();
+        const today = getTodayIsoDate();
+
+        // 검색: 모든 주에서 찾기
+        if (q) {
+            titleEl.textContent = `"${q}" 검색 결과`;
+            const hits = [];
+            weekPlans.forEach(p => p.days.forEach(d => {
+                const s = d.student.filter(t => t.toLowerCase().includes(q.toLowerCase()));
+                const t = d.teacher.filter(t => t.toLowerCase().includes(q.toLowerCase()));
+                if (s.length || t.length) hits.push({ d, s, t });
+            }));
+            body.innerHTML = hits.length ? hits.reverse().map(h => `<div class="wk-search-result">
+                <div class="when">${h.d.m}/${h.d.d}(${h.d.dow})${h.d.iso === today ? ' · 오늘' : ''}</div>
+                ${h.s.length ? `<div class="wk-col-title stu">학생 활동</div>${wkList(h.s, null, me, q)}` : ''}
+                ${h.t.length ? `<div class="wk-col-title tch" style="margin-top:4px;">교사 활동</div>${wkList(h.t, null, me, q)}` : ''}
+            </div>`).join('') : '<div class="lib-empty">검색 결과가 없습니다.</div>';
+            return;
+        }
+
+        const plan = weekPlans[weekPlanIdx];
+        const rep = wkRepeatedSet(plan);
+        const isCurrent = weekPlanIdx === currentWeekPlanIndex();
+        const md = iso => `${+iso.slice(5, 7)}월 ${+iso.slice(8, 10)}일`;
+        titleEl.innerHTML = `${md(plan.start)} ~ ${md(plan.end)}${isCurrent ? '<span class="wk-now">이번 주</span>' : ''}`;
+
+        const days = plan.days.filter(d => d.student.length || d.teacher.length || !/[토일]/.test(d.dow));
+        let html = `<div class="wk-days">${days.map(d => {
+            const cls = d.iso === today ? ' today' : (d.iso < today ? ' past' : '');
+            const dowCls = d.dow === '토' ? ' sat' : d.dow === '일' ? ' sun' : '';
+            return `<div class="wk-day${cls}">
+                <div class="wk-day-head"><span class="wk-day-date">${d.m}/${d.d}</span><span class="wk-day-dow${dowCls}">${d.dow}</span>${d.iso === today ? '<span class="wk-today-tag">오늘</span>' : ''}</div>
+                <div class="wk-day-cols">
+                    <div class="wk-col"><div class="wk-col-title stu">🎒 학생 활동</div>${wkList(d.student, rep, me)}</div>
+                    <div class="wk-col"><div class="wk-col-title tch">👩‍🏫 교사 활동</div>${wkList(d.teacher, rep, me)}</div>
+                </div>
+            </div>`;
+        }).join('')}</div>`;
+
+        const refItems = [...plan.refs.student, ...plan.refs.teacher];
+        const noticeItems = [...plan.notices.a, ...plan.notices.b];
+        if (refItems.length || noticeItems.length) {
+            html += `<div class="wk-extra">
+                ${refItems.length ? `<div class="wk-extra-card"><h4>📌 참고</h4>
+                    ${plan.refs.student.length ? `<div class="wk-col-title stu">학생</div>${wkList(plan.refs.student, null, me)}` : ''}
+                    ${plan.refs.teacher.length ? `<div class="wk-col-title tch" style="margin-top:8px;">교사 · 예정</div>${wkList(plan.refs.teacher, null, me)}` : ''}
+                </div>` : ''}
+                ${noticeItems.length ? `<div class="wk-extra-card"><h4>📢 연간 공지사항</h4>${wkList(noticeItems, null, me)}</div>` : ''}
+            </div>`;
+        }
+        body.innerHTML = html;
+    }
 
     // ===== 🖥️ 바탕화면 모드 =====
     // index.html?wallpaper=1         : 실시간 (지금 교시 기준 자리 상태, 30초마다 갱신)
@@ -16573,6 +16886,7 @@ ${n.content}
         try { buildClassSchedule(); } catch (e) { console.error('buildClassSchedule error:', e); }
         try { initProctorTab(); } catch (e) { console.error('initProctorTab error:', e); }
         try { fetchBookRequests(); } catch (e) { console.error('fetchBookRequests error:', e); }
+        try { fetchWeekPlan(); } catch (e) { console.error('fetchWeekPlan error:', e); }
         try { initEventTab(); } catch (e) { console.error('initEventTab error:', e); }
         try { renderMyTimetable(); } catch (e) { console.error('renderMyTimetable error:', e); }
         try { renderClassTimetable(); } catch (e) { console.error('renderClassTimetable error:', e); }
