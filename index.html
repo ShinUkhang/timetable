@@ -12676,6 +12676,31 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     // 데이터 초기화
+    // 시간표 파일에 없는 교사별 고정 업무 [요일, 교시, 내용]
+    // (업데이트 때 공통 시간표로 칸이 다시 맞춰져도 여기 적힌 업무는 계속 덧붙여짐)
+    const TEACHER_FIXED_DUTIES = {
+        '김민철': [
+            ['화', 1, '중학교 예배'], ['화', 2, '중학교 예배'],
+            ['수', 2, '고등학교 예배'],
+            ['목', 5, '학생기도회'],
+            ['금', 1, '중학교 교직원 설교']
+        ]
+    };
+    // 고정 업무 칸은 수업이 아니므로 교환 추천·수업 시수에서 제외
+    const FIXED_DUTY_KEYS = new Set(Object.values(TEACHER_FIXED_DUTIES).flat().map(([, , label]) => label.replace(/\s+/g, '')));
+
+    function applyTeacherFixedDuties() {
+        for (const [t, list] of Object.entries(TEACHER_FIXED_DUTIES)) {
+            if (!schedule[t]) continue;
+            for (const [d, p, label] of list) {
+                if (!schedule[t][p]) schedule[t][p] = {};
+                const cur = schedule[t][p][d] || '';
+                if (isFree(cur)) schedule[t][p][d] = label;
+                else if (!cur.includes(label)) schedule[t][p][d] = cur + '\n' + label;
+            }
+        }
+    }
+
     function initData() {
         const cards = document.querySelectorAll('.hidden-data-source .card');
         const sel = document.getElementById('myTeacherSelect');
@@ -12705,6 +12730,9 @@ window.SENIOR_PROCTOR_DATA = {
                 }
             });
         });
+
+        // 1-1. 교사별 고정 업무 덧붙이기
+        applyTeacherFixedDuties();
 
         // 1-2. 도서관 담당 김동하 교사 추가 및 초기화
         if (!teachers.includes('김동하')) {
@@ -12855,6 +12883,7 @@ window.SENIOR_PROCTOR_DATA = {
         if (!text) return false;
         text = text.replace(/\s+/g, '');
         if (text === '' || text === '공강' || text === '예배' || text === '동아' || text === '자율') return false;
+        if (FIXED_DUTY_KEYS.has(text)) return false;
         return true;
     }
 
