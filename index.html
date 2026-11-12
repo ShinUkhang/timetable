@@ -1814,6 +1814,11 @@
     .room-item .where { font-weight: 800; background: #fff7ed; color: #c2410c; border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
     .room-item .who { color: var(--gray-700); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .room-item.clash { background: #fff1f2; border-radius: 8px; }
+    .rp-grid { display: grid; gap: 10px; }
+    .rp-grid label { display: grid; gap: 4px; font-size: 12.5px; font-weight: 800; color: var(--gray-700); }
+    .rp-grid .rp-check { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+    .rp-check input { width: 18px; height: 18px; }
+    .rp-tip { margin-top: 12px; font-size: 12px; color: #9a3412; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 9px 11px; line-height: 1.5; }
 
     /* ================= 주간 교육활동 계획 ================= */
     .wkb-banner {
@@ -2726,6 +2731,7 @@
             <div class="room-hero-actions">
                 <a class="room-btn primary" href="https://docs.google.com/spreadsheets/d/1N9_imxWm46VMlyN_IpJkik_FPxNO1XKycOGmlWUlMxc/edit" target="_blank">✍️ 예약 입력하기 (구글 시트)</a>
                 <button class="room-btn" onclick="fetchRoomData(true)">🔄 새로고침</button>
+                <button class="room-btn" onclick="openRoomPrint()">🖨️ 출력</button>
             </div>
         </div>
         <div class="room-week">
@@ -3017,6 +3023,25 @@
 </nav>
 
 <!-- 더보기 메뉴 (휴대폰·태블릿) -->
+<!-- 장소 사용 출력 조건 -->
+<div id="roomPrintModal" class="modal-backdrop" onclick="closeRoomPrint(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div><h3 class="sheet-title">🖨️ 장소 사용 출력</h3><div class="sheet-subtitle">조건을 고르면 A4로 출력합니다 (인쇄 창에서 PDF 저장 가능)</div></div>
+            <button class="sheet-close" onclick="closeRoomPrint()">✕</button>
+        </div>
+        <div class="rp-grid">
+            <label>기간<select id="rpRange" class="m-select"><option value="day">선택한 날</option><option value="week" selected>표시 중인 주 (월~금)</option></select></label>
+            <label>장소<select id="rpRoom" class="m-select"></select></label>
+            <label>형식<select id="rpFormat" class="m-select"><option value="list">목록 (날짜·시간순)</option><option value="grid">시간표 (장소 하나: 요일×시간 / 전체: 날짜마다 장소×시간)</option></select></label>
+            <label class="rp-check"><input type="checkbox" id="rpClass" checked> 정규 수업(설렘온·학습카페·교과교실)도 함께</label>
+        </div>
+        <div class="rp-tip">💡 특정 장소 + 표시 중인 주 + 시간표 형식으로 출력하면 그 장소 문 앞에 붙일 주간 사용표가 됩니다.</div>
+        <button class="ccf-download" onclick="printRoomUsage()">🖨️ 출력하기</button>
+    </div>
+</div>
+
 <div id="navMoreModal" class="modal-backdrop" onclick="closeNavMore(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="sheet-handle"></div>
@@ -14116,6 +14141,139 @@ window.SENIOR_PROCTOR_DATA = {
                 <div class="room-card-head"><b>📋 이번 주 예약 목록</b><span>${weekList.length}건</span></div>
                 ${listHtml}
             </div>`;
+    }
+
+    // ----- 장소 사용 출력 (조건: 기간·장소·형식·정규 수업 포함) -----
+    function openRoomPrint() {
+        if (!roomData) { showToast('예약 시트를 먼저 불러오는 중입니다'); fetchRoomData(); return; }
+        const sel = document.getElementById('rpRoom');
+        sel.innerHTML = '<option value="">전체 장소</option>' + roomData.rooms.map(r => `<option value="${libEsc(r)}">${libEsc(r)}</option>`).join('');
+        document.getElementById('roomPrintModal').classList.add('show');
+    }
+    function closeRoomPrint() {
+        document.getElementById('roomPrintModal').classList.remove('show');
+    }
+
+    // 날짜 하나의 사용 내역 (예약 + 정규 수업), 겹침 표시 포함
+    function roomEntriesOn(iso, room, withClass) {
+        const { slots, list } = roomData;
+        const res = list.filter(r => r.iso === iso && (!room || r.room === room))
+            .map(r => ({ ...r, kind: '예약', src: r }));
+        const cls = withClass ? roomClassUsage(iso).filter(c => !room || c.room === room).map(c => {
+            const idx = slots.indexOf(c.slot);
+            return { iso, start: idx, end: idx, room: c.room, who: c.teacher, target: '', purpose: c.text.split(' ')[0], kind: '수업' };
+        }).filter(c => c.start >= 0) : [];
+        // 겹침은 출력 조건과 상관없이 그날 실제 사용 전체(다른 예약·정규 수업)를 기준으로 판단
+        const allRes = list.filter(r => r.iso === iso);
+        const allCls = roomClassUsage(iso).map(c => ({ room: c.room, idx: slots.indexOf(c.slot) }));
+        const clash = e => e.kind === '예약' && (
+            allRes.some(o => o !== e.src && o.room === e.room && o.start <= e.end && e.start <= o.end) ||
+            allCls.some(c => c.room === e.room && c.idx >= e.start && c.idx <= e.end));
+        return [...res, ...cls].map(e => ({ ...e, clash: clash(e) })).sort((a, b) => a.start - b.start || a.room.localeCompare(b.room, 'ko'));
+    }
+
+    function printRoomUsage() {
+        const range = document.getElementById('rpRange').value;
+        const room = document.getElementById('rpRoom').value;
+        const format = document.getElementById('rpFormat').value;
+        const withClass = document.getElementById('rpClass').checked;
+        const { slots, rooms } = roomData;
+        const isos = range === 'day' ? [roomSelectedIso] : roomWeekDates().map(toIsoDate);
+        const esc = libEsc;
+        const slotName = i => slots[i] ? slots[i].replace(/\s*\(.*\)/, '') : '';
+        const span = e => e.start === e.end ? slotName(e.start) : `${slotName(e.start)}~${slotName(e.end)}`;
+        const dLabel = iso => `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}(${WEEKDAY_NAMES[ccfDateFromIso(iso).getDay()]})`;
+        const periodLabel = isos.length === 1 ? dLabel(isos[0]) : `${dLabel(isos[0])} ~ ${dLabel(isos[isos.length - 1])}`;
+        const title = `${room || '특별실·장소'} ${format === 'grid' && room && isos.length > 1 ? '주간 사용표' : '사용 현황'}`;
+        let body = '';
+        let landscape = false;
+
+        if (format === 'list') {
+            body = isos.map(iso => {
+                const items = roomEntriesOn(iso, room, withClass);
+                const rows = items.length ? items.map(e => `<tr class="${e.clash ? 'clash' : ''}${e.kind === '수업' ? ' cls' : ''}">
+                    <td class="t">${esc(span(e))}</td><td><b>${esc(e.room)}</b></td><td>${esc(e.who)}</td>
+                    <td>${esc(e.target)}</td><td class="l">${esc(e.purpose)}</td>
+                    <td>${e.kind === '수업' ? '정규 수업' : e.clash ? '⚠️ 겹침' : ''}</td></tr>`).join('')
+                    : '<tr><td colspan="6" class="none">사용 없음</td></tr>';
+                return `<section><h2>${dLabel(iso)} <span>${items.filter(e => e.kind === '예약').length}건 예약</span></h2>
+                    <table><colgroup><col style="width:15%"><col style="width:14%"><col style="width:13%"><col style="width:16%"><col style="width:28%"><col style="width:14%"></colgroup>
+                    <thead><tr><th>시간</th><th>장소</th><th>사용 교사</th><th>대상</th><th>사용 목적</th><th>비고</th></tr></thead><tbody>${rows}</tbody></table></section>`;
+            }).join('');
+        } else if (room) {
+            // 장소 하나: 시간대 × 날짜
+            const byDay = isos.map(iso => roomEntriesOn(iso, room, withClass));
+            body = `<table class="grid"><thead><tr><th class="s">시간</th>${isos.map(iso => `<th>${dLabel(iso)}</th>`).join('')}</tr></thead><tbody>
+                ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${byDay.map(items => {
+                    const hit = items.filter(e => si >= e.start && si <= e.end);
+                    if (!hit.length) return '<td></td>';
+                    const cls = hit.length > 1 || hit.some(e => e.clash) ? 'clash' : hit[0].kind === '수업' ? 'cls' : 'bk';
+                    return `<td class="${cls}">${hit.map(e => `<b>${esc(e.kind === '수업' ? '수업 · ' + e.who : e.who)}</b><small>${esc([e.target, e.purpose].filter(Boolean).join(' · '))}</small>`).join('<hr>')}</td>`;
+                }).join('')}</tr>`).join('')}
+            </tbody></table>`;
+        } else {
+            // 전체 장소: 날짜마다 시간대 × 장소 (사용한 장소만)
+            landscape = true;
+            body = isos.map(iso => {
+                const items = roomEntriesOn(iso, '', withClass);
+                const used = rooms.filter(r => items.some(e => e.room === r));
+                if (!used.length) return `<section><h2>${dLabel(iso)}</h2><div class="none-box">사용 없음</div></section>`;
+                return `<section><h2>${dLabel(iso)} <span>${items.filter(e => e.kind === '예약').length}건 예약</span></h2>
+                    <table class="grid"><thead><tr><th class="s">시간</th>${used.map(r => `<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>
+                    ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${used.map(r => {
+                        const hit = items.filter(e => e.room === r && si >= e.start && si <= e.end);
+                        if (!hit.length) return '<td></td>';
+                        const cls = hit.length > 1 || hit.some(e => e.clash) ? 'clash' : hit[0].kind === '수업' ? 'cls' : 'bk';
+                        return `<td class="${cls}">${hit.map(e => `<b>${esc(e.kind === '수업' ? '수업 · ' + e.who : e.who)}</b><small>${esc(e.purpose)}</small>`).join('<hr>')}</td>`;
+                    }).join('')}</tr>`).join('')}
+                    </tbody></table></section>`;
+            }).join('');
+        }
+
+        const now = new Date();
+        const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>${esc(title)} ${esc(periodLabel)}</title>
+<style>
+  @page { size: A4 ${landscape ? 'landscape' : 'portrait'}; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; color: #111; margin: 0; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2.5px solid #111; padding-bottom: 6px; margin-bottom: 10px; }
+  h1 { font-size: 20pt; margin: 0; }
+  h1 small { font-size: 12pt; font-weight: normal; margin-left: 8px; color: #333; }
+  .meta { font-size: 9pt; color: #555; text-align: right; line-height: 1.5; }
+  section { margin-bottom: 12px; break-inside: avoid; }
+  h2 { font-size: 12.5pt; margin: 0 0 4px; }
+  h2 span { font-size: 9pt; font-weight: normal; color: #555; margin-left: 6px; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10.5pt; }
+  th { background: #fff1e6; font-size: 9.5pt; padding: 5px 3px; border: 1px solid #9aa4b2; }
+  td { border: 1px solid #9aa4b2; padding: 5px 4px; text-align: center; vertical-align: middle; word-break: keep-all; }
+  td.l { text-align: left; } td.t { font-weight: bold; } td.none, .none-box { color: #888; font-size: 9.5pt; }
+  .none-box { border: 1px dashed #bbb; padding: 8px; text-align: center; }
+  tr.cls td { color: #555; background: #f3f4f6; }
+  tr.clash td, td.clash { background: #fee2e2; }
+  table.grid td { height: ${landscape ? '9mm' : '13mm'}; font-size: 9.5pt; line-height: 1.25; }
+  table.grid td.s, table.grid th.s { width: 16mm; font-weight: bold; background: #fff7ed; }
+  table.grid td.bk { background: #ffedd5; } table.grid td.cls { background: #f3f4f6; color: #444; }
+  table.grid b { display: block; } table.grid small { display: block; font-size: 8pt; color: #555; }
+  table.grid hr { border: 0; border-top: 1px dashed #c00; margin: 2px 0; }
+  footer { margin-top: 6px; font-size: 8.5pt; color: #666; display: flex; justify-content: space-between; }
+  @media print { th, td { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style></head><body>
+<header><h1>${esc(title)}<small>${esc(periodLabel)}</small></h1>
+<div class="meta">배화여자고등학교<br>${withClass ? '정규 수업 포함' : '예약만'} · 출력 ${now.getMonth() + 1}/${now.getDate()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}</div></header>
+${body}
+<footer><span>※ 장소 사용 예약 구글 시트 기준 · 회색은 정규 수업, 빨강은 겹침</span><span>shinukhang.github.io/timetable</span></footer>
+</body></html>`;
+
+        closeRoomPrint();
+        let frame = document.getElementById('roomPrintFrame');
+        if (frame) frame.remove();
+        frame = document.createElement('iframe');
+        frame.id = 'roomPrintFrame';
+        frame.style.cssText = 'position:fixed; right:0; bottom:0; width:0; height:0; border:0;';
+        document.body.appendChild(frame);
+        const doc = frame.contentWindow.document;
+        doc.open(); doc.write(html); doc.close();
+        setTimeout(() => { frame.contentWindow.focus(); frame.contentWindow.print(); }, 300);
     }
 
     // ===== 📅 주간 교육활동 계획 (구글 문서, 주마다 탭 하나) =====
