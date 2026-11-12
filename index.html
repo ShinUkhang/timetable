@@ -15823,8 +15823,7 @@ window.SENIOR_PROCTOR_DATA = {
                         <div class="today-auto-col" style="border-left: 3px solid #6b46c1;">
                             <div class="today-auto-col-title" style="color:#6b46c1;"><span>🌙 야자감독</span><span>석식 후 자율학습</span></div>
                             <div class="today-auto-col-content">
-                                <span>1학년(믿음방): <b>${fb.night && fb.night.grade1 ? fb.night.grade1.teacher : '-'}T</b></span>
-                                <span>2·3학년(별관 4층): <b>${fb.night && fb.night.grade23 ? fb.night.grade23.teacher : '-'}T</b></span>
+                                <span>별관 4층 (전 학년): <b>${nightTeacherOf(fb)}T</b></span>
                             </div>
                         </div>
                     </div>
@@ -15836,8 +15835,7 @@ window.SENIOR_PROCTOR_DATA = {
             }
         }
 
-        const nG1 = (entry.night && entry.night.grade1) ? entry.night.grade1.teacher : '-';
-        const nG23 = (entry.night && entry.night.grade23) ? entry.night.grade23.teacher : '-';
+        const nT = nightTeacherOf(entry);
 
         banner.innerHTML = `
             <div class="today-auto-header">
@@ -15855,14 +15853,22 @@ window.SENIOR_PROCTOR_DATA = {
                         <span style="font-size:10px;">석식 후~21:00</span>
                     </div>
                     <div class="today-auto-col-content">
-                        <span onclick="selectTeacherAndGo('${nG1}')" style="cursor:pointer;">1학년(믿음방): <b style="text-decoration:underline;">${nG1}T</b></span>
-                        <span onclick="selectTeacherAndGo('${nG23}')" style="cursor:pointer;">2·3학년(별관 4층): <b style="text-decoration:underline;">${nG23}T</b></span>
+                        <span onclick="selectTeacherAndGo('${nT}')" style="cursor:pointer;">별관 4층 (전 학년): <b style="text-decoration:underline;">${nT}T</b></span>
                     </div>
                 </div>
             </div>
         `;
     }
 
+
+    // 야자감독: 10/15부터 별관 4층 통합 (믿음방 감독 없음). 통합 이후 감독 교사는 grade1 에 담겨 옴
+    const NIGHT_UNIFIED_FROM = '2026-10-15';
+    function nightTeacherOf(entry) {
+        const n = entry && entry.night;
+        if (!n) return '-';
+        return (n.grade1 && n.grade1.teacher && n.grade1.teacher !== '-' ? n.grade1.teacher : '')
+            || (n.grade23 && n.grade23.teacher) || '-';
+    }
 
     function renderDutyUI() {
         renderTodayAutoBanner();
@@ -16024,13 +16030,8 @@ window.SENIOR_PROCTOR_DATA = {
         const timePrefix = isToday ? '오늘' : entry.displayDate;
 
         // 야자감독 당번 확인
-        if (entry.night) {
-            if (entry.night.grade1 && entry.night.grade1.teacher === currentTeacher) {
-                alerts.push(`🌙 ${timePrefix} <b>【1학년 야자감독 (믿음방)】</b> 당번입니다!`);
-            }
-            if (entry.night.grade23 && entry.night.grade23.teacher === currentTeacher) {
-                alerts.push(`🌙 ${timePrefix} <b>【2·3학년 야자감독 (별관 4층)】</b> 당번입니다!`);
-            }
+        if (entry.night && nightTeacherOf(entry) === currentTeacher) {
+            alerts.push(`🌙 ${timePrefix} <b>【야자감독 (별관 4층)】</b> 당번입니다!`);
         }
 
         if (alerts.length > 0) {
@@ -16073,8 +16074,8 @@ window.SENIOR_PROCTOR_DATA = {
             const rowClass = isToday ? 'today-row' : '';
             const rowStyle = isSelected ? 'border:2px solid var(--primary);' : '';
 
-            const n1 = (row.night && row.night.grade1) ? (row.night.grade1.teacher || '-') : '-';
-            const n23 = (row.night && row.night.grade23) ? (row.night.grade23.teacher || '-') : '-';
+            // 믿음방(1학년) 감독이 있던 10/14 이전은 빼고 별관 4층 통합 감독만 표시
+            if (k < NIGHT_UNIFIED_FROM) return;
 
             tableRows += `
                 <tr class="${rowClass}" style="${rowStyle}">
@@ -16082,8 +16083,7 @@ window.SENIOR_PROCTOR_DATA = {
                         ${row.displayDate} (${row.dayOfWeek || '-'})
                         ${isToday ? '<br><span style="font-size:10px; color:var(--primary);">[오늘]</span>' : ''}
                     </td>
-                    <td>${n1}</td>
-                    <td>${n23}</td>
+                    <td>${nightTeacherOf(row)}</td>
                 </tr>
             `;
         });
@@ -16092,13 +16092,7 @@ window.SENIOR_PROCTOR_DATA = {
             <!-- 구글 스프레드시트 바로가기 버튼들 -->
             <div style="display:flex; gap:6px; margin-bottom:12px;">
                 <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=669404717#gid=669404717" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
-                    🔗 10/15~ 통합 야자시트
-                </a>
-                <a href="https://docs.google.com/spreadsheets/d/1rz0sBh_WM2mCnz0mQplqnk3rqGxS0wbKfExJcvsFdNI/edit?gid=1066659445#gid=1066659445" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
-                    🔗 1학년 야자시트
-                </a>
-                <a href="https://docs.google.com/spreadsheets/d/163ZwXKA3Ww3-vYQmtXNI1FxV1vqRxSa9fIzig-vhuF8/edit?gid=0#gid=0" target="_blank" class="m-btn m-btn-outline m-btn-sm" style="flex:1;">
-                    🔗 2·3학년 야자시트
+                    🔗 야자감독 구글시트 (별관 4층 통합)
                 </a>
             </div>
 
@@ -16107,8 +16101,7 @@ window.SENIOR_PROCTOR_DATA = {
                 <div style="font-weight:800; font-size:13px; margin-bottom:4px; color:#6b46c1;">★ 야간 자기주도학습(야자) 감독 안내사항 ★</div>
                 <div><b>🌙 야자감독 장소</b></div>
                 <div style="margin-left:6px; color:#44337a; margin-bottom:6px;">
-                    - 10/14까지: 1학년(믿음방), 2·3학년(별관 4층)<br>
-                    - 10/15부터: 1·2·3학년 별관 4층 통합 감독
+                    - 1·2·3학년 별관 4층 통합 감독
                 </div>
                 <div><b>📋 유의사항</b></div>
                 <div style="margin-left:6px; color:#44337a;">
@@ -16119,7 +16112,7 @@ window.SENIOR_PROCTOR_DATA = {
 
             <!-- 일정표 테이블 -->
             <div style="font-weight:800; font-size:14px; color:var(--primary-dark); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
-                <span>📅 야자감독 전체 배정표 (총 ${allKeys.length}일)</span>
+                <span>📅 야자감독 전체 배정표 (총 ${allKeys.filter(k => k >= NIGHT_UNIFIED_FROM).length}일)</span>
                 <span style="font-size:11px; font-weight:normal; color:var(--gray-600);">오늘 행 하늘색</span>
             </div>
             <div class="duty-table-scroll">
@@ -16127,12 +16120,11 @@ window.SENIOR_PROCTOR_DATA = {
                     <thead>
                         <tr>
                             <th style="background:#f1f5f9; color:var(--gray-700); width:110px;">날짜</th>
-                            <th style="background:#faf5ff; color:#6b46c1;">1학년 (믿음방)</th>
-                            <th style="background:#faf5ff; color:#6b46c1;">2·3학년 (별관 4층)</th>
+                            <th style="background:#faf5ff; color:#6b46c1;">야자감독 (별관 4층 · 전 학년)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${tableRows || '<tr><td colspan="3">등록된 야자 일정이 없습니다.</td></tr>'}
+                        ${tableRows || '<tr><td colspan="2">등록된 야자 일정이 없습니다.</td></tr>'}
                     </tbody>
                 </table>
             </div>
