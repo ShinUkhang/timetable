@@ -1816,6 +1816,14 @@
     .room-item.clash { background: #fff1f2; border-radius: 8px; }
     .rp-grid { display: grid; gap: 10px; }
     .rp-grid label { display: grid; gap: 4px; font-size: 12.5px; font-weight: 800; color: var(--gray-700); }
+    .rp-rooms-wrap { display: grid; gap: 6px; }
+    .rp-rooms-head { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; font-weight: 800; color: var(--gray-700); }
+    .rp-rooms-head button { border: 1px solid var(--gray-300); background: white; border-radius: 999px; font-size: 11px; font-weight: 700; padding: 3px 8px; margin-left: 4px; cursor: pointer; }
+    .rp-rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .rp-room { display: flex; align-items: center; gap: 6px; border: 1px solid var(--gray-300); border-radius: 10px; padding: 8px 9px; font-size: 13px; font-weight: 700; color: var(--gray-700); cursor: pointer; background: white; }
+    .rp-room input { width: 16px; height: 16px; accent-color: #c2410c; }
+    .rp-room:has(input:checked) { border-color: #c2410c; background: #fff7ed; color: #9a3412; }
+    .rp-room small { margin-left: auto; font-size: 10.5px; color: #c2410c; font-weight: 800; }
     .rp-grid .rp-check { display: flex; align-items: center; gap: 6px; font-weight: 700; }
     .rp-check input { width: 18px; height: 18px; }
     .rp-tip { margin-top: 12px; font-size: 12px; color: #9a3412; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 9px 11px; line-height: 1.5; }
@@ -3033,11 +3041,14 @@
         </div>
         <div class="rp-grid">
             <label>기간<select id="rpRange" class="m-select"><option value="day">선택한 날</option><option value="week" selected>표시 중인 주 (월~금)</option></select></label>
-            <label>장소<select id="rpRoom" class="m-select"></select></label>
-            <label>형식<select id="rpFormat" class="m-select"><option value="list">목록 (날짜·시간순)</option><option value="grid">시간표 (장소 하나: 요일×시간 / 전체: 날짜마다 장소×시간)</option></select></label>
+            <div class="rp-rooms-wrap">
+                <div class="rp-rooms-head"><span>출력할 장소</span><span><button type="button" onclick="rpSelectAll(true)">전체 선택</button><button type="button" onclick="rpSelectAll('used')">사용한 곳만</button><button type="button" onclick="rpSelectAll(false)">전체 해제</button></span></div>
+                <div class="rp-rooms" id="rpRooms"></div>
+            </div>
+            <label>형식<select id="rpFormat" class="m-select"><option value="list">목록 (날짜·시간순)</option><option value="grid">시간표 (주: 장소마다 한 장씩 / 하루: 시간×장소)</option></select></label>
             <label class="rp-check"><input type="checkbox" id="rpClass" checked> 정규 수업(설렘온·학습카페·교과교실)도 함께</label>
         </div>
-        <div class="rp-tip">💡 특정 장소 + 표시 중인 주 + 시간표 형식으로 출력하면 그 장소 문 앞에 붙일 주간 사용표가 됩니다.</div>
+        <div class="rp-tip">💡 장소를 체크하고 <b>표시 중인 주 + 시간표</b>로 출력하면 체크한 장소마다 한 장씩, 문 앞에 붙일 주간 사용표가 나옵니다.</div>
         <button class="ccf-download" onclick="printRoomUsage()">🖨️ 출력하기</button>
     </div>
 </div>
@@ -14144,22 +14155,39 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     // ----- 장소 사용 출력 (조건: 기간·장소·형식·정규 수업 포함) -----
+    // 출력 기간 안에 사용(예약·정규 수업)이 있는 장소별 건수
+    function rpUsageCount() {
+        const isos = roomWeekDates().map(toIsoDate);
+        const count = {};
+        isos.forEach(iso => {
+            roomData.list.filter(r => r.iso === iso).forEach(r => { count[r.room] = (count[r.room] || 0) + 1; });
+            roomClassUsage(iso).forEach(c => { count[c.room] = (count[c.room] || 0) + 1; });
+        });
+        return count;
+    }
     function openRoomPrint() {
         if (!roomData) { showToast('예약 시트를 먼저 불러오는 중입니다'); fetchRoomData(); return; }
-        const sel = document.getElementById('rpRoom');
-        sel.innerHTML = '<option value="">전체 장소</option>' + roomData.rooms.map(r => `<option value="${libEsc(r)}">${libEsc(r)}</option>`).join('');
+        const count = rpUsageCount();
+        document.getElementById('rpRooms').innerHTML = roomData.rooms.map(r => `<label class="rp-room">
+            <input type="checkbox" value="${libEsc(r)}"${count[r] ? ' checked' : ''}> ${libEsc(r)}${count[r] ? `<small>${count[r]}</small>` : ''}</label>`).join('');
         document.getElementById('roomPrintModal').classList.add('show');
+    }
+    // 전체 선택(true) / 전체 해제(false) / 이번 주 사용한 곳만('used')
+    function rpSelectAll(mode) {
+        const count = mode === 'used' ? rpUsageCount() : null;
+        document.querySelectorAll('#rpRooms input').forEach(cb => { cb.checked = mode === 'used' ? !!count[cb.value] : mode; });
     }
     function closeRoomPrint() {
         document.getElementById('roomPrintModal').classList.remove('show');
     }
 
     // 날짜 하나의 사용 내역 (예약 + 정규 수업), 겹침 표시 포함
-    function roomEntriesOn(iso, room, withClass) {
+    function roomEntriesOn(iso, roomSet, withClass) {
+        const inSet = r => !roomSet || roomSet.has(r);
         const { slots, list } = roomData;
-        const res = list.filter(r => r.iso === iso && (!room || r.room === room))
+        const res = list.filter(r => r.iso === iso && inSet(r.room))
             .map(r => ({ ...r, kind: '예약', src: r }));
-        const cls = withClass ? roomClassUsage(iso).filter(c => !room || c.room === room).map(c => {
+        const cls = withClass ? roomClassUsage(iso).filter(c => inSet(c.room)).map(c => {
             const idx = slots.indexOf(c.slot);
             return { iso, start: idx, end: idx, room: c.room, who: c.teacher, target: '', purpose: c.text.split(' ')[0], kind: '수업' };
         }).filter(c => c.start >= 0) : [];
@@ -14174,23 +14202,32 @@ window.SENIOR_PROCTOR_DATA = {
 
     function printRoomUsage() {
         const range = document.getElementById('rpRange').value;
-        const room = document.getElementById('rpRoom').value;
         const format = document.getElementById('rpFormat').value;
         const withClass = document.getElementById('rpClass').checked;
         const { slots, rooms } = roomData;
+        const picked = [...document.querySelectorAll('#rpRooms input:checked')].map(cb => cb.value);
+        if (!picked.length) { showToast('출력할 장소를 하나 이상 체크해 주세요'); return; }
+        const roomSet = new Set(picked);
         const isos = range === 'day' ? [roomSelectedIso] : roomWeekDates().map(toIsoDate);
         const esc = libEsc;
         const slotName = i => slots[i] ? slots[i].replace(/\s*\(.*\)/, '') : '';
         const span = e => e.start === e.end ? slotName(e.start) : `${slotName(e.start)}~${slotName(e.end)}`;
         const dLabel = iso => `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}(${WEEKDAY_NAMES[ccfDateFromIso(iso).getDay()]})`;
         const periodLabel = isos.length === 1 ? dLabel(isos[0]) : `${dLabel(isos[0])} ~ ${dLabel(isos[isos.length - 1])}`;
-        const title = `${room || '특별실·장소'} ${format === 'grid' && room && isos.length > 1 ? '주간 사용표' : '사용 현황'}`;
+        const roomsLabel = picked.length === 1 ? picked[0] : picked.length === rooms.length ? '특별실·장소' : `장소 ${picked.length}곳`;
+        const weeklySheets = format === 'grid' && isos.length > 1; // 장소마다 한 장씩
+        const title = weeklySheets ? `${roomsLabel} 주간 사용표` : `${roomsLabel} 사용 현황`;
+        const cellHtml = (hit, showRoom) => {
+            if (!hit.length) return '<td></td>';
+            const cls = hit.length > 1 || hit.some(e => e.clash) ? 'clash' : hit[0].kind === '수업' ? 'cls' : 'bk';
+            return `<td class="${cls}">${hit.map(e => `<b>${esc(e.kind === '수업' ? '수업 · ' + e.who : e.who)}</b><small>${esc([showRoom ? e.room : '', e.target, e.purpose].filter(Boolean).join(' · '))}</small>`).join('<hr>')}</td>`;
+        };
         let body = '';
         let landscape = false;
 
         if (format === 'list') {
             body = isos.map(iso => {
-                const items = roomEntriesOn(iso, room, withClass);
+                const items = roomEntriesOn(iso, roomSet, withClass);
                 const rows = items.length ? items.map(e => `<tr class="${e.clash ? 'clash' : ''}${e.kind === '수업' ? ' cls' : ''}">
                     <td class="t">${esc(span(e))}</td><td><b>${esc(e.room)}</b></td><td>${esc(e.who)}</td>
                     <td>${esc(e.target)}</td><td class="l">${esc(e.purpose)}</td>
@@ -14200,34 +14237,26 @@ window.SENIOR_PROCTOR_DATA = {
                     <table><colgroup><col style="width:15%"><col style="width:14%"><col style="width:13%"><col style="width:16%"><col style="width:28%"><col style="width:14%"></colgroup>
                     <thead><tr><th>시간</th><th>장소</th><th>사용 교사</th><th>대상</th><th>사용 목적</th><th>비고</th></tr></thead><tbody>${rows}</tbody></table></section>`;
             }).join('');
-        } else if (room) {
-            // 장소 하나: 시간대 × 날짜
-            const byDay = isos.map(iso => roomEntriesOn(iso, room, withClass));
-            body = `<table class="grid"><thead><tr><th class="s">시간</th>${isos.map(iso => `<th>${dLabel(iso)}</th>`).join('')}</tr></thead><tbody>
-                ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${byDay.map(items => {
-                    const hit = items.filter(e => si >= e.start && si <= e.end);
-                    if (!hit.length) return '<td></td>';
-                    const cls = hit.length > 1 || hit.some(e => e.clash) ? 'clash' : hit[0].kind === '수업' ? 'cls' : 'bk';
-                    return `<td class="${cls}">${hit.map(e => `<b>${esc(e.kind === '수업' ? '수업 · ' + e.who : e.who)}</b><small>${esc([e.target, e.purpose].filter(Boolean).join(' · '))}</small>`).join('<hr>')}</td>`;
-                }).join('')}</tr>`).join('')}
-            </tbody></table>`;
-        } else {
-            // 전체 장소: 날짜마다 시간대 × 장소 (사용한 장소만)
-            landscape = true;
-            body = isos.map(iso => {
-                const items = roomEntriesOn(iso, '', withClass);
-                const used = rooms.filter(r => items.some(e => e.room === r));
-                if (!used.length) return `<section><h2>${dLabel(iso)}</h2><div class="none-box">사용 없음</div></section>`;
-                return `<section><h2>${dLabel(iso)} <span>${items.filter(e => e.kind === '예약').length}건 예약</span></h2>
-                    <table class="grid"><thead><tr><th class="s">시간</th>${used.map(r => `<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>
-                    ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${used.map(r => {
-                        const hit = items.filter(e => e.room === r && si >= e.start && si <= e.end);
-                        if (!hit.length) return '<td></td>';
-                        const cls = hit.length > 1 || hit.some(e => e.clash) ? 'clash' : hit[0].kind === '수업' ? 'cls' : 'bk';
-                        return `<td class="${cls}">${hit.map(e => `<b>${esc(e.kind === '수업' ? '수업 · ' + e.who : e.who)}</b><small>${esc(e.purpose)}</small>`).join('<hr>')}</td>`;
-                    }).join('')}</tr>`).join('')}
+        } else if (weeklySheets) {
+            // 체크한 장소마다 한 장: 시간대 × 요일 (문 앞 부착용)
+            body = picked.map((room, ri) => {
+                const one = new Set([room]);
+                const byDay = isos.map(iso => roomEntriesOn(iso, one, withClass));
+                return `<section class="room-sheet${ri ? ' page' : ''}"><h2>🚪 ${esc(room)} <span>${esc(periodLabel)}</span></h2>
+                    <table class="grid"><thead><tr><th class="s">시간</th>${isos.map(iso => `<th>${dLabel(iso)}</th>`).join('')}</tr></thead><tbody>
+                    ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${byDay.map(items => cellHtml(items.filter(e => si >= e.start && si <= e.end), false)).join('')}</tr>`).join('')}
                     </tbody></table></section>`;
             }).join('');
+        } else {
+            // 하루: 시간대 × 체크한 장소
+            const iso = isos[0];
+            const items = roomEntriesOn(iso, roomSet, withClass);
+            const cols = rooms.filter(r => roomSet.has(r));
+            landscape = cols.length > 5;
+            body = `<section><h2>${dLabel(iso)} <span>${items.filter(e => e.kind === '예약').length}건 예약</span></h2>
+                <table class="grid"><thead><tr><th class="s">시간</th>${cols.map(r => `<th>${esc(r)}</th>`).join('')}</tr></thead><tbody>
+                ${slots.map((s, si) => `<tr><td class="s">${esc(slotName(si))}</td>${cols.map(r => cellHtml(items.filter(e => e.room === r && si >= e.start && si <= e.end), false)).join('')}</tr>`).join('')}
+                </tbody></table></section>`;
         }
 
         const now = new Date();
@@ -14242,6 +14271,8 @@ window.SENIOR_PROCTOR_DATA = {
   .meta { font-size: 9pt; color: #555; text-align: right; line-height: 1.5; }
   section { margin-bottom: 12px; break-inside: avoid; }
   h2 { font-size: 12.5pt; margin: 0 0 4px; }
+  section.page { break-before: page; }
+  section.room-sheet h2 { font-size: 17pt; margin: 4px 0 8px; }
   h2 span { font-size: 9pt; font-weight: normal; color: #555; margin-left: 6px; }
   table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 10.5pt; }
   th { background: #fff1e6; font-size: 9.5pt; padding: 5px 3px; border: 1px solid #9aa4b2; }
