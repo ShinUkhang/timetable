@@ -2250,10 +2250,6 @@
 
         <div id="todayAutoSubBanner" style="display:none;"></div>
 
-        <!-- ⭐ 오늘(현재) 지도 당번 즉시 보기 배너 (안 눌러도 자동 표시) -->
-        <div id="todayAutoDutyBanner" class="today-auto-duty-banner">
-            <!-- JS로 오늘 당번 즉시 렌더링 -->
-        </div>
 
 
         <!-- 교사 본인 지도 당번 알림 배너 (등교/급식/야자) -->
@@ -15786,7 +15782,7 @@ window.SENIOR_PROCTOR_DATA = {
         return;
     }
 
-    // 앱 접속 시 안 눌러도 자동으로 보이는 오늘 당번 배너 렌더링
+    // 오늘 당번 배너 렌더링 (아래 야자감독 주간 위젯과 내용이 겹쳐 화면에서 뺌 — 요소가 없으면 아무것도 하지 않음)
     function renderTodayAutoBanner() {
         const banner = document.getElementById('todayAutoDutyBanner');
         if (!banner) return;
