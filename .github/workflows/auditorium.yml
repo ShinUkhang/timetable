@@ -1,0 +1,39 @@
+# 강당앱(paiwha-auditorium.vercel.app) 예약을 15분마다 받아 auditorium-data 브랜치에 저장한다.
+# 강당앱 API는 다른 사이트에서 직접 읽을 수 없어서(CORS) 이렇게 중계한다.
+# 앱은 raw.githubusercontent.com/.../auditorium-data/auditorium.json 을 읽는다.
+name: 강당 예약 수집
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/auditorium.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auditorium
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 강당 예약 받기
+        run: |
+          mkdir out
+          curl -sfL --retry 3 https://paiwha-auditorium.vercel.app/api/events -o out/auditorium.json
+          node -e "const a=JSON.parse(require('fs').readFileSync('out/auditorium.json','utf8')); if(!Array.isArray(a)) process.exit(1); console.log(a.length+'건')"
+      - name: auditorium-data 브랜치에 올리기
+        run: |
+          cd out
+          git init -q -b auditorium-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add auditorium.json
+          git commit -q -m "강당 예약 $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" auditorium-data

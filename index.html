@@ -1807,6 +1807,12 @@
     .room-chip b { display: block; font-size: 12px; color: #7c2d12; }
     .room-chip span { display: block; font-size: 10px; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; margin: 0 auto; }
     .room-chip.cls b { color: var(--gray-700); }
+    .room-chip.aud b { color: #7c3aed; }
+    .room-chip.fixed b { color: var(--gray-600); }
+    .room-chip.fixed span { font-style: italic; }
+    .room-aud-link { display: block; font-size: 10px; font-weight: 600; color: #7c3aed; text-decoration: none; margin-top: 1px; }
+    .room-aud-note { font-size: 11.5px; color: var(--gray-600); line-height: 1.5; padding: 8px 2px 0; }
+    .room-aud-note a { color: #7c3aed; font-weight: 700; }
     .room-chip + .room-chip { margin-top: 3px; padding-top: 3px; border-top: 1px dashed #f87171; }
     .room-item { display: grid; grid-template-columns: auto auto 1fr; gap: 8px; align-items: center; padding: 8px 4px; border-bottom: 1px dashed var(--gray-200); font-size: 13px; }
     .room-item:last-child { border-bottom: none; }
@@ -14004,6 +14010,71 @@ window.SENIOR_PROCTOR_DATA = {
     let roomWeekOffset = 0;
     let roomSelectedIso = null;
 
+    // ----- 강당: 강당앱(별도 예약 시스템)에서 가져와 함께 표시 -----
+    const AUD_ROOM = '강당';
+    const AUD_APP_URL = 'https://paiwha-auditorium.vercel.app/';
+    // 강당앱 API는 CORS가 막혀 있어 GitHub Actions(auditorium.yml)가 15분마다 복사해 둔 파일을 읽는다
+    const AUD_JSON_URL = 'https://raw.githubusercontent.com/ShinUkhang/timetable/auditorium-data/auditorium.json';
+    // 기관별 고정 사용 (학기 중 예배 시간) — 요일: [시작 시간대, 끝 시간대, 기관]
+    const AUD_FIXED = { 2: ['아침', '4교시', '배화여중'], 3: ['아침', '4교시', '배화여고'], 4: ['아침', '7교시', '배화여대'] };
+    // 고정 사용을 표시하지 않는 기간 (방학) — MM-DD 범위
+    const AUD_FIXED_OFF = [['01-01', '02-28'], ['07-20', '08-16'], ['12-24', '12-31']];
+    let audUpdatedOk = false;
+
+    // 시간대 이름 → [시작분, 끝분) (쉬는 시간은 앞 교시에 포함)
+    function roomSlotRange(name) {
+        const P = { '아침': [0, 500], '1교시': [500, 560], '2교시': [560, 620], '3교시': [620, 680], '4교시': [680, 730],
+            '점심': [730, 790], '5교시': [790, 850], '6교시': [850, 910], '7교시': [910, 960], '방과후': [960, 1080], '야간': [1080, 1440] };
+        const key = Object.keys(P).find(k => name.startsWith(k));
+        return key ? P[key] : null;
+    }
+    function roomSlotSpan(slots, fromMin, toMin) {
+        const idx = slots.map((s, i) => [i, roomSlotRange(s)]).filter(([, r]) => r && fromMin < r[1] && toMin > r[0]).map(([i]) => i);
+        return idx.length ? [idx[0], idx[idx.length - 1]] : null;
+    }
+
+    async function fetchAuditoriumEntries(slots) {
+        let events = [];
+        try {
+            const res = await fetch(`${AUD_JSON_URL}?t=${Date.now()}`);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            events = await res.json();
+            audUpdatedOk = true;
+        } catch (e) {
+            console.warn('강당 예약 불러오기 실패:', e.message);
+            audUpdatedOk = false;
+        }
+        const toMin = s => { const m = String(s).match(/T(\d{2}):(\d{2})/); return m ? +m[1] * 60 + +m[2] : null; };
+        const out = [];
+        (Array.isArray(events) ? events : []).forEach(ev => {
+            const iso = String(ev.start || '').slice(0, 10);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+            const endIso = String(ev.end || ev.start).slice(0, 10);
+            const s = toMin(ev.start) ?? 480, e = endIso > iso ? 1440 : (toMin(ev.end) ?? 1440);
+            const span = roomSlotSpan(slots, s, Math.max(e, s + 1));
+            if (!span) return;
+            const p = ev.extendedProps || {};
+            out.push({ iso, start: span[0], end: span[1], room: AUD_ROOM, src: 'aud',
+                who: p.contact || p.institution || '', target: p.institution || '',
+                purpose: `${ev.title || ''}${p.time ? ` (${p.time})` : ''}` });
+        });
+        // 고정 사용: 오늘 기준 앞뒤 기간의 평일에 생성
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        for (let i = -60; i <= 200; i++) {
+            const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+            const fx = AUD_FIXED[d.getDay()];
+            if (!fx || !getEffectiveDayStr(d)) continue;
+            const iso = toIsoDate(d), md = iso.slice(5);
+            if (AUD_FIXED_OFF.some(([a, b]) => md >= a && md <= b)) continue;
+            const a = slots.findIndex(x => x.startsWith(fx[0])), b = slots.findIndex(x => x.startsWith(fx[1]));
+            if (a < 0 || b < 0) continue;
+            // 그날 강당앱에 다른 예약이 겹치면 그 예약이 우선 (고정 표시는 생략)
+            if (out.some(o => o.src === 'aud' && o.iso === iso && o.start <= b && a <= o.end)) continue;
+            out.push({ iso, start: a, end: b, room: AUD_ROOM, src: 'fixed', who: fx[2], target: fx[2], purpose: '기관 고정 사용 (예배)' });
+        }
+        return out;
+    }
+
     async function fetchRoomData(manual) {
         const url = gid => `https://docs.google.com/spreadsheets/d/${ROOM_SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
         try {
@@ -14025,7 +14096,9 @@ window.SENIOR_PROCTOR_DATA = {
                     room: r[3], who: r[4] || '', target: r[5] || '', purpose: r[6] || ''
                 };
             }).filter(Boolean);
-            roomData = { rooms: rooms.length ? rooms : ['사랑방', '믿음방', '소망방', '학습카페', '설렘온'], slots: slotList, list };
+            const roomNames = (rooms.length ? rooms : ['사랑방', '믿음방', '소망방', '학습카페', '설렘온']).filter(r => r !== AUD_ROOM);
+            const aud = await fetchAuditoriumEntries(slotList);
+            roomData = { rooms: [AUD_ROOM, ...roomNames], slots: slotList, list: [...list.filter(r => r.room !== AUD_ROOM), ...aud] };
             if (manual) showToast('🚪 장소 예약을 새로 불러왔습니다');
         } catch (e) {
             console.warn('장소 예약 시트 불러오기 실패:', e.message);
@@ -14081,7 +14154,7 @@ window.SENIOR_PROCTOR_DATA = {
 
         // 겹침: 같은 날·장소에서 시간이 겹치는 예약, 또는 정규 수업과 겹치는 예약
         const conflicts = [];
-        const weekList = list.filter(r => weekIsos.includes(r.iso));
+        const weekList = list.filter(r => weekIsos.includes(r.iso) && r.src !== 'fixed');
         weekList.forEach((a, i) => {
             weekList.slice(i + 1).forEach(b => {
                 if (a.iso === b.iso && a.room === b.room && a.start <= b.end && b.start <= a.end) conflicts.push({ a, b });
@@ -14100,7 +14173,7 @@ window.SENIOR_PROCTOR_DATA = {
             `${md(weekIsos[0])} ~ ${md(weekIsos[4])}${roomWeekOffset === 0 ? ' · 이번 주' : ''}`;
         document.getElementById('roomDayChips').innerHTML = week.map((d, i) => {
             const iso = weekIsos[i];
-            const n = list.filter(r => r.iso === iso).length;
+            const n = list.filter(r => r.iso === iso && r.src !== 'fixed').length;
             return `<button class="room-day${iso === roomSelectedIso ? ' active' : ''}${iso === todayIso ? ' today' : ''}" onclick="roomSelectedIso='${iso}'; renderRoomTab();">
                 ${days[i]}<small>${md(iso)}</small>${n ? `<i>${n}</i>` : ''}</button>`;
         }).join('');
@@ -14111,7 +14184,7 @@ window.SENIOR_PROCTOR_DATA = {
         const classUse = roomClassUsage(iso);
         const usedRooms = new Set([...dayList.map(r => r.room), ...classUse.map(c => c.room)]);
         const shownRooms = [...rooms.filter(r => usedRooms.has(r)), ...rooms.filter(r => !usedRooms.has(r))];
-        let table = `<table class="room-table"><thead><tr><th class="room-slot">시간</th>${shownRooms.map(r => `<th${usedRooms.has(r) ? '' : ' class="idle"'}>${libEsc(r)}</th>`).join('')}</tr></thead><tbody>`;
+        let table = `<table class="room-table"><thead><tr><th class="room-slot">시간</th>${shownRooms.map(r => `<th${usedRooms.has(r) ? '' : ' class="idle"'}>${libEsc(r)}${r === AUD_ROOM ? `<a class="room-aud-link" href="${AUD_APP_URL}" target="_blank" rel="noopener">강당앱 ↗</a>` : ''}</th>`).join('')}</tr></thead><tbody>`;
         slots.forEach((s, si) => {
             table += `<tr><td class="room-slot">${libEsc(slotName(si))}</td>`;
             shownRooms.forEach(room => {
@@ -14119,8 +14192,8 @@ window.SENIOR_PROCTOR_DATA = {
                 const cls = classUse.filter(c => c.room === room && c.slot === s);
                 const clash = res.length + cls.length > 1;
                 if (!res.length && !cls.length) { table += '<td class="free"></td>'; return; }
-                table += `<td class="${clash ? 'clash' : res.length ? 'booked' : 'class'}">
-                    ${res.map(r => `<div class="room-chip"><b>${libEsc(r.who || '예약')}</b>${r.purpose ? `<span>${libEsc(r.purpose)}</span>` : ''}</div>`).join('')}
+                table += `<td class="${clash ? 'clash' : res.length ? (res.every(r => r.src === 'fixed') ? 'class' : 'booked') : 'class'}">
+                    ${res.map(r => `<div class="room-chip${r.src ? ' ' + r.src : ''}"><b>${libEsc(r.who || '예약')}</b>${r.purpose ? `<span>${libEsc(r.purpose)}</span>` : ''}</div>`).join('')}
                     ${cls.map(c => `<div class="room-chip cls"><b>수업</b><span>${libEsc(c.teacher)} ${libEsc(c.text.split(' ')[0])}</span></div>`).join('')}
                 </td>`;
             });
@@ -14147,6 +14220,8 @@ window.SENIOR_PROCTOR_DATA = {
                 <div class="room-card-head"><b>${md(iso)}(${WEEKDAY_NAMES[ccfDateFromIso(iso).getDay()]}) 장소 사용 현황</b>
                     <span class="room-legend"><i class="lg-b"></i>예약 <i class="lg-c"></i>정규 수업 <i class="lg-x"></i>겹침</span></div>
                 <div class="room-table-wrap">${table}</div>
+                <div class="room-aud-note">🎭 <b>강당</b>은 <a href="${AUD_APP_URL}" target="_blank" rel="noopener">강당앱</a> 예약을 그대로 보여 줍니다 (15분마다 갱신, 예약·변경은 강당앱에서).
+                    고정: 화 오전 배화여중 · 수 오전 배화여고 · 목 전일 배화여대${audUpdatedOk ? '' : ' · <span style="color:#dc2626;">⚠️ 강당앱 예약을 불러오지 못했습니다</span>'}</div>
             </div>
             <div class="m-card room-card">
                 <div class="room-card-head"><b>📋 이번 주 예약 목록</b><span>${weekList.length}건</span></div>
@@ -14160,7 +14235,7 @@ window.SENIOR_PROCTOR_DATA = {
         const isos = roomWeekDates().map(toIsoDate);
         const count = {};
         isos.forEach(iso => {
-            roomData.list.filter(r => r.iso === iso).forEach(r => { count[r.room] = (count[r.room] || 0) + 1; });
+            roomData.list.filter(r => r.iso === iso && r.src !== 'fixed').forEach(r => { count[r.room] = (count[r.room] || 0) + 1; });
             roomClassUsage(iso).forEach(c => { count[c.room] = (count[c.room] || 0) + 1; });
         });
         return count;
@@ -14186,7 +14261,7 @@ window.SENIOR_PROCTOR_DATA = {
         const inSet = r => !roomSet || roomSet.has(r);
         const { slots, list } = roomData;
         const res = list.filter(r => r.iso === iso && inSet(r.room))
-            .map(r => ({ ...r, kind: '예약', src: r }));
+            .map(r => ({ ...r, kind: '예약', ref: r }));
         const cls = withClass ? roomClassUsage(iso).filter(c => inSet(c.room)).map(c => {
             const idx = slots.indexOf(c.slot);
             return { iso, start: idx, end: idx, room: c.room, who: c.teacher, target: '', purpose: c.text.split(' ')[0], kind: '수업' };
@@ -14195,7 +14270,7 @@ window.SENIOR_PROCTOR_DATA = {
         const allRes = list.filter(r => r.iso === iso);
         const allCls = roomClassUsage(iso).map(c => ({ room: c.room, idx: slots.indexOf(c.slot) }));
         const clash = e => e.kind === '예약' && (
-            allRes.some(o => o !== e.src && o.room === e.room && o.start <= e.end && e.start <= o.end) ||
+            allRes.some(o => o !== e.ref && o.room === e.room && o.start <= e.end && e.start <= o.end) ||
             allCls.some(c => c.room === e.room && c.idx >= e.start && c.idx <= e.end));
         return [...res, ...cls].map(e => ({ ...e, clash: clash(e) })).sort((a, b) => a.start - b.start || a.room.localeCompare(b.room, 'ko'));
     }
@@ -14231,7 +14306,7 @@ window.SENIOR_PROCTOR_DATA = {
                 const rows = items.length ? items.map(e => `<tr class="${e.clash ? 'clash' : ''}${e.kind === '수업' ? ' cls' : ''}">
                     <td class="t">${esc(span(e))}</td><td><b>${esc(e.room)}</b></td><td>${esc(e.who)}</td>
                     <td>${esc(e.target)}</td><td class="l">${esc(e.purpose)}</td>
-                    <td>${e.kind === '수업' ? '정규 수업' : e.clash ? '⚠️ 겹침' : ''}</td></tr>`).join('')
+                    <td>${e.kind === '수업' ? '정규 수업' : e.clash ? '⚠️ 겹침' : e.src === 'aud' ? '강당앱' : e.src === 'fixed' ? '고정' : ''}</td></tr>`).join('')
                     : '<tr><td colspan="6" class="none">사용 없음</td></tr>';
                 return `<section><h2>${dLabel(iso)} <span>${items.filter(e => e.kind === '예약').length}건 예약</span></h2>
                     <table><colgroup><col style="width:15%"><col style="width:14%"><col style="width:13%"><col style="width:16%"><col style="width:28%"><col style="width:14%"></colgroup>
