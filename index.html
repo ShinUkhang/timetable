@@ -1770,6 +1770,51 @@
     .more-item.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
     .more-item .mi-badge { position: absolute; top: 6px; right: 6px; background: #e11d48; color: white; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 2px 6px; }
 
+    /* ================= 특별실·장소 사용 예약 ================= */
+    .room-hero { border-radius: 18px; padding: 16px; margin-bottom: 12px; color: white; background: linear-gradient(135deg, #7c2d12 0%, #c2410c 55%, #f59e0b 100%); box-shadow: 0 10px 24px rgba(194, 65, 12, 0.25); }
+    .room-hero-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+    .room-hero-sub { font-size: 12.5px; opacity: 0.93; line-height: 1.5; margin-top: 4px; }
+    .room-hero-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .room-btn { font-size: 12.5px; font-weight: 800; color: white; text-decoration: none; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.4); border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+    .room-btn.primary { background: white; color: #c2410c; border-color: white; }
+    .room-week { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .room-arrow { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gray-300); background: white; font-size: 18px; font-weight: 800; cursor: pointer; }
+    .room-week-label { flex: 1; height: 36px; border-radius: 10px; border: 1px solid var(--gray-300); background: white; font-size: 13.5px; font-weight: 800; color: var(--gray-800); cursor: pointer; }
+    .room-days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 12px; }
+    .room-day { position: relative; border: 1px solid #fed7aa; background: white; border-radius: 10px; padding: 6px 0; font-size: 13px; font-weight: 800; color: var(--gray-700); cursor: pointer; line-height: 1.2; }
+    .room-day small { display: block; font-size: 10px; font-weight: 600; color: var(--gray-600); }
+    .room-day i { position: absolute; top: -6px; right: -4px; font-style: normal; font-size: 10px; font-weight: 800; background: #c2410c; color: white; border-radius: 999px; padding: 1px 6px; }
+    .room-day.today { border-color: #c2410c; color: #c2410c; }
+    .room-day.active { background: #c2410c; border-color: #c2410c; color: white; }
+    .room-day.active small { color: rgba(255,255,255,0.85); }
+    .room-alert { background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239; border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; font-size: 12.5px; line-height: 1.6; }
+    .room-alert b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+    .room-card { padding: 12px; }
+    .room-card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 14px; color: var(--gray-800); }
+    .room-card-head span { font-size: 11.5px; color: var(--gray-600); }
+    .room-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 3px 0 6px; vertical-align: -1px; }
+    .lg-b { background: #fed7aa; } .lg-c { background: #e2e8f0; } .lg-x { background: #fecaca; }
+    .room-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--gray-200); border-radius: 10px; }
+    .room-table { border-collapse: collapse; min-width: 100%; font-size: 12px; }
+    .room-table th, .room-table td { border: 1px solid var(--gray-200); padding: 4px; min-width: 76px; height: 34px; vertical-align: middle; text-align: center; }
+    .room-table th { background: #fff7ed; color: #9a3412; font-weight: 800; white-space: nowrap; position: sticky; top: 0; }
+    .room-table th.idle { color: var(--gray-500); background: var(--gray-50); }
+    .room-table .room-slot { position: sticky; left: 0; z-index: 1; background: #fff7ed; font-weight: 800; color: #9a3412; min-width: 54px; white-space: nowrap; }
+    .room-table td.booked { background: #ffedd5; }
+    .room-table td.class { background: #f1f5f9; }
+    .room-table td.clash { background: #fecaca; box-shadow: inset 0 0 0 2px #dc2626; }
+    .room-chip { line-height: 1.25; }
+    .room-chip b { display: block; font-size: 12px; color: #7c2d12; }
+    .room-chip span { display: block; font-size: 10px; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; margin: 0 auto; }
+    .room-chip.cls b { color: var(--gray-700); }
+    .room-chip + .room-chip { margin-top: 3px; padding-top: 3px; border-top: 1px dashed #f87171; }
+    .room-item { display: grid; grid-template-columns: auto auto 1fr; gap: 8px; align-items: center; padding: 8px 4px; border-bottom: 1px dashed var(--gray-200); font-size: 13px; }
+    .room-item:last-child { border-bottom: none; }
+    .room-item .when { font-weight: 800; color: #9a3412; white-space: nowrap; }
+    .room-item .where { font-weight: 800; background: #fff7ed; color: #c2410c; border-radius: 6px; padding: 1px 7px; white-space: nowrap; }
+    .room-item .who { color: var(--gray-700); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .room-item.clash { background: #fff1f2; border-radius: 8px; }
+
     /* ================= 주간 교육활동 계획 ================= */
     .wkb-banner {
         display: flex; gap: 12px; align-items: stretch; cursor: pointer;
@@ -2673,6 +2718,25 @@
         </div>
     </section>
 
+    <!-- ==================== 특별실·장소 사용 예약 ==================== -->
+    <section id="tab-room" class="tab-content">
+        <div class="room-hero">
+            <div class="room-hero-title">🚪 특별실 · 장소 사용</div>
+            <div class="room-hero-sub">사랑방·믿음방·학습카페 등 사용 예약을 구글 시트에 적으면 모두가 보고 피할 수 있어요. 정규 수업(설렘온·학습카페·교과교실)도 함께 보여 줍니다.</div>
+            <div class="room-hero-actions">
+                <a class="room-btn primary" href="https://docs.google.com/spreadsheets/d/1N9_imxWm46VMlyN_IpJkik_FPxNO1XKycOGmlWUlMxc/edit" target="_blank">✍️ 예약 입력하기 (구글 시트)</a>
+                <button class="room-btn" onclick="fetchRoomData(true)">🔄 새로고침</button>
+            </div>
+        </div>
+        <div class="room-week">
+            <button class="room-arrow" onclick="moveRoomWeek(-1)">‹</button>
+            <button class="room-week-label" id="roomWeekLabel" onclick="moveRoomWeek(0)">이번 주</button>
+            <button class="room-arrow" onclick="moveRoomWeek(1)">›</button>
+        </div>
+        <div class="room-days" id="roomDayChips"></div>
+        <div id="roomBody"><div class="lib-empty">장소 예약을 불러오는 중입니다… ⏳</div></div>
+    </section>
+
     <section id="tab-group" class="tab-content">
         <div class="m-card">
             <div class="m-card-title">👥 공통 공강 시간 계산</div>
@@ -2936,6 +3000,10 @@
     <button class="nav-item" onclick="switchTab('tab-phone', this)">
         <span class="nav-icon">📞</span>
         <span class="nav-label">교직원전화</span>
+    </button>
+    <button id="navItemRoom" class="nav-item nav-secondary" onclick="switchTab('tab-room', this)">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-label">장소예약</span>
     </button>
     <button class="nav-item nav-secondary" onclick="switchTab('tab-group', this)">
         <span class="nav-icon">👥</span>
@@ -12083,6 +12151,8 @@ window.SENIOR_PROCTOR_DATA = {
                 bookDeadlinePanelShown = true;
                 setLibraryPanel('books');
             }
+        } else if (tabId === 'tab-room') {
+            if (roomData) renderRoomTab(); else fetchRoomData();
         } else if (tabId === 'tab-weekplan') {
             if (weekPlans) renderWeekPlan(); else fetchWeekPlan();
         } else if (tabId === 'tab-proctor') {
@@ -13888,6 +13958,165 @@ window.SENIOR_PROCTOR_DATA = {
     }
 
     document.addEventListener('DOMContentLoaded', ccfUpdateBar);
+
+    // ===== 🚪 특별실·장소 사용 예약 (구글 시트 입력 → 앱에서 정규 수업과 함께 보기) =====
+    const ROOM_SHEET_ID = '1N9_imxWm46VMlyN_IpJkik_FPxNO1XKycOGmlWUlMxc';
+    const ROOM_DEFAULT_SLOTS = ['아침 (08:00~08:20)', '1교시', '2교시', '3교시', '4교시', '점심', '5교시', '6교시', '7교시', '방과후 (16:00~18:00)', '야간 (18:00~)'];
+    // 시간표 칸에 적힌 장소 약칭 → 시트의 장소 이름
+    const ROOM_TIMETABLE_ALIAS = { '설렘': '설렘온', '카페': '학습카페', '교과1': '교과교실1', '교과2': '교과교실2' };
+    let roomData = null;        // { rooms: [], slots: [], list: [{ iso, start, end, room, who, target, purpose }] }
+    let roomWeekOffset = 0;
+    let roomSelectedIso = null;
+
+    async function fetchRoomData(manual) {
+        const url = gid => `https://docs.google.com/spreadsheets/d/${ROOM_SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+        try {
+            const [resList, resMeta] = await Promise.all([fetch(url(0)), fetch(url(1))]);
+            if (!resList.ok || !resMeta.ok) throw new Error('HTTP ' + resList.status + '/' + resMeta.status);
+            const rows = parseCsvFull(await resList.text()).map(r => r.map(c => c.trim()));
+            const meta = parseCsvFull(await resMeta.text()).map(r => r.map(c => c.trim()));
+            const rooms = meta.slice(1).map(r => r[0]).filter(Boolean);
+            const slots = meta.slice(1).map(r => r[2]).filter(Boolean);
+            const slotList = slots.length ? slots : ROOM_DEFAULT_SLOTS;
+            const list = rows.slice(1).map(r => {
+                const m = (r[0] || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+                const start = slotList.indexOf(r[1]);
+                if (!m || start < 0 || !r[3]) return null;
+                const endIdx = r[2] ? slotList.indexOf(r[2]) : start;
+                return {
+                    iso: `${m[1]}-${String(m[2]).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`,
+                    start, end: Math.max(start, endIdx < 0 ? start : endIdx),
+                    room: r[3], who: r[4] || '', target: r[5] || '', purpose: r[6] || ''
+                };
+            }).filter(Boolean);
+            roomData = { rooms: rooms.length ? rooms : ['사랑방', '믿음방', '소망방', '학습카페', '설렘온'], slots: slotList, list };
+            if (manual) showToast('🚪 장소 예약을 새로 불러왔습니다');
+        } catch (e) {
+            console.warn('장소 예약 시트 불러오기 실패:', e.message);
+            const body = document.getElementById('roomBody');
+            if (body) body.innerHTML = `<div class="lib-empty">예약 시트를 불러오지 못했습니다.<br><span style="font-size:12px;">시트가 '링크가 있는 사용자'에게 공유되어 있어야 앱에서 보입니다.</span></div>`;
+            return;
+        }
+        renderRoomTab();
+    }
+
+    // 그 날짜의 정규 수업 장소 사용 (시간표 칸의 '설렘', '카페' 등)
+    function roomClassUsage(iso) {
+        const day = getEffectiveDayStr(ccfDateFromIso(iso));
+        if (!day) return [];
+        const pd = window.SENIOR_PROCTOR_DATA;
+        const proctorWeek = pd && iso >= pd.weekStart && iso <= pd.weekEnd; // 고3 이동수업 없는 주간
+        const out = [];
+        for (const t of teachers) {
+            for (let p = 1; p <= 7; p++) {
+                const text = schedule[t]?.[p]?.[day] || '';
+                for (const [alias, room] of Object.entries(ROOM_TIMETABLE_ALIAS)) {
+                    if (!text.split('\n').some(line => line.trim() === alias || line.trim().endsWith(' ' + alias))) continue;
+                    if (proctorWeek && (room === '설렘온' || room === '학습카페')) continue;
+                    out.push({ room, slot: `${p}교시`, teacher: t, text: text.replace(/\n/g, ' ') });
+                }
+            }
+        }
+        return out;
+    }
+
+    function roomWeekDates() {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const mon = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (today.getDay() + 6) % 7 + roomWeekOffset * 7);
+        return [0, 1, 2, 3, 4].map(i => new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i));
+    }
+
+    function moveRoomWeek(delta) {
+        roomWeekOffset = delta === 0 ? 0 : roomWeekOffset + delta;
+        roomSelectedIso = null;
+        renderRoomTab();
+    }
+
+    function renderRoomTab() {
+        const body = document.getElementById('roomBody');
+        if (!body || !roomData) return;
+        const week = roomWeekDates();
+        const todayIso = toIsoDate(new Date());
+        if (!roomSelectedIso || !week.some(d => toIsoDate(d) === roomSelectedIso)) {
+            roomSelectedIso = week.some(d => toIsoDate(d) === todayIso) ? todayIso : toIsoDate(week[0]);
+        }
+        const { rooms, slots, list } = roomData;
+        const weekIsos = week.map(toIsoDate);
+
+        // 겹침: 같은 날·장소에서 시간이 겹치는 예약, 또는 정규 수업과 겹치는 예약
+        const conflicts = [];
+        const weekList = list.filter(r => weekIsos.includes(r.iso));
+        weekList.forEach((a, i) => {
+            weekList.slice(i + 1).forEach(b => {
+                if (a.iso === b.iso && a.room === b.room && a.start <= b.end && b.start <= a.end) conflicts.push({ a, b });
+            });
+            roomClassUsage(a.iso).forEach(c => {
+                const idx = slots.indexOf(c.slot);
+                if (c.room === a.room && idx >= a.start && idx <= a.end) conflicts.push({ a, cls: c });
+            });
+        });
+        const isConflict = r => conflicts.some(c => c.a === r || c.b === r);
+        const slotName = i => slots[i] ? slots[i].replace(/\s*\(.*\)/, '') : '';
+        const range = r => r.start === r.end ? slotName(r.start) : `${slotName(r.start)}~${slotName(r.end)}`;
+        const md = iso => `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}`;
+
+        document.getElementById('roomWeekLabel').textContent =
+            `${md(weekIsos[0])} ~ ${md(weekIsos[4])}${roomWeekOffset === 0 ? ' · 이번 주' : ''}`;
+        document.getElementById('roomDayChips').innerHTML = week.map((d, i) => {
+            const iso = weekIsos[i];
+            const n = list.filter(r => r.iso === iso).length;
+            return `<button class="room-day${iso === roomSelectedIso ? ' active' : ''}${iso === todayIso ? ' today' : ''}" onclick="roomSelectedIso='${iso}'; renderRoomTab();">
+                ${days[i]}<small>${md(iso)}</small>${n ? `<i>${n}</i>` : ''}</button>`;
+        }).join('');
+
+        // 선택한 날의 장소 × 시간대 표
+        const iso = roomSelectedIso;
+        const dayList = list.filter(r => r.iso === iso);
+        const classUse = roomClassUsage(iso);
+        const usedRooms = new Set([...dayList.map(r => r.room), ...classUse.map(c => c.room)]);
+        const shownRooms = [...rooms.filter(r => usedRooms.has(r)), ...rooms.filter(r => !usedRooms.has(r))];
+        let table = `<table class="room-table"><thead><tr><th class="room-slot">시간</th>${shownRooms.map(r => `<th${usedRooms.has(r) ? '' : ' class="idle"'}>${libEsc(r)}</th>`).join('')}</tr></thead><tbody>`;
+        slots.forEach((s, si) => {
+            table += `<tr><td class="room-slot">${libEsc(slotName(si))}</td>`;
+            shownRooms.forEach(room => {
+                const res = dayList.filter(r => r.room === room && si >= r.start && si <= r.end);
+                const cls = classUse.filter(c => c.room === room && c.slot === s);
+                const clash = res.length + cls.length > 1;
+                if (!res.length && !cls.length) { table += '<td class="free"></td>'; return; }
+                table += `<td class="${clash ? 'clash' : res.length ? 'booked' : 'class'}">
+                    ${res.map(r => `<div class="room-chip"><b>${libEsc(r.who || '예약')}</b>${r.purpose ? `<span>${libEsc(r.purpose)}</span>` : ''}</div>`).join('')}
+                    ${cls.map(c => `<div class="room-chip cls"><b>수업</b><span>${libEsc(c.teacher)} ${libEsc(c.text.split(' ')[0])}</span></div>`).join('')}
+                </td>`;
+            });
+            table += '</tr>';
+        });
+        table += '</tbody></table>';
+
+        // 이번 주 겹침 경고
+        const conflictHtml = conflicts.length ? `<div class="room-alert"><b>⚠️ 이번 주 겹치는 예약 ${conflicts.length}건</b>
+            ${conflicts.map(c => `<div>${md(c.a.iso)}(${WEEKDAY_NAMES[ccfDateFromIso(c.a.iso).getDay()]}) ${libEsc(c.a.room)} ${range(c.a)} · ${libEsc(c.a.who)}
+                ${c.b ? `↔ ${libEsc(c.b.who)} (${range(c.b)})` : `↔ 정규 수업 ${libEsc(c.cls.teacher)} ${libEsc(c.cls.slot)}`}</div>`).join('')}</div>` : '';
+
+        // 이번 주 예약 목록
+        const listHtml = weekList.length
+            ? weekList.sort((a, b) => a.iso.localeCompare(b.iso) || a.start - b.start).map(r => `<div class="room-item${isConflict(r) ? ' clash' : ''}">
+                <span class="when">${md(r.iso)}(${WEEKDAY_NAMES[ccfDateFromIso(r.iso).getDay()]}) ${libEsc(range(r))}</span>
+                <span class="where">${libEsc(r.room)}</span>
+                <span class="who">${libEsc(r.who)}${r.target ? ` · ${libEsc(r.target)}` : ''}${r.purpose ? ` · ${libEsc(r.purpose)}` : ''}</span>
+            </div>`).join('')
+            : '<div class="lib-empty" style="padding:14px;">이번 주 예약이 없습니다.</div>';
+
+        body.innerHTML = `${conflictHtml}
+            <div class="m-card room-card">
+                <div class="room-card-head"><b>${md(iso)}(${WEEKDAY_NAMES[ccfDateFromIso(iso).getDay()]}) 장소 사용 현황</b>
+                    <span class="room-legend"><i class="lg-b"></i>예약 <i class="lg-c"></i>정규 수업 <i class="lg-x"></i>겹침</span></div>
+                <div class="room-table-wrap">${table}</div>
+            </div>
+            <div class="m-card room-card">
+                <div class="room-card-head"><b>📋 이번 주 예약 목록</b><span>${weekList.length}건</span></div>
+                ${listHtml}
+            </div>`;
+    }
 
     // ===== 📅 주간 교육활동 계획 (구글 문서, 주마다 탭 하나) =====
     const WEEKPLAN_DOC_ID = '1pcAX_3qfyklDpZLWnaJoMpHXcOps6p7YbUkemwcDrb0';
