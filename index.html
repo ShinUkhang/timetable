@@ -1706,6 +1706,70 @@
         margin-top: 4px;
     }
 
+    /* ================= 홈(내 시간표) 업무 편의 ================= */
+    /* 휴대폰·태블릿: 내 오늘 → 선생님 선택 → 시간표 → 알림·야자 순 */
+    @media (max-width: 1199px) {
+        #tab-my.active { display: flex; flex-direction: column; }
+        #tab-my > #myTodayCard { order: -3; }
+        #tab-my > .layout-first { order: -2; }
+        #tab-my > .layout-main { order: -1; }
+    }
+    @media (min-width: 1200px) {
+        #tab-my.active > #myTodayCard { order: -2; }
+    }
+    .mt-card { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; border-radius: var(--card-radius); padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 6px 16px rgba(26, 54, 93, 0.25); }
+    .mt-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; opacity: 0.92; }
+    .mt-name { font-weight: 800; }
+    .mt-now { margin-top: 6px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .mt-now b { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+    .mt-now.off { font-size: 15px; font-weight: 800; }
+    .mt-now-label { font-size: 13px; font-weight: 800; background: rgba(255,255,255,0.18); border-radius: 999px; padding: 2px 9px; }
+    .mt-next { display: block; font-size: 12.5px; margin-top: 4px; opacity: 0.95; }
+    .mt-next b { color: #fde68a; }
+    .mt-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
+    .mt-cell { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 4px 2px; text-align: center; min-width: 0; }
+    .mt-cell.busy { background: rgba(255,255,255,0.92); color: #1a365d; }
+    .mt-cell.cur { outline: 2.5px solid #fde68a; outline-offset: 1px; }
+    .mt-cell.past { opacity: 0.45; }
+    .mt-p { display: block; font-size: 11px; font-weight: 900; }
+    .mt-t { display: block; font-size: 9.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.9; }
+
+    /* 오늘 결·보강 알림 (한 줄 목록) */
+    .tsb { padding: 10px 12px !important; }
+    .tsb-head { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; font-weight: 800; color: #c53030; margin-bottom: 6px; }
+    .tsb-head b { font-size: 16px; }
+    .tsb-all { background: white; border: 1px solid #feb2b2; color: #c53030; font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; cursor: pointer; }
+    .tsb-list { display: grid; gap: 4px; }
+    .tsb-row { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid #fed7d7; border-radius: 9px; padding: 6px 8px; font-size: 12.5px; min-width: 0; }
+    .tsb-row.mine { border: 1.5px solid #f6ad55; background: #fffaf0; }
+    .tsb-time { flex: none; font-weight: 900; color: var(--primary); background: var(--primary-light); border-radius: 5px; padding: 1px 5px; font-size: 11.5px; }
+    .tsb-class { flex: none; font-weight: 700; color: var(--gray-800); max-width: 34%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tsb-who { flex: none; font-weight: 700; color: var(--gray-700); cursor: pointer; text-decoration: underline dotted; }
+    .tsb-arrow { flex: none; color: var(--gray-500); font-size: 11px; }
+    .tsb-right { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; justify-content: flex-end; white-space: nowrap; overflow: hidden; }
+    .tsb-sub { color: #276749; cursor: pointer; }
+    .tsb-swap { color: #553c9e; font-size: 12px; }
+    .tsb-partner { color: #553c9e; font-weight: 700; cursor: pointer; font-size: 12px; }
+    .tsb-kind { flex: none; font-size: 10.5px; font-weight: 800; border-radius: 4px; padding: 0 5px; }
+    .tsb-kind.sub { background: #c6f6d5; color: #22543d; }
+    .tsb-kind.swap { background: #e9d8fd; color: #553c9e; }
+    .tsb-more { width: 100%; margin-top: 6px; border: none; background: transparent; color: #c53030; font-size: 12px; font-weight: 800; cursor: pointer; padding: 4px; }
+
+    /* 하단 메뉴: 휴대폰·태블릿은 주요 4개 + 더보기 */
+    .nav-more-btn { display: none; }
+    @media (max-width: 1199px) {
+        .bottom-nav .nav-secondary { display: none !important; }
+        .nav-more-btn { display: flex; }
+        .nav-label { font-size: 11px; letter-spacing: -0.3px; }
+        .nav-icon { font-size: 19px; }
+    }
+    .nav-dot { position: absolute; top: 2px; left: 50%; margin-left: 8px; width: 9px; height: 9px; border-radius: 50%; background: #e11d48; box-shadow: 0 0 0 2px white; }
+    .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .more-item { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 6px; border: 1px solid var(--gray-200); border-radius: 14px; background: var(--gray-50); cursor: pointer; font-size: 13px; font-weight: 800; color: var(--gray-800); }
+    .more-item .mi-icon { font-size: 26px; }
+    .more-item.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .more-item .mi-badge { position: absolute; top: 6px; right: 6px; background: #e11d48; color: white; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 2px 6px; }
+
     /* ================= 주간 교육활동 계획 ================= */
     .wkb-banner {
         display: flex; gap: 12px; align-items: stretch; cursor: pointer;
@@ -2176,6 +2240,9 @@
 
     <!-- ==================== 탭 1: 내 시간표 ==================== -->
     <section id="tab-my" class="tab-content active">
+
+        <!-- 👤 내 오늘: 지금·다음 수업과 오늘 교시 한눈에 -->
+        <div id="myTodayCard" class="mt-card" style="display:none;"></div>
 
         <!-- 🔥 오늘 결·보강 실시간 알림 배너 (오늘 결보강 내역이 있으면 최상단 자동 노출) -->
         <!-- 📚 희망도서 신청 마감 임박 배너 (마감 2주 전부터 자동 노출) -->
@@ -2845,16 +2912,16 @@
         <span class="nav-icon">📅</span>
         <span class="nav-label">주간일정</span>
     </button>
-    <button class="nav-item" onclick="switchTab('tab-class', this)">
+    <button class="nav-item nav-secondary" onclick="switchTab('tab-class', this)">
         <span class="nav-icon">🏫</span>
         <span class="nav-label">반별시간표</span>
     </button>
-    <button id="navItemLibrary" class="nav-item" onclick="switchTab('tab-library', this)">
+    <button id="navItemLibrary" class="nav-item nav-secondary" onclick="switchTab('tab-library', this)">
         <span class="nav-badge" id="navLibraryBadge" style="display:none;"></span>
         <span class="nav-icon">📚</span>
         <span class="nav-label">도서관</span>
     </button>
-    <button id="navItemProctor" class="nav-item" onclick="switchTab('tab-proctor', this)" style="display:none;">
+    <button id="navItemProctor" class="nav-item nav-secondary" onclick="switchTab('tab-proctor', this)" style="display:none;">
         <span class="nav-icon">🎓</span>
         <span class="nav-label">3학년임장</span>
     </button>
@@ -2862,11 +2929,11 @@
         <span class="nav-icon">🔄</span>
         <span class="nav-label">결·보강</span>
     </button>
-    <button class="nav-item" onclick="switchTab('tab-lunch', this)">
+    <button class="nav-item nav-secondary" onclick="switchTab('tab-lunch', this)">
         <span class="nav-icon">🍱</span>
         <span class="nav-label">급식·점심</span>
     </button>
-    <button id="navItemEvent" class="nav-item" onclick="switchTab('tab-event', this)">
+    <button id="navItemEvent" class="nav-item nav-secondary" onclick="switchTab('tab-event', this)">
         <span class="nav-icon">⏱️</span>
         <span class="nav-label">행사·단축</span>
     </button>
@@ -2874,11 +2941,28 @@
         <span class="nav-icon">📞</span>
         <span class="nav-label">교직원전화</span>
     </button>
-    <button class="nav-item" onclick="switchTab('tab-group', this)">
+    <button class="nav-item nav-secondary" onclick="switchTab('tab-group', this)">
         <span class="nav-icon">👥</span>
         <span class="nav-label">공강·전체</span>
     </button>
+    <button id="navMoreBtn" class="nav-item nav-more-btn" onclick="openNavMore()">
+        <span class="nav-dot" id="navMoreDot" style="display:none;"></span>
+        <span class="nav-icon">☰</span>
+        <span class="nav-label">더보기</span>
+    </button>
 </nav>
+
+<!-- 더보기 메뉴 (휴대폰·태블릿) -->
+<div id="navMoreModal" class="modal-backdrop" onclick="closeNavMore(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div><h3 class="sheet-title">☰ 더보기</h3><div class="sheet-subtitle">다른 메뉴로 이동</div></div>
+            <button class="sheet-close" onclick="closeNavMore()">✕</button>
+        </div>
+        <div class="more-grid" id="navMoreGrid"></div>
+    </div>
+</div>
 
 <!-- 공문 이미지 크게 보기 모달 -->
 <div id="eventImgModal" class="modal-backdrop" onclick="closeEventImgModal(event)">
@@ -11936,6 +12020,7 @@ window.SENIOR_PROCTOR_DATA = {
             ? btnElem 
             : document.querySelector(`.bottom-nav .nav-item[onclick*='${tabId}']`);
         if (navBtn) navBtn.classList.add('active');
+        updateNavMoreState();
         
         if (tabId === 'tab-phone') {
             if (currentSeatViewMode === 'map') {
@@ -12445,6 +12530,7 @@ window.SENIOR_PROCTOR_DATA = {
         const nav = document.getElementById('navItemLibrary');
         const badge = document.getElementById('navLibraryBadge');
         if (nav) nav.classList.toggle('nav-alert', near);
+        updateNavMoreState();
         if (badge) {
             badge.style.display = near ? '' : 'none';
             badge.textContent = dText;
@@ -12926,10 +13012,92 @@ window.SENIOR_PROCTOR_DATA = {
 
     function onTeacherChange() {
         renderMyTimetable();
+        try { renderTodayAutoSubBanner(); } catch (e) {}
         updateSavedTeacherUI();
     }
 
+    // ===== 하단 더보기 메뉴 (휴대폰·태블릿에서 숨긴 메뉴 모음) =====
+    function visibleSecondaryNavItems() {
+        return [...document.querySelectorAll('.bottom-nav .nav-secondary')].filter(el => el.style.display !== 'none');
+    }
+    function openNavMore() {
+        const grid = document.getElementById('navMoreGrid');
+        grid.innerHTML = '';
+        visibleSecondaryNavItems().forEach(el => {
+            const btn = document.createElement('button');
+            btn.className = 'more-item' + (el.classList.contains('active') ? ' active' : '');
+            const badge = el.querySelector('.nav-badge');
+            btn.innerHTML = `<span class="mi-icon">${el.querySelector('.nav-icon').textContent}</span><span>${el.querySelector('.nav-label').textContent}</span>`
+                + (badge && badge.style.display !== 'none' ? `<span class="mi-badge">${badge.textContent}</span>` : '');
+            btn.onclick = () => { closeNavMore(); el.click(); };
+            grid.appendChild(btn);
+        });
+        document.getElementById('navMoreModal').classList.add('show');
+    }
+    function closeNavMore() {
+        document.getElementById('navMoreModal').classList.remove('show');
+    }
+    // 더보기 버튼: 숨긴 메뉴가 열려 있으면 강조, 숨긴 메뉴에 알림(D-day 등)이 있으면 빨간 점
+    function updateNavMoreState() {
+        const more = document.getElementById('navMoreBtn');
+        if (!more) return;
+        const items = visibleSecondaryNavItems();
+        more.classList.toggle('active', items.some(el => el.classList.contains('active')));
+        const dot = document.getElementById('navMoreDot');
+        if (dot) dot.style.display = items.some(el => el.classList.contains('nav-alert')) ? '' : 'none';
+    }
+
+    // 👤 내 오늘 카드: 지금/다음 수업 + 오늘 1~7교시 (결보강·임장·고정 업무 반영)
+    function renderMyToday() {
+        const card = document.getElementById('myTodayCard');
+        if (!card) return;
+        const t = document.getElementById('myTeacherSelect')?.value;
+        if (!t || !teachers.includes(t) || t === '김동하') { card.style.display = 'none'; return; }
+        const day = getTodayDayStr();
+        const now = new Date();
+        const dateText = `${now.getMonth() + 1}월 ${now.getDate()}일 (${WEEKDAY_NAMES[now.getDay()]})`;
+        card.style.display = 'block';
+        if (!day) {
+            card.innerHTML = `<div class="mt-head"><span class="mt-name">👤 ${t} 선생님</span><span class="mt-date">${dateText}</span></div>
+                <div class="mt-now off">${getScheduleOverride()?.desc || '오늘은 수업이 없는 날입니다'}</div>`;
+            return;
+        }
+        const pc = wpCurrentPeriod();
+        const status = p => {
+            const st = getSeatTeacherStatus(t, day, String(p));
+            return st.isAtDesk ? null : st.statusText;
+        };
+        const periods = [1, 2, 3, 4, 5, 6, 7].map(p => ({ p, text: status(p) }));
+        const curNum = /^\d$/.test(pc.key || '') ? +pc.key : null;
+        const mins = now.getHours() * 60 + now.getMinutes();
+        const inClassTime = curNum && WP_PERIODS.some(([k, s, e]) => k === pc.key && mins >= s && mins < e);
+
+        // 지금 / 다음
+        let nowHtml;
+        if (!pc.key) nowHtml = `<span class="mt-now-label">${pc.label}</span>`;
+        else if (pc.key === 'lunch') nowHtml = `<span class="mt-now-label">🍱 ${pc.label}</span>`;
+        else {
+            const cur = periods.find(x => x.p === curNum);
+            nowHtml = inClassTime
+                ? `<span class="mt-now-label">지금 ${curNum}교시</span><b>${cur.text ? cur.text.replace(/\n/g, ' ') : '공강'}</b>`
+                : `<span class="mt-now-label">${pc.label}</span>`;
+        }
+        const from = curNum ? (inClassTime ? curNum + 1 : curNum) : (pc.key === 'lunch' ? 5 : (mins < 500 ? 1 : 8));
+        const next = periods.find(x => x.p >= from && x.text);
+        const nextHtml = next ? `<span class="mt-next">다음 수업 <b>${next.p}교시 · ${next.text.replace(/\n/g, ' ')}</b></span>` : `<span class="mt-next">오늘 남은 수업 없음 🎉</span>`;
+        const busy = periods.filter(x => x.text).length;
+
+        card.innerHTML = `
+            <div class="mt-head"><span class="mt-name">👤 ${t} 선생님 · 오늘 ${busy}시간</span><span class="mt-date">${dateText}</span></div>
+            <div class="mt-now">${nowHtml}</div>
+            ${nextHtml}
+            <div class="mt-strip">${periods.map(x => `<div class="mt-cell${x.text ? ' busy' : ''}${x.p === curNum && inClassTime ? ' cur' : ''}${curNum && x.p < curNum ? ' past' : ''}">
+                <span class="mt-p">${x.p}</span><span class="mt-t">${x.text ? x.text.split('\n')[0] : '공강'}</span></div>`).join('')}</div>`;
+    }
+    setInterval(() => { try { renderMyToday(); } catch (e) {} }, 60 * 1000);
+
     function renderMyTimetable() {
+        try { renderMyToday(); } catch (e) { console.error('renderMyToday error:', e); }
         const t = document.getElementById('myTeacherSelect').value;
         const titleEl = document.getElementById('myTimetableTitle');
         const table = document.getElementById('myTimetableTable');
@@ -16295,6 +16463,8 @@ window.SENIOR_PROCTOR_DATA = {
         return partner;
     }
 
+    // 오늘 결·보강 알림 (한 줄씩, 내 관련 건 먼저, 3건 넘으면 접기)
+    let todaySubExpanded = false;
     function renderTodayAutoSubBanner() {
         const banner = document.getElementById('todayAutoSubBanner');
         if (!banner) return;
@@ -16313,7 +16483,9 @@ window.SENIOR_PROCTOR_DATA = {
             return item.origDate.includes(`${m}/${d}`) || item.origDate.includes(`${m}.${d}`);
         });
 
-        const todaySubs = sortSubstituteList(rawTodaySubs);
+        const me = document.getElementById('myTeacherSelect')?.value || '';
+        const involves = it => !!me && (it.origTeacher === me || it.subTeacher === me || getSwapPartner(it) === me);
+        const todaySubs = sortSubstituteList(rawTodaySubs).sort((x, y) => involves(y) - involves(x));
 
         if (todaySubs.length === 0) {
             banner.style.display = 'none';
@@ -16321,66 +16493,38 @@ window.SENIOR_PROCTOR_DATA = {
             return;
         }
 
+        const LIMIT = 3;
+        const shown = todaySubExpanded ? todaySubs : todaySubs.slice(0, LIMIT);
+        const go = name => `onclick="event.stopPropagation(); selectTeacherAndGo('${name}')"`;
+        const rows = shown.map(item => {
+            const isSub = item.type === 'substitute';
+            const partner = isSub ? '' : getSwapPartner(item);
+            const right = isSub
+                ? `<b class="tsb-sub" ${go(item.subTeacher)}>${item.subTeacher}</b><span class="tsb-kind sub">보강</span>`
+                : `<b class="tsb-swap">${String(item.newDate || '').replace(/\(.*?\)/, '')} ${item.newTime || ''}</b>${partner ? ` <span class="tsb-partner" ${go(partner)}>↔ ${partner}</span>` : ''}<span class="tsb-kind swap">교환</span>`;
+            return `<div class="tsb-row${involves(item) ? ' mine' : ''}">
+                <span class="tsb-time">${item.origTime}</span>
+                <span class="tsb-class">${item.subjectClass}</span>
+                <span class="tsb-who" ${go(item.origTeacher)}>${item.origTeacher}</span>
+                <span class="tsb-arrow">→</span>
+                <span class="tsb-right">${right}</span>
+            </div>`;
+        }).join('');
+        const more = todaySubs.length - LIMIT;
+
         banner.style.display = 'block';
-        let itemsHtml = '';
-        todaySubs.forEach(item => {
-            const isSub = (item.type === 'substitute');
-            const timeBadge = `<span style="background:var(--primary-light); color:var(--primary); font-weight:800; padding:2px 6px; border-radius:4px; font-size:11px;">⏰ ${item.origTime}</span>`;
-            const classInfo = `<span style="font-weight:bold; color:var(--gray-800); font-size:13px;">${item.subjectClass}</span>`;
-
-            if (isSub) {
-                itemsHtml += `
-                    <div class="today-sub-item">
-                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                            ${timeBadge}
-                            ${classInfo}
-                            <span style="font-size:11px; color:#c53030; font-weight:bold;">(결강)</span>
-                            <button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.origTeacher}')">
-                                <span>👤 ${item.origTeacher}T</span>
-                            </button>
-                            <span style="font-size:11px; color:var(--gray-500);">➔</span>
-                            <button class="sub-teacher-btn sub" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.subTeacher}')">
-                                <span>🟢 ${item.subTeacher}T (보강)</span>
-                            </button>
-                        </div>
-                        ${item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : ''}
-                    </div>
-                `;
-            } else {
-                itemsHtml += `
-                    <div class="today-sub-item">
-                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                            ${timeBadge}
-                            ${classInfo}
-                            <span style="font-size:11px; color:#553c9e; font-weight:bold;">(교환)</span>
-                            <button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${item.origTeacher}')">
-                                <span>👤 ${item.origTeacher}T</span>
-                            </button>
-                            <span style="font-size:11px; color:var(--gray-500);">➔</span>
-                            <span style="font-weight:bold; color:#553c9e; font-size:12px;">${item.newDate} ${item.newTime}</span>
-                            ${getSwapPartner(item) ? `<button class="sub-teacher-btn" style="padding:2px 7px; font-size:11px;" onclick="selectTeacherAndGo('${getSwapPartner(item)}')"><span>↔️ ${getSwapPartner(item)}T와 교환</span></button>` : ''}
-                        </div>
-                        ${item.reason ? `<span class="sub-reason-badge">${item.reason}</span>` : ''}
-                    </div>
-                `;
-            }
-        });
-
-        banner.className = 'today-sub-banner';
+        banner.className = 'today-sub-banner tsb';
         banner.innerHTML = `
-            <div class="today-sub-header">
-                <div class="today-sub-title">
-                    <span>🔔</span>
-                    <span>오늘(${m}/${d}) 결·보강 알림 (총 ${todaySubs.length}건)</span>
-                </div>
-                <button onclick="switchTab('tab-substitute')" style="background:white; border:1px solid #feb2b2; color:#c53030; font-size:11px; font-weight:bold; padding:3px 8px; border-radius:6px; cursor:pointer;">
-                    전체 목록 ➔
-                </button>
+            <div class="tsb-head">
+                <span>🔔 오늘(${m}/${d}) 결·보강 <b>${todaySubs.length}</b>건</span>
+                <button class="tsb-all" onclick="openSubstituteTab()">전체 ›</button>
             </div>
-            <div style="display:flex; flex-direction:column; gap:5px;">
-                ${itemsHtml}
-            </div>
-        `;
+            <div class="tsb-list">${rows}</div>
+            ${more > 0 ? `<button class="tsb-more" onclick="todaySubExpanded = !todaySubExpanded; renderTodayAutoSubBanner();">${todaySubExpanded ? '접기 ▲' : `외 ${more}건 더 보기 ▼`}</button>` : ''}`;
+    }
+
+    function openSubstituteTab() {
+        switchTab('tab-substitute', document.querySelector(".bottom-nav .nav-item[onclick*='tab-substitute']"));
     }
 
     function filterSubstituteDate(dateVal, btnElem) {
