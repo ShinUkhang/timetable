@@ -2000,17 +2000,6 @@
     .lib-stat-num { font-size: 19px; font-weight: 900; line-height: 1.1; }
     .lib-stat-label { font-size: 10.5px; opacity: 0.88; margin-top: 2px; }
 
-    .lib-seg {
-        position: sticky; top: 58px; z-index: 20;
-        display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
-        background: white; border: 1px solid var(--gray-200); border-radius: 14px;
-        padding: 4px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    }
-    .lib-seg-btn {
-        border: none; background: none; border-radius: 10px; padding: 9px 0;
-        font-size: 13px; font-weight: 800; color: var(--gray-600); cursor: pointer;
-    }
-    .lib-seg-btn.active { background: var(--lib); color: white; box-shadow: 0 3px 8px rgba(15,118,110,0.3); }
     .lib-panel { display: none; }
     .lib-panel.active { display: block; animation: fadeIn 0.18s ease-in-out; }
 
@@ -2042,21 +2031,7 @@
     .lib-list-box { max-height: 320px; overflow-y: auto; border: 1px solid var(--gray-200); border-radius: 10px; background: white; }
     .lib-empty { text-align: center; padding: 26px 12px; color: var(--gray-500); font-size: 13px; }
 
-    /* 희망도서 */
-    .book-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 4px; }
-    .book-sum-box { background: var(--paper); border: 1px solid #fde68a; border-radius: 12px; padding: 10px 12px; }
-    .book-sum-num { font-size: 20px; font-weight: 900; color: #92400e; line-height: 1.1; }
-    .book-sum-label { font-size: 11px; color: #a16207; margin-top: 2px; }
-    .book-deadline { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #fff1f2; border: 1px solid #fecdd3; color: #9f1239; border-radius: 12px; padding: 9px 12px; font-size: 12.5px; font-weight: 700; }
-    .book-deadline b { font-size: 15px; }
-    .book-filter-row { margin-top: 10px; }
-    .book-filter-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
-    .book-filter-chip { flex: none; border: 1px solid var(--gray-300); background: white; border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 700; color: var(--gray-700); cursor: pointer; }
-    .book-filter-chip.active { background: var(--lib-dark); border-color: var(--lib-dark); color: white; }
-    .book-list { display: grid; gap: 8px; }
-    .book-item { display: flex; gap: 12px; align-items: flex-start; background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 11px 12px; }
-    .book-spine { flex: none; width: 40px; height: 54px; border-radius: 4px 7px 7px 4px; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 900; color: white; box-shadow: inset 4px 0 0 rgba(0,0,0,0.15), 0 2px 5px rgba(0,0,0,0.12); }
-    /* 희망도서 마감 임박: 하단 탭 강조 + 홈 배너 */
+    /* 하단 탭 배지·강조 */
     .nav-item { position: relative; }
     .nav-badge {
         position: absolute; top: 0; left: 50%; transform: translateX(4px);
@@ -2074,84 +2049,11 @@
     @keyframes navAlertBounce { 0%, 100% { transform: translateY(0); } 15% { transform: translateY(-4px); } 30% { transform: translateY(0); } }
     @keyframes navAlertPulse { 0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.45); } 70% { box-shadow: 0 0 0 8px rgba(20, 184, 166, 0); } 100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); } }
 
-    .book-dl-banner {
-        align-items: center; gap: 10px; cursor: pointer;
-        background: linear-gradient(135deg, #134e4a 0%, #0f766e 60%, #14b8a6 100%);
-        color: white; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px;
-        box-shadow: 0 6px 16px rgba(15, 118, 110, 0.28);
-    }
-    .book-dl-dday { flex: none; background: #fde68a; color: #92400e; font-weight: 900; font-size: 14px; border-radius: 10px; padding: 6px 9px; }
-    .book-dl-text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; line-height: 1.35; }
-    .book-dl-text small { font-size: 11px; opacity: 0.88; }
-    .book-dl-go { flex: none; background: white; color: #0f766e; font-size: 12px; font-weight: 800; text-decoration: none; border-radius: 999px; padding: 6px 11px; }
-    .book-dl-close { flex: none; background: rgba(255,255,255,0.18); border: none; color: white; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 12px; }
-    .book-spine { position: relative; overflow: hidden; }
-    .book-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: white; }
-    .book-rank { display: inline-block; margin-top: 6px; font-size: 11.5px; font-weight: 700; color: #92400e; background: linear-gradient(90deg, #fef3c7, #fde68a); border-radius: 8px; padding: 3px 9px; }
-    .book-rank b { font-size: 13px; color: #b45309; }
-    .book-rank span { font-weight: 600; color: #a16207; font-size: 10.5px; }
-    .book-cat { font-size: 11px; font-weight: 700; color: #5b21b6; background: #ede9fe; border-radius: 999px; padding: 2px 8px; }
-    .area-box { margin-top: 12px; background: #fafaf9; border: 1px solid var(--gray-200); border-radius: 14px; padding: 12px; }
-    .area-box:empty { display: none; }
-    .area-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-    .area-head-sub { font-size: 11px; color: var(--gray-500); }
-    .area-bars { display: grid; gap: 8px; }
-    .area-row { display: grid; grid-template-columns: 112px minmax(0, 1fr) 72px; align-items: center; gap: 8px; }
-    .area-name { font-size: 12.5px; font-weight: 700; color: var(--gray-800); white-space: nowrap; }
-    .area-track { height: 12px; background: var(--gray-200); border-radius: 999px; overflow: hidden; }
-    .area-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
-    .area-num { font-size: 12px; color: var(--gray-700); text-align: right; white-space: nowrap; }
-    .area-num span { font-size: 11px; color: var(--gray-500); margin-left: 2px; }
-    .area-cats { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-    .area-cat { font-size: 11px; font-weight: 600; color: var(--gray-700); background: white; border: 1px solid var(--gray-200); border-radius: 999px; padding: 2px 8px; }
-    .area-pending { margin-top: 8px; font-size: 11px; color: var(--gray-500); }
-    .book-body { flex: 1; min-width: 0; }
-    .book-title { font-size: 14px; font-weight: 800; color: var(--gray-800); line-height: 1.35; word-break: keep-all; }
-    .book-sub { font-size: 12px; color: var(--gray-600); margin-top: 3px; }
-    .book-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 7px; }
-    .book-who { font-size: 11px; font-weight: 700; color: var(--lib-dark); background: var(--lib-soft); border-radius: 999px; padding: 2px 8px; }
-    .book-price { font-size: 11px; color: var(--gray-600); }
-    .book-status { font-size: 11px; font-weight: 800; border-radius: 999px; padding: 2px 9px; }
-    .st-buy { background: #dbeafe; color: #1e40af; }
-    .st-plan { background: #fef3c7; color: #92400e; }
-    .st-own { background: #dcfce7; color: #166534; }
-    .st-out { background: #fee2e2; color: #991b1b; }
-    .st-etc { background: var(--gray-100); color: var(--gray-700); }
-    .book-link { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--lib); text-decoration: none; white-space: nowrap; }
-
-    /* 베스트셀러 */
-    .best-toggle { display: inline-flex; background: var(--gray-100); border-radius: 10px; padding: 3px; gap: 2px; }
-    .best-toggle button { border: none; background: none; border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 800; color: var(--gray-600); cursor: pointer; }
-    .best-toggle button.active { background: white; color: var(--lib-dark); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-    .best-meta { font-size: 11.5px; color: var(--gray-600); margin: 8px 0 10px; }
-    .best-list { display: grid; gap: 8px; }
-    .best-item { display: flex; gap: 12px; align-items: center; text-decoration: none; color: inherit; background: white; border: 1px solid var(--gray-200); border-radius: 14px; padding: 10px 12px; transition: transform 0.12s, box-shadow 0.12s; }
-    .best-item:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
-    .best-rank { flex: none; width: 30px; text-align: center; }
-    .best-rank-num { font-size: 20px; font-weight: 900; color: var(--gray-700); line-height: 1; font-style: italic; }
-    .best-item.top .best-rank-num { color: #d97706; }
-    .best-move { font-size: 10px; font-weight: 800; margin-top: 3px; }
-    .mv-up { color: #dc2626; } .mv-down { color: #2563eb; } .mv-same { color: var(--gray-500); } .mv-new { color: #d97706; }
-    .best-cover { flex: none; width: 52px; height: 74px; border-radius: 4px; object-fit: cover; background: var(--gray-100); box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
-    .best-body { flex: 1; min-width: 0; }
-    .best-title { font-size: 13.5px; font-weight: 800; color: var(--gray-800); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .best-sub { font-size: 11.5px; color: var(--gray-600); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .best-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
-    .best-tag { font-size: 10.5px; font-weight: 700; background: var(--gray-100); color: var(--gray-700); border-radius: 999px; padding: 1px 7px; }
-    .best-tag.req { background: #fef3c7; color: #92400e; }
-
     @media (min-width: 768px) {
         .lib-hero { padding: 26px 26px 20px; }
         .lib-hero-title { font-size: 26px; }
         .lib-stats { grid-template-columns: repeat(3, minmax(0, 160px)); }
-        .book-summary { grid-template-columns: repeat(4, 1fr); }
-        .book-list, .best-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    @media (min-width: 1200px) {
-        .lib-seg { top: 75px; max-width: 520px; }
-        .best-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-
     /* ================= 기기별 화면 최적화 =================
        ~767px  : 휴대폰 (기본 스타일)
        768px~  : 태블릿 — 넓은 본문, 큰 글씨, 가운데 팝업
@@ -2309,8 +2211,6 @@
         <div id="myTodayCard" class="mt-card" style="display:none;"></div>
 
         <!-- 🔥 오늘 결·보강 실시간 알림 배너 (오늘 결보강 내역이 있으면 최상단 자동 노출) -->
-        <!-- 📚 희망도서 신청 마감 임박 배너 (마감 2주 전부터 자동 노출) -->
-        <div id="bookDeadlineBanner" class="book-dl-banner" style="display:none;" onclick="openBookRequestsPanel()"></div>
 
         <div id="todayAutoSubBanner" style="display:none;"></div>
 
@@ -2470,20 +2370,12 @@
             <div class="lib-hero-deco" aria-hidden="true">📚</div>
             <div class="lib-hero-kicker">본관 3층 · 담당 김동하 선생님</div>
             <h2 class="lib-hero-title">배화여고 학교도서관</h2>
-            <div class="lib-hero-sub">활용수업 예약 현황, 교직원 희망도서, 교보문고 베스트셀러를 한곳에서</div>
+            <div class="lib-hero-sub">도서관 활용수업 예약 현황과 연간 일정</div>
             <div class="lib-hero-actions">
                 <a href="tel:333" class="lib-chip">📞 내선 333</a>
-                <a href="https://docs.google.com/spreadsheets/d/1A5YTxhvW4R6L5y7uWisIWn5ao8rXggU1dNh_6qTWPOY/edit?gid=0#gid=0" target="_blank" class="lib-chip">✍️ 희망도서 신청</a>
                 <a href="https://docs.google.com/spreadsheets/d/159Ed3lWMPRHg2YlDW0kWBva3A6O2K156gzUEX1Bv6Ic/edit?usp=sharing" target="_blank" class="lib-chip">📊 활용수업 시트</a>
             </div>
             <div class="lib-stats" id="libHeroStats"></div>
-        </div>
-
-        <!-- 하위 메뉴 -->
-        <div class="lib-seg" role="tablist">
-            <button class="lib-seg-btn active" data-panel="class" onclick="setLibraryPanel('class')">📅 활용수업</button>
-            <button class="lib-seg-btn" data-panel="books" onclick="setLibraryPanel('books')">📝 희망도서</button>
-            <button class="lib-seg-btn" data-panel="best" onclick="setLibraryPanel('best')">🏆 베스트셀러</button>
         </div>
 
         <!-- 1) 활용수업 -->
@@ -2516,40 +2408,6 @@
             </div>
         </div>
 
-        <!-- 2) 교직원 희망도서 -->
-        <div class="lib-panel" id="libPanelBooks">
-            <div class="m-card lib-card">
-                <div class="lib-card-head">
-                    <div class="lib-card-title">📝 교직원 희망도서 신청 현황</div>
-                    <button onclick="fetchBookRequests(true)" class="lib-icon-btn" title="새로고침">🔄</button>
-                </div>
-                <div id="bookReqSummary" class="book-summary"></div>
-                <div id="bookAreaStats" class="area-box"></div>
-                <div class="book-filter-row">
-                    <div class="book-filter-chips" id="bookReqFilterChips"></div>
-                    <input type="text" id="bookReqSearch" class="lib-search" placeholder="🔍 도서명·저자·신청자 검색" oninput="renderBookRequests()">
-                </div>
-                <div id="bookReqList" class="book-list"><div class="lib-empty">신청 목록을 불러오는 중입니다… ⏳</div></div>
-                <div class="lib-hint">구입은 4·7·9·12월에 진행되며, 도서관운영위원회 심의 후 입고됩니다. 급히 필요한 도서는 김동하T에게 직접 말씀해 주세요.</div>
-            </div>
-        </div>
-
-        <!-- 3) 교보문고 베스트셀러 -->
-        <div class="lib-panel" id="libPanelBest">
-            <div class="m-card lib-card">
-                <div class="lib-card-head">
-                    <div class="lib-card-title">🏆 교보문고 베스트셀러</div>
-                    <a href="https://store.kyobobook.co.kr/bestseller/realtime" target="_blank" class="lib-link-sm">교보문고 ↗</a>
-                </div>
-                <div class="best-toggle" id="bestToggle">
-                    <button class="active" data-kind="realtime" onclick="setBestKind('realtime')">⚡ 실시간</button>
-                    <button data-kind="daily" onclick="setBestKind('daily')">일간</button>
-                    <button data-kind="weekly" onclick="setBestKind('weekly')">주간</button>
-                </div>
-                <div class="best-meta" id="bestMeta"></div>
-                <div id="bestList" class="best-list"><div class="lib-empty">순위를 불러오는 중입니다… ⏳</div></div>
-            </div>
-        </div>
     </section>
 
     <!-- ==================== 탭 3: 오늘 급식 & 점심 짝꿍 ==================== -->
@@ -3001,7 +2859,6 @@
         <span class="nav-label">장소예약</span>
     </button>
     <button id="navItemLibrary" class="nav-item nav-secondary" onclick="switchTab('tab-library', this)">
-        <span class="nav-badge" id="navLibraryBadge" style="display:none;"></span>
         <span class="nav-icon">📚</span>
         <span class="nav-label">도서관</span>
     </button>
@@ -12163,13 +12020,6 @@ window.SENIOR_PROCTOR_DATA = {
             }
         } else if (tabId === 'tab-library') {
             renderLibraryTab();
-            if (!bookRequests) fetchBookRequests();
-            if (!kyoboBest) fetchKyoboBest();
-            // 마감 임박 기간에는 처음 열 때 희망도서 화면부터
-            if (isBookDeadlineNear() && !bookDeadlinePanelShown) {
-                bookDeadlinePanelShown = true;
-                setLibraryPanel('books');
-            }
         } else if (tabId === 'tab-room') {
             if (roomData) renderRoomTab(); else fetchRoomData();
         } else if (tabId === 'tab-weekplan') {
@@ -12472,40 +12322,25 @@ window.SENIOR_PROCTOR_DATA = {
         renderLibraryHeroStats();
     }
 
-    // ===== 도서관: 하위 메뉴 / 희망도서 / 교보문고 베스트셀러 =====
-    const BOOK_REQ_SHEET_ID = '1A5YTxhvW4R6L5y7uWisIWn5ao8rXggU1dNh_6qTWPOY';
-    const KYOBO_BEST_URL = 'https://raw.githubusercontent.com/ShinUkhang/timetable/kyobo-data/kyobo_best.json';
-    let libraryPanel = 'class';
-    let bookRequests = null;      // { title, deadline, list: [...] }
-    let bookReqFilter = '전체';
-    let kyoboBest = null;
-    let bestKind = 'realtime';
-
+    // ===== 도서관 =====
     function libEsc(s) {
         return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-    }
-
-    function setLibraryPanel(panel) {
-        libraryPanel = panel;
-        document.querySelectorAll('.lib-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.panel === panel));
-        document.querySelectorAll('.lib-panel').forEach(el => el.classList.remove('active'));
-        const id = { class: 'libPanelClass', books: 'libPanelBooks', best: 'libPanelBest' }[panel];
-        document.getElementById(id)?.classList.add('active');
-        if (panel === 'books' && !bookRequests) fetchBookRequests();
-        if (panel === 'best' && !kyoboBest) fetchKyoboBest();
     }
 
     function renderLibraryHeroStats() {
         const el = document.getElementById('libHeroStats');
         if (!el) return;
+        const byDate = window.LIBRARY_SCHEDULE_DATA?.scheduleByDate || {};
         const todayIso = getTodayIsoDate();
-        const todayCount = Object.keys(window.LIBRARY_SCHEDULE_DATA?.scheduleByDate?.[todayIso] || {}).length;
-        const reqCount = bookRequests ? bookRequests.list.length : '–';
-        const top = kyoboBest?.realtime?.items?.[0];
+        const todayCount = Object.keys(byDate[todayIso] || {}).length;
+        const now = new Date(); now.setHours(0, 0, 0, 0);
+        const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (now.getDay() + 6) % 7);
+        const weekCount = [0, 1, 2, 3, 4].reduce((n, i) => n + Object.keys(byDate[toIsoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i))] || {}).length, 0);
+        const totalCount = (window.LIBRARY_SCHEDULE_DATA?.classList || []).length;
         el.innerHTML = `
             <div class="lib-stat"><div class="lib-stat-num">${todayCount}</div><div class="lib-stat-label">오늘 활용수업</div></div>
-            <div class="lib-stat"><div class="lib-stat-num">${reqCount}</div><div class="lib-stat-label">희망도서 신청</div></div>
-            <div class="lib-stat"><div class="lib-stat-num" style="font-size:14px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${top ? libEsc(top.title.replace(/\(.*?\)/g, '').trim()) : '–'}</div><div class="lib-stat-label">실시간 1위</div></div>`;
+            <div class="lib-stat"><div class="lib-stat-num">${weekCount}</div><div class="lib-stat-label">이번 주</div></div>
+            <div class="lib-stat"><div class="lib-stat-num">${totalCount}</div><div class="lib-stat-label">연간 전체</div></div>`;
     }
 
     // 줄바꿈이 들어간 칸도 처리하는 CSV 파서
@@ -12527,306 +12362,6 @@ window.SENIOR_PROCTOR_DATA = {
         }
         if (cur || row.length) { row.push(cur); rows.push(row); }
         return rows;
-    }
-
-    async function fetchBookRequests(manual) {
-        const listEl = document.getElementById('bookReqList');
-        if (manual && listEl) listEl.innerHTML = '<div class="lib-empty">신청 목록을 불러오는 중입니다… ⏳</div>';
-        try {
-            const res = await fetch(`https://docs.google.com/spreadsheets/d/${BOOK_REQ_SHEET_ID}/export?format=csv&gid=0&t=${Date.now()}`);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const rows = parseCsvFull(await res.text()).map(r => r.map(c => c.trim()));
-            const title = rows[0]?.[0] || '교직원 희망도서 신청';
-            const headerIdx = rows.findIndex(r => r[0] === '순번' && r.some(c => c.includes('서명')));
-            const h = rows[headerIdx] || [];
-            const col = name => h.findIndex(c => c.includes(name));
-            const ci = { no: 0, who: col('신청자'), title: col('서명'), author: col('저자'), pub: col('출판사'), year: col('출판년도'), price: col('정가'), qty: col('권수'), status: col('비고') };
-            const list = rows.slice(headerIdx + 1)
-                .filter(r => r[0] !== '예시' && r[ci.title])
-                .map(r => ({
-                    no: r[ci.no], who: r[ci.who], title: r[ci.title], author: r[ci.author], pub: r[ci.pub],
-                    year: r[ci.year], price: parseInt((r[ci.price] || '').replace(/[^0-9]/g, '')) || 0,
-                    qty: parseInt(r[ci.qty]) || 1, status: r[ci.status] || '접수'
-                }));
-            const dl = title.match(/(\d+)월\s*(\d+)일/);
-            bookRequests = { title, list, deadline: dl ? { m: +dl[1], d: +dl[2] } : null };
-            if (manual) showToast('📝 희망도서 목록을 새로 불러왔습니다');
-        } catch (e) {
-            console.warn('희망도서 시트 불러오기 실패:', e.message);
-            if (listEl) listEl.innerHTML = '<div class="lib-empty">신청 목록을 불러오지 못했습니다. 잠시 후 🔄를 눌러 주세요.</div>';
-            return;
-        }
-        renderBookRequests();
-        renderLibraryHeroStats();
-        updateBookDeadlineAlert();
-        if (kyoboBest) renderBest();
-    }
-
-    function bookStatusClass(st) {
-        if (/품절|절판/.test(st)) return 'st-out';
-        if (/소장/.test(st)) return 'st-own';
-        if (/예정/.test(st)) return 'st-plan';
-        if (/구입|완료|입고/.test(st)) return 'st-buy';
-        return 'st-etc';
-    }
-    const BOOK_SPINE_COLORS = ['#0f766e', '#b45309', '#7c3aed', '#be123c', '#1d4ed8', '#15803d', '#a16207', '#0e7490'];
-
-    function renderBookRequests() {
-        if (!bookRequests) return;
-        const { list, deadline } = bookRequests;
-
-        // 요약
-        const total = list.reduce((s, b) => s + b.qty, 0);
-        const sum = list.reduce((s, b) => s + b.price * b.qty, 0);
-        const people = new Set(list.map(b => b.who).filter(Boolean)).size;
-        const ownCount = list.filter(b => /소장/.test(b.status)).length;
-        let dlHtml = '';
-        if (deadline) {
-            const now = new Date(); now.setHours(0, 0, 0, 0);
-            const end = new Date(now.getFullYear(), deadline.m - 1, deadline.d);
-            const diff = Math.round((end - now) / 86400000);
-            dlHtml = `<div class="book-deadline"><span>⏰ 신청 마감 ${deadline.m}월 ${deadline.d}일</span><b>${diff > 0 ? 'D-' + diff : diff === 0 ? 'D-DAY' : '마감'}</b></div>`;
-        }
-        document.getElementById('bookReqSummary').innerHTML = `${dlHtml}
-            <div class="book-sum-box"><div class="book-sum-num">${total}권</div><div class="book-sum-label">신청 도서</div></div>
-            <div class="book-sum-box"><div class="book-sum-num">${people}명</div><div class="book-sum-label">신청 교직원</div></div>
-            <div class="book-sum-box"><div class="book-sum-num">${sum.toLocaleString()}원</div><div class="book-sum-label">정가 합계</div></div>
-            <div class="book-sum-box"><div class="book-sum-num">${ownCount}권</div><div class="book-sum-label">이미 소장</div></div>`;
-
-        renderBookAreaStats();
-
-        // 상태 필터
-        const statuses = ['전체', ...new Set(list.map(b => b.status))];
-        if (!statuses.includes(bookReqFilter)) bookReqFilter = '전체';
-        document.getElementById('bookReqFilterChips').innerHTML = statuses.map(st => {
-            const n = st === '전체' ? list.length : list.filter(b => b.status === st).length;
-            return `<button class="book-filter-chip${st === bookReqFilter ? ' active' : ''}" data-st="${libEsc(st)}" onclick="bookReqFilter = this.dataset.st; renderBookRequests();">${libEsc(st)} ${n}</button>`;
-        }).join('');
-
-        // 목록
-        const q = (document.getElementById('bookReqSearch')?.value || '').trim().toLowerCase();
-        const shown = list.filter(b => (bookReqFilter === '전체' || b.status === bookReqFilter) &&
-            (!q || [b.title, b.author, b.pub, b.who].some(v => (v || '').toLowerCase().includes(q))));
-        const listEl = document.getElementById('bookReqList');
-        if (!shown.length) {
-            listEl.innerHTML = `<div class="lib-empty">${list.length ? '조건에 맞는 도서가 없습니다.' : '아직 신청된 도서가 없습니다.'}</div>`;
-            return;
-        }
-        listEl.innerHTML = shown.map((b, i) => {
-            const color = BOOK_SPINE_COLORS[(b.title.charCodeAt(0) || i) % BOOK_SPINE_COLORS.length];
-            const meta = [b.author, b.pub, b.year].filter(Boolean).map(libEsc).join(' · ');
-            const info = getKyoboBookInfo(b.title);
-            const rank = getKyoboRank(b.title);
-            // 표지가 있으면 표지, 없거나 못 불러오면 색 책등
-            const cover = `<div class="book-spine" style="background:${color};">${libEsc(b.title.trim().charAt(0))}${info?.isbn
-                ? `<img class="book-cover" loading="lazy" alt="" src="https://contents.kyobobook.co.kr/sih/fit-in/150x0/pdt/${encodeURIComponent(info.isbn)}.jpg" onerror="this.remove()">` : ''}</div>`;
-            const link = info?.id
-                ? `https://product.kyobobook.co.kr/detail/${encodeURIComponent(info.id)}`
-                : `https://search.kyobobook.co.kr/search?keyword=${encodeURIComponent(b.title)}`;
-            return `<div class="book-item">
-                ${cover}
-                <div class="book-body">
-                    <div class="book-title">${libEsc(b.title)}</div>
-                    <div class="book-sub">${meta}</div>
-                    ${rank ? `<div class="book-rank">🏆 교보 ${rank.label} <b>${rank.rank}위</b>${rank.others ? ` <span>(${rank.others})</span>` : ''}</div>` : ''}
-                    <div class="book-tags">
-                        <span class="book-status ${bookStatusClass(b.status)}">${libEsc(b.status)}</span>
-                        ${info?.category ? `<span class="book-cat">${libEsc(info.category)}</span>` : ''}
-                        ${!rank && kyoboBest ? '<span class="book-price">교보 100위 밖</span>' : ''}
-                        ${b.who ? `<span class="book-who">👤 ${libEsc(b.who)}</span>` : ''}
-                        ${b.price ? `<span class="book-price">${b.price.toLocaleString()}원${b.qty > 1 ? ` × ${b.qty}` : ''}</span>` : ''}
-                        <a class="book-link" href="${link}" target="_blank">교보 ↗</a>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    // ===== 희망도서 신청 마감 임박 알림 (마감 14일 전 ~ 마감일) =====
-    const BOOK_DEADLINE_ALERT_DAYS = 14;
-    let bookDeadlinePanelShown = false;
-
-    function getBookDeadlineDiff() {
-        const dl = bookRequests?.deadline;
-        if (!dl) return null;
-        const now = new Date(); now.setHours(0, 0, 0, 0);
-        const end = new Date(now.getFullYear(), dl.m - 1, dl.d);
-        return Math.round((end - now) / 86400000);
-    }
-    function isBookDeadlineNear() {
-        const diff = getBookDeadlineDiff();
-        return diff !== null && diff >= 0 && diff <= BOOK_DEADLINE_ALERT_DAYS;
-    }
-
-    function updateBookDeadlineAlert() {
-        const near = isBookDeadlineNear();
-        const diff = getBookDeadlineDiff();
-        const dText = diff === 0 ? 'D-DAY' : `D-${diff}`;
-        const nav = document.getElementById('navItemLibrary');
-        const badge = document.getElementById('navLibraryBadge');
-        if (nav) nav.classList.toggle('nav-alert', near);
-        updateNavMoreState();
-        if (badge) {
-            badge.style.display = near ? '' : 'none';
-            badge.textContent = dText;
-        }
-        const banner = document.getElementById('bookDeadlineBanner');
-        if (!banner) return;
-        let closed = false;
-        try { closed = sessionStorage.getItem('closedBookDeadlineBanner') === '1'; } catch (e) {}
-        if (!near || closed) { banner.style.display = 'none'; return; }
-        const dl = bookRequests.deadline;
-        const count = bookRequests.list.reduce((s, b) => s + b.qty, 0);
-        banner.style.display = 'flex';
-        banner.innerHTML = `
-            <span class="book-dl-dday">${dText}</span>
-            <span class="book-dl-text"><b>📚 희망도서 신청 마감 ${dl.m}/${dl.d}</b><small>${count}권 신청됨 · 현황 보기 ›</small></span>
-            <a class="book-dl-go" href="https://docs.google.com/spreadsheets/d/${BOOK_REQ_SHEET_ID}/edit?gid=0#gid=0" target="_blank" onclick="event.stopPropagation()">✍️ 신청</a>
-            <button class="book-dl-close" onclick="event.stopPropagation(); closeBookDeadlineBanner();" title="닫기">✕</button>`;
-    }
-
-    function closeBookDeadlineBanner() {
-        try { sessionStorage.setItem('closedBookDeadlineBanner', '1'); } catch (e) {}
-        document.getElementById('bookDeadlineBanner').style.display = 'none';
-    }
-
-    function openBookRequestsPanel() {
-        bookDeadlinePanelShown = true;
-        switchTab('tab-library', document.getElementById('navItemLibrary'));
-        setLibraryPanel('books');
-    }
-
-    // 희망도서의 교보 상품 정보 (GitHub Actions가 매시간 시트를 읽어 분야·ISBN을 찾아 둠)
-    function getKyoboBookInfo(title) {
-        return kyoboBest?.books?.[bookKey(title)] || null;
-    }
-
-    // 희망도서의 현재 교보 순위 (실시간 → 일간 → 주간 100위 안)
-    function getKyoboRank(title) {
-        if (!kyoboBest) return null;
-        const info = getKyoboBookInfo(title);
-        const key = bookKey(title);
-        const found = [];
-        for (const [kind, label] of [['realtime', '실시간'], ['daily', '일간'], ['weekly', '주간']]) {
-            const item = (kyoboBest[kind]?.items || []).find(it => (info?.id && it.id === info.id) || bookKey(it.title) === key);
-            if (item) found.push({ label, rank: item.rank });
-        }
-        if (!found.length) return null;
-        return { ...found[0], others: found.slice(1).map(f => `${f.label} ${f.rank}위`).join(' · ') };
-    }
-
-    // 교보 분야 → 학교 도서 영역
-    const BOOK_AREAS = [
-        { name: '문학', icon: '📖', color: '#be123c', cats: ['소설', '시/에세이'] },
-        { name: '인문·사회', icon: '🏛️', color: '#7c3aed', cats: ['인문', '정치/사회', '역사/문화', '종교', '경제/경영'] },
-        { name: '과학·기술', icon: '🔬', color: '#1d4ed8', cats: ['과학', '기술/공학', '컴퓨터/IT'] },
-        { name: '예술', icon: '🎨', color: '#db2777', cats: ['예술/대중문화'] },
-        { name: '자기계발·생활', icon: '🌱', color: '#15803d', cats: ['자기계발', '건강', '가정/육아', '요리', '취미/실용/스포츠', '여행'] },
-        { name: '어린이·청소년', icon: '🧸', color: '#d97706', cats: ['유아(0~7세)', '어린이(초등)', '청소년', '만화'] },
-        { name: '학습·외국어', icon: '✏️', color: '#0e7490', cats: ['외국어', '중/고등참고서', '초등참고서', '취업/수험서', '대학교재'] }
-    ];
-
-    function renderBookAreaStats() {
-        const el = document.getElementById('bookAreaStats');
-        if (!el || !bookRequests) return;
-        const list = bookRequests.list;
-        if (!list.length) { el.innerHTML = ''; return; }
-        if (!kyoboBest?.books) {
-            el.innerHTML = '<div class="lib-empty" style="padding:14px;">영역 통계를 준비하는 중입니다… ⏳</div>';
-            return;
-        }
-        const areaCount = {}, catCount = {};
-        let pending = 0;
-        for (const b of list) {
-            const cat = getKyoboBookInfo(b.title)?.category;
-            if (!cat) { pending += b.qty; continue; }
-            const area = BOOK_AREAS.find(a => a.cats.includes(cat))?.name || '기타';
-            areaCount[area] = (areaCount[area] || 0) + b.qty;
-            catCount[cat] = (catCount[cat] || 0) + b.qty;
-        }
-        const total = Object.values(areaCount).reduce((s, n) => s + n, 0) || 1;
-        const max = Math.max(1, ...Object.values(areaCount));
-        const areas = [...BOOK_AREAS, { name: '기타', icon: '📦', color: '#64748b' }]
-            .filter(a => areaCount[a.name])
-            .sort((a, b) => areaCount[b.name] - areaCount[a.name]);
-        el.innerHTML = `
-            <div class="area-head"><span class="lib-card-title" style="font-size:14px;">📊 영역별 신청 통계</span><span class="area-head-sub">교보문고 분류 기준</span></div>
-            <div class="area-bars">${areas.map(a => {
-                const n = areaCount[a.name];
-                return `<div class="area-row">
-                    <div class="area-name">${a.icon} ${a.name}</div>
-                    <div class="area-track"><div class="area-fill" style="width:${Math.max(6, n / max * 100)}%; background:${a.color};"></div></div>
-                    <div class="area-num"><b>${n}</b>권 <span>${Math.round(n / total * 100)}%</span></div>
-                </div>`;
-            }).join('')}</div>
-            <div class="area-cats">${Object.entries(catCount).sort((a, b) => b[1] - a[1])
-                .map(([c, n]) => `<span class="area-cat">${libEsc(c)} ${n}</span>`).join('')}</div>
-            ${pending ? `<div class="area-pending">새로 신청된 ${pending}권은 1시간 안에 분류됩니다.</div>` : ''}`;
-    }
-
-    async function fetchKyoboBest() {
-        try {
-            const res = await fetch(`${KYOBO_BEST_URL}?t=${Math.floor(Date.now() / 300000)}`);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            kyoboBest = await res.json();
-        } catch (e) {
-            console.warn('교보문고 순위 불러오기 실패:', e.message);
-            document.getElementById('bestList').innerHTML = `<div class="lib-empty">순위를 아직 불러올 수 없습니다.<br><a href="https://store.kyobobook.co.kr/bestseller/realtime" target="_blank" class="lib-link-sm">교보문고에서 바로 보기 ↗</a></div>`;
-            return;
-        }
-        renderBest();
-        renderLibraryHeroStats();
-        if (bookRequests) renderBookRequests();
-    }
-
-    function setBestKind(kind) {
-        bestKind = kind;
-        document.querySelectorAll('#bestToggle button').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
-        renderBest();
-    }
-
-    // 제목 비교용 (괄호·공백·기호 제거)
-    function bookKey(t) {
-        return String(t || '').replace(/\(.*?\)|\[.*?\]/g, '').replace(/[^0-9a-zA-Z가-힣]/g, '').toLowerCase();
-    }
-
-    function renderBest() {
-        if (!kyoboBest) return;
-        const data = kyoboBest[bestKind] || { items: [] };
-        const ymw = data.ymw || '';
-        const label = { realtime: '실시간', daily: '일간', weekly: '주간' }[bestKind];
-        let when = '';
-        if (/^\d{8}/.test(ymw)) when = `${+ymw.slice(4, 6)}월 ${+ymw.slice(6, 8)}일${ymw.length >= 10 ? ` ${+ymw.slice(8, 10)}시` : ''} 기준`;
-        const upd = kyoboBest.updatedAt ? new Date(kyoboBest.updatedAt) : null;
-        document.getElementById('bestMeta').innerText =
-            `교보문고 ${label} 베스트 ${when}${upd ? ` · ${upd.getMonth() + 1}/${upd.getDate()} ${String(upd.getHours()).padStart(2, '0')}:${String(upd.getMinutes()).padStart(2, '0')} 수집 (매시간 갱신)` : ''}`;
-
-        const requested = new Set((bookRequests?.list || []).map(b => bookKey(b.title)));
-        const listEl = document.getElementById('bestList');
-        if (!data.items.length) {
-            listEl.innerHTML = '<div class="lib-empty">순위 정보가 없습니다.</div>';
-            return;
-        }
-        listEl.innerHTML = data.items.map(b => {
-            let move = '<div class="best-move mv-same">–</div>';
-            if (!b.prevRank) move = '<div class="best-move mv-new">NEW</div>';
-            else if (b.prevRank > b.rank) move = `<div class="best-move mv-up">▲${b.prevRank - b.rank}</div>`;
-            else if (b.prevRank < b.rank) move = `<div class="best-move mv-down">▼${b.rank - b.prevRank}</div>`;
-            const isReq = requested.has(bookKey(b.title));
-            return `<a class="best-item${b.rank <= 3 ? ' top' : ''}" href="https://product.kyobobook.co.kr/detail/${encodeURIComponent(b.id)}" target="_blank">
-                <div class="best-rank"><div class="best-rank-num">${b.rank}</div>${move}</div>
-                <img class="best-cover" loading="lazy" alt="" src="https://contents.kyobobook.co.kr/sih/fit-in/150x0/pdt/${encodeURIComponent(b.isbn)}.jpg" onerror="this.style.visibility='hidden'">
-                <div class="best-body">
-                    <div class="best-title">${libEsc(b.title)}</div>
-                    <div class="best-sub">${libEsc(b.author)} · ${libEsc(b.publisher)}</div>
-                    <div class="best-tags">
-                        ${b.category ? `<span class="best-tag">${libEsc(b.category)}</span>` : ''}
-                        ${b.rating ? `<span class="best-tag">★ ${b.rating}</span>` : ''}
-                        ${isReq ? '<span class="best-tag req">📝 희망도서 신청됨</span>' : ''}
-                    </div>
-                </div>
-            </a>`;
-        }).join('');
     }
 
     function filterLibraryTabClasses() {
@@ -17670,7 +17205,6 @@ ${n.content}
         try { initData(); } catch (e) { console.error('initData error:', e); }
         try { buildClassSchedule(); } catch (e) { console.error('buildClassSchedule error:', e); }
         try { initProctorTab(); } catch (e) { console.error('initProctorTab error:', e); }
-        try { fetchBookRequests(); } catch (e) { console.error('fetchBookRequests error:', e); }
         try { fetchWeekPlan(); } catch (e) { console.error('fetchWeekPlan error:', e); }
         try { initEventTab(); } catch (e) { console.error('initEventTab error:', e); }
         try { renderMyTimetable(); } catch (e) { console.error('renderMyTimetable error:', e); }
