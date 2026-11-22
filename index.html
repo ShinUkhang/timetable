@@ -1808,6 +1808,30 @@
     .room-chip span { display: block; font-size: 10px; color: var(--gray-600); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; margin: 0 auto; }
     .room-chip.cls b { color: var(--gray-700); }
     .room-chip.aud b { color: #7c3aed; }
+    /* 특별 시정 (기말고사 타종) */
+    .bell-notice { align-items: center; gap: 10px; cursor: pointer; background: linear-gradient(135deg, #7c2d12, #c2410c); color: white; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 6px 16px rgba(194,65,12,0.25); }
+    .bell-notice .bn-icon { font-size: 20px; }
+    .bell-notice .bn-text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; line-height: 1.4; }
+    .bell-notice .bn-text small { font-size: 11.5px; opacity: 0.92; }
+    .bell-notice .bn-go { flex: none; background: white; color: #c2410c; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 5px 10px; }
+    .sb-card.today { border: 2px solid #f97316; }
+    .sb-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 14.5px; color: var(--gray-800); }
+    .sb-today { font-size: 11px; font-weight: 800; background: #ffedd5; color: #c2410c; border-radius: 999px; padding: 2px 9px; }
+    .sb-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+    .sb-table th, .sb-table td { border: 1px solid var(--gray-200); padding: 7px 6px; text-align: center; vertical-align: middle; }
+    .sb-table thead th { background: var(--gray-100); font-size: 12px; }
+    .sb-table thead th:first-child, .sb-table tbody th { width: 62px; }
+    .sb-table tbody th { background: #fafaf9; font-weight: 800; color: var(--gray-700); }
+    .sb-table tbody th em { display: block; font-style: normal; font-size: 10px; color: white; background: #f97316; border-radius: 999px; margin-top: 3px; padding: 1px 0; }
+    .sb-table tr.cur td, .sb-table tr.cur th { background: #fff7ed; }
+    .sb-table small { color: var(--gray-500); font-size: 11px; }
+    .sb-red { color: #dc2626; font-weight: 700; }
+    .sb-move { font-size: 12px; color: var(--gray-700); }
+    .sb-ex { display: grid; gap: 2px; font-size: 12px; text-align: left; }
+    .sb-ex span { display: flex; justify-content: space-between; gap: 4px; padding: 1px 4px; border-radius: 4px; }
+    .sb-ex span.bell { background: #fde8e8; }
+    .sb-ex i { font-style: normal; font-size: 10.5px; color: var(--gray-500); }
+    .sb-ex b { margin-left: auto; margin-right: 4px; }
     .room-chip.fixed b { color: var(--gray-600); }
     .room-chip.fixed span { font-style: italic; }
     .room-aud-link { display: block; font-size: 10px; font-weight: 600; color: #7c3aed; text-decoration: none; margin-top: 1px; }
@@ -2208,6 +2232,7 @@
     <section id="tab-my" class="tab-content active">
 
         <!-- 👤 내 오늘: 지금·다음 수업과 오늘 교시 한눈에 -->
+        <div id="bellNoticeBanner" class="bell-notice" style="display:none;" onclick="switchTab('tab-event', document.getElementById('navItemEvent'))"></div>
         <div id="myTodayCard" class="mt-card" style="display:none;"></div>
 
         <!-- 🔥 오늘 결·보강 실시간 알림 배너 (오늘 결보강 내역이 있으면 최상단 자동 노출) -->
@@ -12437,7 +12462,7 @@ window.SENIOR_PROCTOR_DATA = {
         const periods = [1, 2, 3, 4, 5, 6, 7].map(p => ({ p, text: status(p) }));
         const curNum = /^\d$/.test(pc.key || '') ? +pc.key : null;
         const mins = now.getHours() * 60 + now.getMinutes();
-        const inClassTime = curNum && WP_PERIODS.some(([k, s, e]) => k === pc.key && mins >= s && mins < e);
+        const inClassTime = curNum && getBellPeriods(now).some(([k, s, e]) => k === pc.key && mins >= s && mins < e);
 
         // 지금 / 다음
         let nowHtml;
@@ -13820,6 +13845,44 @@ ${body}
     // 교시 시각 (분): 1교시 08:20 ~ 7교시 16:00
     const WP_PERIODS = [['1', 500, 550], ['2', 560, 610], ['3', 620, 670], ['4', 680, 730], ['lunch', 730, 790], ['5', 790, 840], ['6', 850, 900], ['7', 910, 960]];
 
+    // ===== 특별 시정 (기말고사 타종 등): 기간 안의 날에는 이 시각으로 교시를 계산 =====
+    // periods: [교시, 시작분, 끝분] (5교시 이후는 평소와 동일하게 자동으로 붙음)
+    // exam: [교시, 예비령, 준비령, 본령, 종료령] (3학년)
+    const SPECIAL_BELLS = [{
+        from: '2026-11-23', to: '2026-11-27',
+        title: '3학년 기말고사 기간 타종',
+        sub: '1·2학년: 준비령~종료령 50분 수업 / 3학년: 본령부터 45분 시험',
+        move: '08:05 고사실·대기실 이동',
+        sets: [
+            { days: [1, 3, 4, 5], label: '월·수·목·금 (3학년 고사 2교시까지)',
+              periods: [['1', 500, 550], ['2', 565, 615], ['3', 625, 675], ['4', 685, 735], ['lunch', 735, 790]],
+              firstOverride: { 1: { start: 510, note: '교실 정비 후 08:30 시작' } },
+              exam: [[1, '08:15', '08:20', '08:25', '09:10'], [2, '09:20', '09:25', '09:30', '10:15']] },
+            { days: [2], label: '화요일 (3학년 고사 3교시까지)',
+              periods: [['1', 500, 550], ['2', 565, 615], ['3', 630, 680], ['4', 690, 740], ['lunch', 740, 790]],
+              exam: [[1, '08:15', '08:20', '08:25', '09:10'], [2, '09:20', '09:25', '09:30', '10:15'], [3, '10:25', '10:30', '10:35', '11:20']] }
+        ]
+    }];
+    const BELL_AFTERNOON = [['5', 790, 840], ['6', 850, 900], ['7', 910, 960]];
+
+    // 그 날짜의 특별 시정 → { plan, set, periods } 또는 null
+    function getSpecialBell(dt = new Date()) {
+        const iso = toIsoDate(dt);
+        const plan = SPECIAL_BELLS.find(p => iso >= p.from && iso <= p.to);
+        if (!plan) return null;
+        const wd = dt.getDay();
+        const set = plan.sets.find(s => s.days.includes(wd));
+        if (!set) return null;
+        const periods = set.periods.map(([k, s, e]) => {
+            const ov = k === '1' && set.firstOverride?.[wd];
+            return [k, ov ? ov.start : s, e];
+        }).concat(BELL_AFTERNOON);
+        return { plan, set, periods, note: set.firstOverride?.[wd]?.note || '' };
+    }
+    function getBellPeriods(dt = new Date()) {
+        return getSpecialBell(dt)?.periods || WP_PERIODS;
+    }
+
     function wpDeptColor(text) {
         return (WP_DEPT_COLORS.find(([re]) => re.test(text)) || [null, '#475569'])[1];
     }
@@ -13835,8 +13898,9 @@ ${body}
         const mins = now.getHours() * 60 + now.getMinutes();
         if (mins < 480) return { key: null, label: '수업 시작 전' };
         if (mins >= 960) return { key: null, label: '오늘 수업 끝' };
-        for (let i = 0; i < WP_PERIODS.length; i++) {
-            const [key, start, end] = WP_PERIODS[i];
+        const bells = getBellPeriods(now);
+        for (let i = 0; i < bells.length; i++) {
+            const [key, start, end] = bells[i];
             if (mins >= start && mins < end) {
                 return { key, label: key === 'lunch' ? `점심시간 ${wpTimeText(start)}~${wpTimeText(end)}` : `${key}교시 ${wpTimeText(start)}~${wpTimeText(end)}` };
             }
@@ -14649,6 +14713,13 @@ ${body}
         const mins = now.getHours() * 60 + now.getMinutes();
         const todayIso = getTodayIsoDate();
 
+        // 특별 시정(기말고사 타종 등): 끝나고 5분까지는 그 교시
+        const special = getSpecialBell(now);
+        if (special) {
+            for (const [key, , end] of special.periods) if (mins < end + 5) return key;
+            return '7';
+        }
+
         // 9월 30일(수) 오전 변동 시간표 반영
         if (todayIso === '2026-09-30') {
             // 1교시: 08:20 ~ 09:10 (50분 정상)
@@ -14813,6 +14884,12 @@ ${body}
             '6': '6교시 (14:10~15:00)',
             '7': '7교시 (15:10~16:00)'
         };
+        const todaySpecial = day === getTodayDayStr() ? getSpecialBell() : null;
+        if (todaySpecial) {
+            todaySpecial.periods.forEach(([k, s, e]) => {
+                periodNameMap[k] = `${k === 'lunch' ? '점심시간' : k + '교시'} (${wpTimeText(s)}~${wpTimeText(e)}${+k <= 4 || k === 'lunch' ? ' 고사 시정' : ''})`;
+            });
+        }
         const periodDisplay = periodNameMap[effectivePeriod] || `${effectivePeriod}교시`;
 
         // 퀵 네비게이션 칩 바
@@ -16761,6 +16838,18 @@ ${n.content}
         const navItemEvent = document.getElementById('navItemEvent');
         const tabEvent = document.getElementById('tab-event');
 
+        // 특별 시정(기말고사 타종 등) 기간: 시작 3일 전부터 끝날 때까지 행사 탭에 시정표 표시
+        const bellPlan = SPECIAL_BELLS.find(p => {
+            const pre = ccfDateFromIso(p.from); pre.setDate(pre.getDate() - 3);
+            return todayIso >= toIsoDate(pre) && todayIso <= p.to;
+        });
+        renderBellNoticeBanner();
+        if (bellPlan) {
+            if (navItemEvent) navItemEvent.style.display = 'flex';
+            if (tabEvent) renderSpecialBellTab(bellPlan, tabEvent);
+            return;
+        }
+
         // 9월 30일 변동 행사: 오늘이 2026-09-30을 지난 경우
         if (todayIso > '2026-09-30') {
             // 미래에 다른 예정된 행사가 없으면 행사 탭 네비게이션 버튼을 숨김
@@ -16781,6 +16870,70 @@ ${n.content}
             // 오늘(9/23)인 경우 행사 탭 정상 노출
             if (navItemEvent) navItemEvent.style.display = 'flex';
         }
+    }
+
+    // 특별 시정표 화면 (PDF 시정표와 같은 구성: 교시 · 1·2학년 · 3학년 타종)
+    function renderSpecialBellTab(plan, el) {
+        const now = new Date();
+        const today = getSpecialBell(now);
+        const mins = now.getHours() * 60 + now.getMinutes();
+        const md = iso => `${+iso.slice(5, 7)}/${+iso.slice(8, 10)}`;
+        const wdName = d => WEEKDAY_NAMES[d];
+        const t = wpTimeText;
+        const sets = plan.sets.map(set => {
+            const isToday = today && today.set === set;
+            const rows = set.periods.map(([k, s, e]) => {
+                const ex = set.exam.find(x => String(x[0]) === k);
+                const fo = k === '1' && set.firstOverride ? Object.entries(set.firstOverride) : [];
+                const time12 = fo.length
+                    ? fo.map(([wd, ov]) => `<span class="sb-red">(${wdName(+wd)}) ${ov.note.replace(/\s*\d{2}:\d{2}.*$/, '')}<br>${t(ov.start)}~${t(e)}</span>`).join('')
+                      + `<br>(${set.days.filter(d => !set.firstOverride[d]).map(wdName).join('')}) ${t(s)}~${t(e)}`
+                    : `${t(s)}~${t(e)}`;
+                const start = isToday ? (today.periods.find(p => p[0] === k) || [k, s])[1] : s;
+                const cur = isToday && mins >= start && mins < e;
+                const name = k === 'lunch' ? '중식' : `${k}교시`;
+                const exHtml = ex ? `<div class="sb-ex">
+                        <span>예비령 <b>${ex[1]}</b><i>멘트</i></span><span class="bell">준비령 <b>${ex[2]}</b><i>벨+방송</i></span>
+                        <span>본령 <b>${ex[3]}</b><i>멘트</i></span><span class="bell">종료령 <b>${ex[4]}</b><i>벨+방송</i></span></div>` : '';
+                return `<tr class="${cur ? 'cur' : ''}${ex ? ' exam' : ''}"><th>${name}${cur ? '<em>지금</em>' : ''}</th>
+                    <td>${time12}${k === 'lunch' ? ` <small>(${e - s}분)</small>` : ''}</td><td>${exHtml}</td></tr>`;
+            }).join('');
+            return `<div class="m-card sb-card${isToday ? ' today' : ''}">
+                <div class="sb-head"><b>■ ${set.label}</b>${isToday ? '<span class="sb-today">오늘 적용</span>' : ''}</div>
+                <table class="sb-table"><thead><tr><th>교시</th><th>1·2학년</th><th>3학년</th></tr></thead><tbody>
+                    <tr><th>이동</th><td></td><td class="sb-move">${plan.move}</td></tr>
+                    ${rows}
+                    <tr><th>5교시~</th><td>평소와 동일</td><td></td></tr>
+                </tbody></table></div>`;
+        });
+        // 오늘 해당 요일 표를 위로
+        const order = plan.sets.map((s, i) => i).sort((a, b) => (today && plan.sets[b] === today.set) - (today && plan.sets[a] === today.set));
+        el.innerHTML = `
+            <div class="event-hero-banner">
+                <div class="event-hero-title"><span>📝</span> ${plan.title}</div>
+                <div class="event-hero-sub">${md(plan.from)}(${wdName(ccfDateFromIso(plan.from).getDay())}) ~ ${md(plan.to)}(${wdName(ccfDateFromIso(plan.to).getDay())}) · 정기고사 관리 강화 지침에 따른 수업·고사 시간 운영<br>${plan.sub}</div>
+                <div class="event-badge-group">
+                    <span class="event-badge event-badge-warn">⏱️ 오전 교시 시각 변경</span>
+                    <span class="event-badge event-badge-green">🍱 중식 시각 변경</span>
+                    <span class="event-badge event-badge-info">📖 5교시부터 평소와 동일</span>
+                </div>
+            </div>
+            ${order.map(i => sets[i]).join('')}
+            <div class="lib-hint" style="margin-bottom:12px;">ℹ️ 기간 중에는 홈의 <b>지금 몇 교시</b>, <b>내 오늘</b>, 교직원 좌석 현황이 이 시각 기준으로 계산됩니다. 담임 선생님께서는 학생들에게 안내해 주세요.</div>`;
+    }
+
+    // 홈 상단: 오늘 특별 시정 한 줄 안내
+    function renderBellNoticeBanner() {
+        const el = document.getElementById('bellNoticeBanner');
+        if (!el) return;
+        const sp = getSpecialBell();
+        if (!sp) { el.style.display = 'none'; return; }
+        const t = wpTimeText;
+        const p = k => sp.periods.find(x => x[0] === k);
+        const first = p('1'), lunch = p('lunch');
+        el.style.display = 'flex';
+        el.innerHTML = `<span class="bn-icon">📝</span><span class="bn-text"><b>오늘 ${sp.plan.title}</b>
+            <small>1교시 ${t(first[1])}~${t(first[2])}${sp.note ? ` (${sp.note.replace(/\s*\d{2}:\d{2}.*$/, '')})` : ''} · 3학년 고사 ${sp.set.exam.length}교시까지 · 중식 ${t(lunch[1])}~${t(lunch[2])}</small></span><span class="bn-go">시정표 ›</span>`;
     }
 
     // 구글 문서 실시간 Fetch (공지사항 및 단축수업)
